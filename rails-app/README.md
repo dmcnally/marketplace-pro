@@ -23,7 +23,7 @@ The admin sidebar must contain Products, Categories, Allergens, and Menus, in
 that order. The main sidebar contains Overview and Orders, with an additional
 Admin link for editors and admins. Admin includes a Back to Overview link.
 Editors and admins can manage all four sections and publish menus.
-Products, variants, and menus are archived, never deleted. All domain changes
+Products, variants, categories, allergens, and menus are archived, never deleted. All domain changes
 must be tracked through events, including every product, variant, and allergen
 change. Product, variant, and menu content uses immutable recordables; published
 menus snapshot content, prices, and allergens while availability remains live.
