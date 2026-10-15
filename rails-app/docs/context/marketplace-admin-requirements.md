@@ -24,6 +24,24 @@ earlier editorial navigation and any conflicting Marketplace design assumptions.
   pattern: edits create new versions. Availability is separate operational state
   and remains live, but its changes must also produce events.
 
+## Event history views
+
+- Products, menus, categories, and allergens each have a history view showing
+  who changed what and when.
+- A product's history includes its variant changes, so editors can follow the
+  product and its variants together without switching between separate histories.
+- History covers content, prices, assignments, ordering, availability,
+  publication, unpublication, archiving, restoration, and reverting as applicable
+  to the resource. Bulk operations must retain the affected record-level changes.
+- Content-change events offer a before-and-after comparison, including names,
+  descriptions, prices, and allergen assignments. Reuse the existing diff
+  functionality where applicable and include relationship changes in the
+  comparison rather than limiting it to scalar recordable fields.
+- History and its comparisons are read-only in the current scope. Restoring an
+  arbitrary historical content version is deferred. Revert all to the most
+  recently published version is the only content rollback action initially;
+  archive restoration remains a separate supported operation.
+
 ## Archiving behavior and rationale
 
 Archiving means an item has been withdrawn from sale. It must stop being
@@ -32,9 +50,10 @@ Temporary unavailability serves a different purpose: use the availability toggle
 for "sold out today" and archive for "we no longer offer this."
 
 - Archiving a variant makes it unavailable across all menus in the bucket,
-  including the live menu.
+  and immediately omits it from the live menu without republishing.
 - Archiving a product makes all its variants unavailable across all menus in the
-  bucket, including the live menu.
+  bucket and immediately omits the product and its variants from the live menu
+  without republishing. Archived items are not displayed as sold out.
 - Archived products and variants are excluded from future menu selection.
 - Archived categories and allergens cannot be newly assigned to products or
   variants. Existing assignments and event history remain intact. Archiving a
@@ -43,12 +62,24 @@ for "sold out today" and archive for "we no longer offer this."
 - Archived categories and allergens can be restored, making them available for
   assignment again. Restoration preserves existing assignments and is tracked
   through events.
-- Published content snapshots and event history are preserved. Live availability
-  prevents ordering withdrawn items without rewriting what was published.
+- Published content snapshots and event history are preserved. The live menu
+  filters out archived products and variants without rewriting historical
+  published versions. They also do not appear in Overview's live-menu
+  availability controls.
+- After filtering archived items, the live menu hides products with no visible
+  variants and sections with no visible products. This takes effect without
+  republishing and does not delete their draft structure or published history.
+  Temporary unavailability alone does not make a variant invisible.
 - Products and variants can be restored, but restoration does not automatically
   make them available. A bucket member must explicitly enable availability once
   the item is on the currently published menu.
   This prevents an administrative restoration from unintentionally resuming sales.
+- Restored products and variants automatically reappear without republishing
+  when they remain included in the live menu's published structure and published
+  product version, provided their parent product is not archived. Previously
+  hidden products and sections reappear when they contain visible content again.
+  The restored variants remain unavailable until a bucket member explicitly
+  enables them. This preserves menu structure without automatically resuming sales.
 - Archiving the currently published menu atomically unpublishes it. An archived
   menu must not remain live; the bucket may then have no published menu.
 - Archived menus can be restored as unpublished drafts. Restoration never
@@ -79,7 +110,7 @@ for "sold out today" and archive for "we no longer offer this."
   introduction of a new variant for sale.
 - Adding a product to a menu section includes all its variants. There is no
   per-menu variant selection. The live menu uses the variants in the product's
-  published version; draft variants are not exposed.
+  published version, excluding archived variants; draft variants are not exposed.
 
 ## Categories and menu sections
 
@@ -123,6 +154,23 @@ for "sold out today" and archive for "we no longer offer this."
   must be reviewed.
 - The allergen list is owned and managed by the bucket, not shared globally
   across the application.
+- Changes to an allergen's name or description retain the previously published
+  wording on published products until each affected product is republished.
+  Flag the affected products as having unpublished changes.
+- Show a prominent warning that allergens have been edited and the live menu may
+  be inaccurate when affected products appear on the live menu. Identify the
+  affected products and direct editors/admins to review and republish them.
+- This warning appears in admin for editors and admins, not on the staff
+  Overview page.
+- The same warning covers unpublished additions or removals of allergen
+  assignments on variants of products appearing on the live menu, including
+  assignments changed through the product-level bulk editor. Flag the affected
+  products for review and republication; live assignments remain those in the
+  published product version until it is republished.
+- The warning remains while the live menu references products whose published
+  allergen information differs from the edited information. Republishing the
+  menu alone does not resolve it; the affected products must be republished
+  or cease to appear on the live menu.
 
 ## Separate publication lifecycles
 
@@ -149,6 +197,11 @@ for "sold out today" and archive for "we no longer offer this."
   published version. Publishing a product update updates it on the live menu
   without requiring menu republication.
 - Availability remains separate and live, regardless of either publication cycle.
+- Publishing requires confirmation summarizing its impact. For menu publication,
+  identify the currently published menu being replaced, if any. For product
+  publication, explain whether the changes will appear on the live menu and
+  highlight price and allergen changes. The confirmation must reflect the
+  resource's publication scope.
 - This separation keeps menu arrangement independent of catalogue editing and
   gives reverting a clear scope without rolling back shared products from a menu.
 
@@ -264,8 +317,25 @@ for "sold out today" and archive for "we no longer offer this."
 - The customer side of the application has not yet been scoped and is outside
   the current requirements.
 
+## Editing concurrency and scope
+
+The initial application serves a small takeaway, likely with one person managing
+the catalogue and menus. Concurrent editing is possible but uncommon; keep the
+workflow simple.
+
+- Provide basic stale-save protection so one editor does not silently overwrite
+  another editor's changes. On a conflict, ask the editor to reload.
+- Reject a stale publication confirmation if the draft changed after review;
+  require reviewing the current draft before confirming publication again.
+- Collaborative editing, automatic merging, and advanced concurrency workflows
+  are outside the initial scope. Atomic menu replacement remains required.
+- The core admin decisions are sufficiently defined to proceed to implementation
+  planning without expanding the initial feature scope.
+
 ## Deferred work
 
+- Collaborative editing, automatic merging, and advanced concurrency workflows.
+- Restoration of arbitrary historical content versions.
 - Order processing behavior and permissions, including the division of
   responsibilities between Rails and Android, will be defined separately.
 
