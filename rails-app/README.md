@@ -20,9 +20,12 @@ A bucket is the owner boundary for its content and access through memberships.
 Each bucket may have at most one published menu at a time. Menu publication is a
 domain requirement; menu functionality is not yet implemented in this application.
 The admin sidebar must contain Products, Categories, Allergens, and Menus, in
-that order. The non-admin sidebar must contain only Overview and Orders, in that
-order, with Orders linking to an Orders page. This navigation split is documented
-only and remains to be reflected in Figma and implemented in Rails.
+that order. The main sidebar contains Overview and Orders, with an additional
+Admin link for editors and admins. Admin includes a Back to Overview link.
+Editors and admins can manage all four sections and publish menus.
+The confirmed domain rules and remaining decisions are captured in
+[Marketplace admin requirements](docs/context/marketplace-admin-requirements.md).
+These requirements remain to be fully reflected in Figma and implemented in Rails.
 
 This application uses a **delegated type pattern** where `Recording` serves as a polymorphic wrapper around immutable content types called **Recordables**. This design provides uniform behavior across all content types while maintaining clean separation of concerns.
 

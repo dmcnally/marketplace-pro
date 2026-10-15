@@ -2,10 +2,15 @@
 
 ## Current document invariants
 
+The confirmed domain and navigation requirements are maintained in
+[Marketplace admin requirements](marketplace-admin-requirements.md). They take
+precedence over the historical editorial redesign scope below.
+
 - A bucket is the owner boundary for content and membership access. Do not model a bucket as containing multiple sites.
 - Each bucket may have at most one published menu at a time.
 - The admin sidebar contains Products, Categories, Allergens, and Menus, in that order.
-- The non-admin sidebar contains only Overview and Orders, in that order. Orders links to an Orders page.
+- The main sidebar contains Overview and Orders, in that order. Editors and admins also see an Admin link. Orders links to an Orders page.
+- The admin area includes a Back to Overview link. Editors and admins can manage all four admin sections and publish menus.
 - Articles is not a sidebar item.
 - These requirements supersede the earlier editorial navigation described below. The admin/non-admin navigation split is documented only; Figma and Rails still require updates to reflect it. Menu functionality also remains to be implemented.
 
