@@ -214,9 +214,7 @@ GEM
     htmldiff (0.0.1)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    image_processing (1.14.0)
-      mini_magick (>= 4.9.5, < 6)
-      ruby-vips (>= 2.0.17, < 3)
+    image_processing (2.2.0)
     importmap-rails (2.2.3)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -263,8 +261,6 @@ GEM
     marcel (1.2.1)
     matrix (0.4.3)
     method_source (1.1.0)
-    mini_magick (5.4.0)
-      logger
     mini_mime (1.1.5)
     minitest (6.0.6)
       drb (~> 2.0)
@@ -420,9 +416,6 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
-    ruby-vips (2.3.0)
-      ffi (~> 1.12)
-      logger
     rubydex (0.4.1)
     rubydex (0.4.1-aarch64-linux)
     rubydex (0.4.1-x86_64-linux)
@@ -515,7 +508,7 @@ DEPENDENCIES
   guard-shell (~> 0.7.1)
   hotwire-spark (~> 0.1.13)
   htmldiff (~> 0.0.1)
-  image_processing (~> 1.2)
+  image_processing (~> 2.2)
   importmap-rails
   jbuilder
   kamal
