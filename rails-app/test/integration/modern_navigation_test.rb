@@ -5,7 +5,7 @@ class ModernNavigationTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select ".management-sidebar__brand", "b. Blogger"
+    assert_select ".management-sidebar__brand", "Marketplace"
     assert_select "nav[aria-label=Workspace]" do
       assert_select "a[href=?]", articles_path, text: "Articles"
       assert_select "a[href=?]", admin_members_path, count: 0

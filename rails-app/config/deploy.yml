@@ -1,8 +1,8 @@
 # Name of your application. Used to uniquely configure containers.
-service: blogger
+service: marketplace
 
 # Name of the container image (use your-user/app-name on external registries).
-image: blogger
+image: marketplace
 
 # Deploy to these servers.
 servers:
