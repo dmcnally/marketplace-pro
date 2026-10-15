@@ -1,4 +1,4 @@
-# Blogger
+# Marketplace
 
 A Rails application demonstrating the Recording/Recordable delegated type pattern for content management with built-in event tracking and tree-based relationships.
 
@@ -15,6 +15,14 @@ Connect to the site as http://localhost:3000
 If you're not running Docker then you'll have to figure things out for yourself.
 
 ## Architecture Overview
+
+A bucket is the owner boundary for its content and access through memberships.
+Each bucket may have at most one published menu at a time. Menu publication is a
+domain requirement; menu functionality is not yet implemented in this application.
+The admin sidebar must contain Products, Categories, Allergens, and Menus, in
+that order. The non-admin sidebar must contain only Overview and Orders, in that
+order, with Orders linking to an Orders page. This navigation split is documented
+only and remains to be reflected in Figma and implemented in Rails.
 
 This application uses a **delegated type pattern** where `Recording` serves as a polymorphic wrapper around immutable content types called **Recordables**. This design provides uniform behavior across all content types while maintaining clean separation of concerns.
 

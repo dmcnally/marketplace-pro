@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Workspace overview · Blogger" %></title>
+    <title><%= content_for(:title) || "Workspace overview · Marketplace" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -13,7 +13,7 @@
     <%= render "layouts/sys_admin_banner" %>
     <div class="workspace__layout">
       <aside class="workspace__sidebar">
-        <%= link_to "b.  Blogger", root_path, class: "workspace__brand" %>
+        <%= link_to "Marketplace", root_path, class: "workspace__brand" %>
         <p class="workspace__eyebrow">EDITORIAL WORKSPACE</p>
         <nav class="workspace__nav" aria-label="Admin">
           <%= link_to "Overview", admin_root_path, class: "workspace__nav-link workspace__nav-link--active", aria: { current: "page" } %>

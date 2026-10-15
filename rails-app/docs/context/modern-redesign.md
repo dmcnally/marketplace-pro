@@ -1,5 +1,14 @@
 # Modern redesign: scope and handoff
 
+## Current document invariants
+
+- A bucket is the owner boundary for content and membership access. Do not model a bucket as containing multiple sites.
+- Each bucket may have at most one published menu at a time.
+- The admin sidebar contains Products, Categories, Allergens, and Menus, in that order.
+- The non-admin sidebar contains only Overview and Orders, in that order. Orders links to an Orders page.
+- Articles is not a sidebar item.
+- These requirements supersede the earlier editorial navigation described below. The admin/non-admin navigation split is documented only; Figma and Rails still require updates to reflect it. Menu functionality also remains to be implemented.
+
 ## What was missed
 
 The user requested the Modern Figma design across Blogger. The first pass
