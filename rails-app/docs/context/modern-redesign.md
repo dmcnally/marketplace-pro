@@ -8,14 +8,27 @@ precedence over the historical editorial redesign scope below.
 
 - A bucket is the owner boundary for content and membership access. Do not model a bucket as containing multiple sites.
 - Each bucket may have at most one published menu at a time.
+- Publishing requires at least one section containing a product; empty menus and sections can be saved as drafts.
+- Empty sections are omitted from the published snapshot and retained in the draft.
+- Editors and admins can manually reorder sections, products within sections, and variants within products. Ordering changes are tracked through events and require republishing.
 - Publishing atomically replaces the current menu. Published content, prices, and allergens are snapshots; availability remains live. Editors and admins may unpublish without replacement.
-- Products, variants, and menus are archived, never deleted. Products, variants, and menu content use immutable recordables.
+- Products, variants, categories, allergens, and menus are archived, never deleted. Products, variants, and menu content use immutable recordables.
+- Archived categories and allergens retain existing assignments and history but cannot be newly assigned to products or variants.
+- Categories and allergens can be restored to make them assignable again; restoration is tracked through events.
+- A product may appear in multiple sections of a menu, sharing variants, prices, and availability. The editor must visibly indicate these placements and identify the other sections; the indicator does not block placement.
+- A product may appear only once within each menu section; duplicate placement in the same section is blocked.
+- Menus and sections each have a required name, optional description, and one optional image. Their images are part of the published snapshot and require republishing when changed.
+- Editors and admins have a basic draft menu preview page with simple styling. Previewing does not publish or change the live menu; a full customer-facing design remains outside scope.
+- Archiving withdraws products and variants from sale immediately across all menus and excludes them from future selection, while preserving snapshots and history. Restoring products or variants does not automatically enable availability. Archiving the published menu atomically unpublishes it.
+- Restored menus return as unpublished drafts and require explicit publication; restoration never replaces the live menu.
 - All domain changes must be tracked through events, including every product, variant, and allergen change, relationship changes, availability, archiving, and publication transitions.
 - Each bucket uses one currency. Products have a required name, optional description, and optional image; variants have a required name and price, availability, and allergens.
 - The admin sidebar contains Products, Categories, Allergens, and Menus, in that order.
 - The main sidebar contains Overview and Orders, in that order. Editors and admins also see an Admin link. Orders links to an Orders page.
 - The admin area includes a Back to Overview link. Editors and admins can manage all four admin sections and publish menus.
 - Articles is not a sidebar item.
+- Orders is a staff view of all orders in the current bucket, accessible to every bucket member. Customer-facing behavior is outside the current scope; order mutation permissions remain undecided.
+- Order processing is deferred beyond the current admin build. Part of that workflow will be handled by the Android application; the Rails/Android split will be defined later.
 - These requirements supersede the earlier editorial navigation described below. The admin/non-admin navigation split is documented only; Figma and Rails still require updates to reflect it. Menu functionality also remains to be implemented.
 
 ## What was missed
