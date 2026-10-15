@@ -25,8 +25,10 @@ Admin link for editors and admins. Admin includes a Back to Overview link.
 Editors and admins can manage all four sections and publish menus.
 Products, variants, categories, allergens, and menus are archived, never deleted. All domain changes
 must be tracked through events, including every product, variant, and allergen
-change. Product, variant, and menu content uses immutable recordables; published
-menus snapshot content, prices, and allergens while availability remains live.
+change. Product, variant, and menu content uses immutable recordables. Products
+and their variants publish together, including prices and allergens. Menus
+publish their presentation, sections, and product placements separately and use
+each product's published version. Availability remains live.
 Each bucket uses one currency.
 The confirmed domain rules and remaining decisions are captured in
 [Marketplace admin requirements](docs/context/marketplace-admin-requirements.md).

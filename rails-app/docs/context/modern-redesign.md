@@ -9,16 +9,23 @@ precedence over the historical editorial redesign scope below.
 - A bucket is the owner boundary for content and membership access. Do not model a bucket as containing multiple sites.
 - Each bucket may have at most one published menu at a time.
 - Publishing requires at least one section containing a product; empty menus and sections can be saved as drafts.
+- Draft menus may include unpublished products, but publishing is blocked for products without a published version. The editor must publish or remove each blocking product; no silent omission or automatic product publication. New draft edits to an already published product do not block the menu.
 - Empty sections are omitted from the published snapshot and retained in the draft.
 - Editors and admins can manually reorder sections, products within sections, and variants within products. Ordering changes are tracked through events and require republishing.
-- Publishing atomically replaces the current menu. Published content, prices, and allergens are snapshots; availability remains live. Editors and admins may unpublish without replacement.
+- Menu publication atomically replaces the current menu and publishes its presentation, sections, and product placements. Products and their variants publish together on a separate lifecycle, including prices and allergens. The live menu uses each product's published version; product updates do not require menu republication. Availability stays live. Editors and admins may unpublish menus without replacement.
 - Products, variants, categories, allergens, and menus are archived, never deleted. Products, variants, and menu content use immutable recordables.
 - Archived categories and allergens retain existing assignments and history but cannot be newly assigned to products or variants.
 - Categories and allergens can be restored to make them assignable again; restoration is tracked through events.
 - A product may appear in multiple sections of a menu, sharing variants, prices, and availability. The editor must visibly indicate these placements and identify the other sections; the indicator does not block placement.
 - A product may appear only once within each menu section; duplicate placement in the same section is blocked.
 - Menus and sections each have a required name, optional description, and one optional image. Their images are part of the published snapshot and require republishing when changed.
-- Editors and admins have a basic draft menu preview page with simple styling. Previewing does not publish or change the live menu; a full customer-facing design remains outside scope.
+- Editors and admins have a basic menu preview page with simple styling, combining draft menu structure with published product versions. Products without a published version are clearly flagged as blockers. Previewing does not publish or change the live menu; a full customer-facing design remains outside scope.
+- Menu and product editors indicate unpublished changes within their own publication scope and offer reverting to their published version. Menu revert affects presentation and structure; product revert affects its content and variants. Reverts preserve history, produce events, and leave live availability unchanged.
+- Revert uses the most recently published version even when currently unpublished. It is unavailable before first publication and does not change publication status.
+- Revert all requires confirmation explaining that the current draft is replaced, event history is preserved, and live availability remains unchanged.
+- Revert preserves archive status. Archived references remain archived, archived variants remain unavailable, and a notice explains that restoration requires a separate action.
+- Products have a separate Unpublish action for editors and admins, applying to the product and variants together and tracked through events. Block it while the product is referenced by the live menu: remove all its placements and republish the menu first, or unpublish the menu. This initial restriction may be revisited if it causes workflow friction; availability can stop sales immediately.
+- Product publication requires at least one non-archived variant with a valid name and price. Temporary unavailability does not block publication.
 - Archiving withdraws products and variants from sale immediately across all menus and excludes them from future selection, while preserving snapshots and history. Restoring products or variants does not automatically enable availability. Archiving the published menu atomically unpublishes it.
 - Restored menus return as unpublished drafts and require explicit publication; restoration never replaces the live menu.
 - All domain changes must be tracked through events, including every product, variant, and allergen change, relationship changes, availability, archiving, and publication transitions.
@@ -28,6 +35,9 @@ precedence over the historical editorial redesign scope below.
 - The admin area includes a Back to Overview link. Editors and admins can manage all four admin sections and publish menus.
 - Articles is not a sidebar item.
 - Orders is a staff view of all orders in the current bucket, accessible to every bucket member. Customer-facing behavior is outside the current scope; order mutation permissions remain undecided.
+- Every bucket member can toggle availability only for products and variants on the currently published menu in their bucket, with changes tracked through events. Draft placement or product publication alone does not qualify. Content editing and publishing remain restricted to editors and admins.
+- Overview displays the live menu's products and variants with availability controls for every bucket member, without requiring admin access or another sidebar page.
+- Product-level availability toggles are bulk UX controls over published variants, not separate product state. Each affected variant change is tracked through events.
 - Order processing is deferred beyond the current admin build. Part of that workflow will be handled by the Android application; the Rails/Android split will be defined later.
 - These requirements supersede the earlier editorial navigation described below. The admin/non-admin navigation split is documented only; Figma and Rails still require updates to reflect it. Menu functionality also remains to be implemented.
 
