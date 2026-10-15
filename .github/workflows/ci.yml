@@ -1,5 +1,9 @@
 name: CI
 
+defaults:
+  run:
+    working-directory: rails-app
+
 on:
   pull_request:
   push:
@@ -21,6 +25,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          working-directory: rails-app
           bundler-cache: true
 
       - name: Scan for common Rails security vulnerabilities using static analysis
@@ -40,6 +45,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          working-directory: rails-app
           bundler-cache: true
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
@@ -49,7 +55,7 @@ jobs:
     name: Ruby code style (RuboCop)
     runs-on: ubuntu-latest
     env:
-      RUBOCOP_CACHE_ROOT: tmp/rubocop
+      RUBOCOP_CACHE_ROOT: ${{ github.workspace }}/rails-app/tmp/rubocop
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -57,12 +63,13 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          working-directory: rails-app
           bundler-cache: true
 
       - name: Prepare RuboCop cache
         uses: actions/cache@v6
         env:
-          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
+          DEPENDENCIES_HASH: ${{ hashFiles('rails-app/.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'rails-app/Gemfile.lock') }}
         with:
           path: ${{ env.RUBOCOP_CACHE_ROOT }}
           key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
@@ -83,6 +90,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          working-directory: rails-app
           bundler-cache: true
 
       - name: Check architectural consistency
@@ -110,6 +118,7 @@ jobs:
 
     steps:
       - name: Ensure PostgreSQL development package is installed
+        working-directory: ${{ github.workspace }}
         run: |
           if ! dpkg-query -W -f='${Status}' libpq-dev 2>/dev/null | grep -qx 'install ok installed'; then
             sudo apt-get update
@@ -122,6 +131,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          working-directory: rails-app
           bundler-cache: true
 
       - name: Run tests
@@ -157,6 +167,7 @@ jobs:
 
     steps:
       - name: Ensure PostgreSQL development package is installed
+        working-directory: ${{ github.workspace }}
         run: |
           if ! dpkg-query -W -f='${Status}' libpq-dev 2>/dev/null | grep -qx 'install ok installed'; then
             sudo apt-get update
@@ -169,6 +180,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          working-directory: rails-app
           bundler-cache: true
 
       - name: Run System Tests
@@ -187,5 +199,5 @@ jobs:
         if: failure()
         with:
           name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
+          path: ${{ github.workspace }}/rails-app/tmp/screenshots
           if-no-files-found: ignore
