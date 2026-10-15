@@ -341,7 +341,8 @@ workflow simple.
 
 ## Implementation status
 
-The latest decisions above are documented only. The existing Figma showcase has
-Products, Categories, Allergens, and Menus in its sidebar, but still needs the
-main/admin navigation split and the corresponding Marketplace screens. Rails
-also needs the domain features and navigation implemented.
+The Marketplace Figma design now includes the main/admin navigation split and
+the corresponding screens, workflow states, and desktop/mobile examples. See
+[Figma requirements coverage](marketplace-figma-coverage.md) for the design links
+and requirement-by-requirement evidence. This is design coverage, not runtime
+verification. Rails still needs the domain features and navigation implemented.

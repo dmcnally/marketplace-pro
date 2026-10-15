@@ -49,7 +49,7 @@ precedence over the historical editorial redesign scope below.
 - Overview displays the live menu's products and variants with availability controls for every bucket member, without requiring admin access or another sidebar page.
 - Product-level availability toggles are bulk UX controls over published variants, not separate product state. Each affected variant change is tracked through events.
 - Order processing is deferred beyond the current admin build. Part of that workflow will be handled by the Android application; the Rails/Android split will be defined later.
-- These requirements supersede the earlier editorial navigation described below. The admin/non-admin navigation split is documented only; Figma and Rails still require updates to reflect it. Menu functionality also remains to be implemented.
+- These requirements supersede the earlier editorial navigation described below. The Marketplace Figma screens now represent the main/admin navigation split and confirmed workflows; see [Figma requirements coverage](marketplace-figma-coverage.md). Rails navigation and domain functionality still require implementation.
 
 ## What was missed
 
@@ -66,7 +66,7 @@ Label unsupported features clearly. Memberships provide joined dates.
 
 ## Required design sources
 
-[Blogger · Modern redesign](https://www.figma.com/design/H6dpgQ8jzdr0zH2MlT9iUM/Blogger-Modern-redesign)
+[Marketplace · Modern redesign](https://www.figma.com/design/UfIFxpLKXKsP9HBj9k3rfP/marketplace?m=auto&t=NVsE2yJTM0Sbdyi6-6)
 
 - `1:2`: **Modern · 00 Admin showcase**, overview frame `4:2`.
 - `0:1`: **Modern · 01 Foundations**, initially missed. Its shared components
