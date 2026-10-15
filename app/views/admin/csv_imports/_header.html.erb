@@ -1,0 +1,26 @@
+<header id="<%= dom_id(import, :header) %>" class="csv-import-detail__header">
+  <div>
+    <div class="csv-import-detail__title-row">
+      <h1 class="csv-import-detail__title">
+        <%= import.source_file.attached? ? import.source_file.filename : "CSV import" %>
+      </h1>
+
+      <% if import.approved? %>
+        <span class="csv-import-detail__approval-status csv-import-detail__approval-status--approved">Approved</span>
+      <% else %>
+        <span class="csv-import-detail__approval-status csv-import-detail__approval-status--awaiting">Awaiting approval</span>
+      <% end %>
+    </div>
+
+    <p class="csv-import-detail__meta">
+      Uploaded <%= import.created_at.to_fs(:long) %> by <%= import.created_by.person_card.name.presence || "Unnamed person" %>
+    </p>
+  </div>
+
+  <div class="csv-import-detail__aside">
+    <span class="csv-import-detail__type"><%= import.import_type.titleize %></span>
+    <div class="csv-import-detail__actions">
+      <%= approval_actions.approve_button_for(import) %>
+    </div>
+  </div>
+</header>

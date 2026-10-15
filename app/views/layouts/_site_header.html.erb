@@ -1,0 +1,24 @@
+<header class="site-header">
+  <div class="site-header__container">
+    <div class="site-header__identity">
+      <%= link_to "Blogger", root_path, class: "site-header__brand" %>
+      <% if Current.bucket.present? %>
+        <span class="site-header__bucket"><%= Current.bucket.name %></span>
+      <% end %>
+    </div>
+
+    <nav class="site-header__nav">
+      <% if authenticated? %>
+        <%= admin_actions.header_link %>
+        <details class="site-header__account">
+          <summary class="site-header__user"><%= Current.user.email_address %></summary>
+          <div class="site-header__menu">
+            <%= session_actions.sign_out_button %>
+          </div>
+        </details>
+      <% else %>
+        <%= session_actions.sign_in_link %>
+      <% end %>
+    </nav>
+  </div>
+</header>

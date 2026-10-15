@@ -1,0 +1,27 @@
+<% content_for :title, "Members" %>
+
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-header__title">Members</h1>
+  </div>
+
+  <% if @memberships.any? %>
+    <div class="member-list">
+      <% @memberships.each do |membership| %>
+        <div class="member-list__item">
+          <div>
+            <h2 class="member-list__name"><%= membership.person.person_card.name.presence || "Unnamed person" %></h2>
+            <p class="member-list__meta"><%= membership.person.user&.email_address || "No account email" %></p>
+          </div>
+
+          <span class="member-list__role"><%= membership.role.titleize %></span>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <p class="empty-state__message">No members yet.</p>
+      <p class="empty-state__hint">Members will appear here after they are added to this bucket.</p>
+    </div>
+  <% end %>
+</div>

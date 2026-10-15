@@ -1,0 +1,12 @@
+<% if Current.person.sys_admin? %>
+  <div class="sys-admin-banner">
+    <div class="sys-admin-banner__container">
+      <span class="sys-admin-banner__label">Sys Admin</span>
+      <% if (exit_bucket_button = sys_admin_actions.banner_exit_bucket_button) %>
+        <div class="sys-admin-banner__actions">
+          <%= exit_bucket_button %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

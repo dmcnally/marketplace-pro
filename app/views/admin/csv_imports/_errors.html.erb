@@ -1,0 +1,10 @@
+<% if import.errors.any? %>
+  <div class="form-errors" role="alert">
+    <h2 class="form-errors__title">Please correct the following errors:</h2>
+    <ul class="form-errors__list">
+      <% import.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -1,0 +1,42 @@
+/* Block */
+.publication-toggle {
+  display: inline-block;
+}
+
+/* Element */
+.publication-toggle__button {
+  padding: 12px 16px;
+  font-weight: 400;
+  border-radius: var(--radius-control);
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Modifiers */
+.publication-toggle__button--publish {
+  background-color: var(--color-success); /* green */
+}
+
+.publication-toggle__button--publish:hover {
+  background-color: var(--color-success);
+}
+
+.publication-toggle__button--unpublish {
+  background-color: var(--color-tint);
+  color: var(--color-brand);
+}
+
+.publication-toggle__button--unpublish:hover {
+  background-color: #ddd7ff;
+}
+
+@media (max-width: 40rem) {
+  .publication-toggle,
+  .publication-toggle form,
+  .publication-toggle__button {
+    box-sizing: border-box;
+    width: 100%;
+  }
+}

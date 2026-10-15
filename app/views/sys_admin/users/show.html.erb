@@ -1,0 +1,54 @@
+<% content_for :title, @user.email_address %>
+
+<div class="page page--medium">
+  <div class="page-header">
+    <h1 class="page-header__title user-detail__title"><%= @user.email_address %></h1>
+
+    <div class="user-detail__actions">
+      <%= sys_admin_user_actions.password_reset_button_for(@user) %>
+    </div>
+  </div>
+
+  <dl class="user-detail">
+    <div class="user-detail__row">
+      <dt class="user-detail__term">Person</dt>
+      <dd class="user-detail__description"><%= @user.person.person_card.name.presence || "Unnamed person" %></dd>
+    </div>
+
+    <div class="user-detail__row">
+      <dt class="user-detail__term">Created</dt>
+      <dd class="user-detail__description"><%= @user.created_at.to_fs(:long) %></dd>
+    </div>
+
+    <div class="user-detail__row">
+      <dt class="user-detail__term">Sessions</dt>
+      <dd class="user-detail__description"><%= pluralize(@user.sessions.size, "session") %></dd>
+    </div>
+  </dl>
+
+  <section class="user-buckets" aria-labelledby="user-buckets-title">
+    <div class="user-buckets__header">
+      <h2 class="user-buckets__title" id="user-buckets-title">Buckets</h2>
+    </div>
+
+    <% if @memberships.any? %>
+      <div class="user-buckets__list">
+        <% @memberships.each do |membership| %>
+          <div class="user-buckets__item">
+            <div>
+              <h3 class="user-buckets__name"><%= membership.bucket.name %></h3>
+              <p class="user-buckets__meta"><%= membership.role.titleize %></p>
+            </div>
+
+            <%= sys_admin_bucket_actions.show_link_for(membership.bucket) %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <p class="empty-state__message">No bucket access.</p>
+        <p class="empty-state__hint">Bucket memberships will appear here after access is granted.</p>
+      </div>
+    <% end %>
+  </section>
+</div>

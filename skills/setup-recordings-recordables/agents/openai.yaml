@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Recordings & Recordables"
+  short_description: "Build recording/recordable Rails architecture"
+  default_prompt: "Use $setup-recordings-recordables to set up or extend the Recording/Recordable model pattern with concerns, overrides, buckets, events, and tests."

@@ -1,0 +1,40 @@
+<%= turbo_stream_from @recording %>
+<div class="page page--medium">
+  <%= link_to "&larr; Back to Articles".html_safe, articles_path, class: "back-link" %>
+
+  <article class="article-detail">
+    <header class="article-detail__header">
+      <h1 class="article-detail__title"><%= @recording.recordable.title %></h1>
+      <div class="article-detail__meta">
+        <span>Created <%= time_ago_in_words(@recording.created_at) %> ago</span>
+        <% if @recording.updated_at != @recording.created_at %>
+          <span class="article-detail__meta-separator">|</span>
+          <span>Updated <%= time_ago_in_words(@recording.updated_at) %> ago</span>
+        <% end %>
+      </div>
+    </header>
+
+    <% if @recording.recordable.body.present? %>
+      <div class="article-detail__body">
+        <%= simple_format(@recording.recordable.body) %>
+      </div>
+    <% else %>
+      <p class="article-detail__empty">No content.</p>
+    <% end %>
+  </article>
+
+  <div class="article-actions">
+    <%= article_actions.edit_link_for(@recording) %>
+    <%= diff_actions.show_link_for(@recording) %>
+    <%= article_actions.delete_button_for(@recording) %>
+    <%= publication_actions.toggle_for(@recording) %>
+  </div>
+
+  <%# Timeline Section %>
+  <%= turbo_stream_from @recording, "timeline" %>
+  <h3 class="timeline__title">Timeline</h3>
+  <%= timeline_actions.render_for(@recording) %>
+
+  <%# Comments Section %>
+  <%= comment_actions.new_form_for(@recording) %>
+</div>

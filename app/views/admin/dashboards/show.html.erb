@@ -1,0 +1,97 @@
+<% content_for :title, "Workspace overview · Blogger" %>
+
+<div class="workspace__toolbar">
+  <span>Workspace / Overview</span>
+  <%= form_with url: articles_path, method: :get, class: "workspace__search", data: { controller: "workspace-search", action: "keydown@window->workspace-search#focus" } do |form| %>
+    <%= form.search_field :q, placeholder: "Search articles…", aria: { label: "Search articles" }, data: { workspace_search_target: "input" } %>
+    <%= form.submit "Search", class: "workspace__search-button" %>
+  <% end %>
+  <details class="workspace__account">
+    <summary aria-label="Account menu"><%= @overview.initials %></summary>
+    <div class="workspace__account-menu"><%= session_actions.sign_out_button %></div>
+  </details>
+</div>
+<header class="workspace__heading">
+  <div><h1>Welcome back, <%= @overview.first_name %></h1><p>Here’s what’s happening across your workspace today.</p></div>
+  <%= article_actions.new_link(label: "Create article") %>
+</header>
+<div class="workspace__metrics">
+  <section class="workspace-card workspace-metric">
+    <div class="workspace-card__heading"><h2>Published articles</h2><span class="workspace__badge">All time</span></div>
+    <p class="workspace-metric__value"><%= @overview.published_count %></p>
+    <p class="workspace-metric__change">+<%= @overview.published_this_month %> this month</p>
+  </section>
+  <section class="workspace-card workspace-metric">
+    <div class="workspace-card__heading"><h2>Team members</h2><span class="workspace__badge">30 days</span></div>
+    <p class="workspace-metric__value"><%= @overview.member_count %></p>
+    <p class="workspace-metric__change"><%= pluralize(@overview.new_member_count, "new member") %></p>
+  </section>
+  <section class="workspace-card workspace-metric">
+    <div class="workspace-card__heading"><h2>Unpublished articles</h2><span class="workspace__badge">Current</span></div>
+    <p class="workspace-metric__value"><%= @overview.draft_count %></p>
+    <p class="workspace-metric__change workspace-metric__change--brand">Ready for your next steps</p>
+  </section>
+</div>
+<div class="workspace__analytics">
+  <section class="workspace-card">
+    <div class="workspace-card__heading"><h2>Publishing activity</h2><span class="workspace__badge workspace__badge--wide">This week</span></div>
+    <p class="workspace-card__muted"><%= pluralize(@overview.published_this_week, "article") %> published this week</p>
+    <div class="workspace-chart" role="img" aria-label="Articles published by day this week: <%= @overview.publishing_days.map { |date, count| "#{date.strftime('%A')} #{count}" }.join(', ') %>">
+      <% maximum = [@overview.publishing_days.map(&:last).max, 1].max %>
+      <% @overview.publishing_days.each do |date, count| %>
+        <div class="workspace-chart__day">
+          <%= tag.div class: ["workspace-chart__bar", ("workspace-chart__bar--highlight" if count == maximum)], style: "height: #{count * 206.0 / maximum}px", title: "#{count} articles" %>
+          <span><%= date.strftime("%a") %></span>
+        </div>
+      <% end %>
+    </div>
+  </section>
+  <section class="workspace-card">
+    <h2>Needs your attention</h2>
+    <div class="workspace-card__item"><%= link_to "Review unpublished articles", articles_path %><p><%= pluralize(@overview.draft_count, "unpublished article") %></p></div>
+    <div class="workspace-card__item"><%= link_to "Review team imports", admin_csv_imports_path %><p>Check processing and approval status</p></div>
+    <div class="workspace-card__item"><%= link_to "Invite your collaborators", admin_invitations_path %><p><%= pluralize(@overview.invitations.size, "invitation") %> still pending</p></div>
+    <%= link_to "View articles", articles_path, class: "btn btn--secondary" %>
+  </section>
+</div>
+<section class="workspace-card workspace-team">
+  <div class="workspace-card__heading"><h2>Team members</h2><%= admin_invitation_actions.new_link(label: "Invite member") %></div>
+  <div class="workspace-team__scroll">
+    <table>
+      <thead><tr><th scope="col">Member</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Joined</th><th scope="col"><span class="workspace__sr-only">Actions</span></th></tr></thead>
+      <tbody>
+        <% @overview.memberships.each do |membership| %>
+          <tr>
+            <td><strong><%= membership.person.person_card.name.presence || "Unnamed person" %></strong><small><%= membership.person.user&.email_address || "No account email" %></small></td>
+            <td><%= membership.role.humanize %></td>
+            <td><span class="workspace__badge workspace__badge--success">Active</span></td>
+            <td><small><%= time_ago_in_words(membership.created_at) %> ago</small></td>
+            <td><%= link_to "View →", admin_members_path, aria: { label: "View team members" } %></td>
+          </tr>
+        <% end %>
+        <% if @overview.memberships.empty? %><tr><td colspan="5">No members yet. Invite a collaborator to get started.</td></tr><% end %>
+      </tbody>
+    </table>
+  </div>
+  <%= link_to "View all members →", admin_members_path, class: "workspace-team__more" %>
+</section>
+<div class="workspace__bottom">
+  <section class="workspace-card" id="recent-activity">
+    <h2>Recent activity</h2>
+    <% @overview.recent_events.each do |event| %>
+      <div class="workspace-card__item">
+        <strong><%= event.timeline_description %> · <%= event.action.humanize.downcase %></strong>
+        <p><%= event.person&.person_card&.name.presence || "Workspace" %> · <%= time_ago_in_words(event.created_at) %> ago</p>
+      </div>
+    <% end %>
+    <% if @overview.recent_events.empty? %><p class="workspace-card__muted">Your workspace activity will appear here.</p><% end %>
+  </section>
+  <section class="workspace-card" id="workspace-preferences">
+    <h2>Workspace preferences</h2>
+    <label class="workspace-card__muted" for="workspace-name">Workspace name</label>
+    <input id="workspace-name" class="workspace__input" value="<%= @overview.bucket.name %>" readonly>
+    <div class="workspace-card__heading"><span>Weekly activity digest</span><span class="workspace__badge">Unavailable</span></div>
+    <p class="workspace-card__muted">Workspace preferences are managed by your system administrator. Email digests are not available yet.</p>
+  </section>
+</div>
+<footer class="workspace__footer"><%= @overview.bucket.name %> · Your editorial workspace</footer>

@@ -1,0 +1,19 @@
+<% content_for :title, "Sys Admin" %>
+
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-header__title">Sys Admin</h1>
+  </div>
+
+  <div class="dashboard-summary">
+    <div class="dashboard-summary__item">
+      <p class="dashboard-summary__label">Buckets</p>
+      <p class="dashboard-summary__value"><%= @bucket_count %></p>
+    </div>
+
+    <div class="dashboard-summary__item">
+      <p class="dashboard-summary__label">Users</p>
+      <p class="dashboard-summary__value"><%= @user_count %></p>
+    </div>
+  </div>
+</div>

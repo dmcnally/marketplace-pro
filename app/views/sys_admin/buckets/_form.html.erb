@@ -1,0 +1,22 @@
+<%= form_with model: [ :sys_admin, bucket ], class: "form" do |form| %>
+  <% if bucket.errors.any? %>
+    <div class="form-errors">
+      <h2 class="form-errors__title"><%= pluralize(bucket.errors.count, "error") %> prohibited this bucket from being saved:</h2>
+      <ul class="form-errors__list">
+        <% bucket.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-field">
+    <%= form.label :name, class: "form-field__label" %>
+    <%= form.text_field :name, class: "form-field__input", autofocus: true %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn--primary" %>
+    <%= link_to "Cancel", sys_admin_buckets_path, class: "btn btn--secondary" %>
+  </div>
+<% end %>

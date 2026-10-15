@@ -1,0 +1,13 @@
+<% content_for :title, "CSV Import" %>
+<div class="page">
+  <%= admin_import_actions.index_back_link %>
+  <%= render "header", import: @import %>
+  <%= turbo_stream_from @import %>
+  <%= turbo_stream_from @import, csv_import_filter %>
+  <nav class="form-actions" aria-label="Import records">
+    <%= admin_csv_import_actions.link_to_all_records(@import) %>
+    <%= admin_csv_import_actions.link_to_errors(@import) %>
+    <%= admin_csv_import_actions.link_to_valid_records(@import) %>
+  </nav>
+  <%= render "csv_import", import: @import, selected_filter: csv_import_filter %>
+</div>

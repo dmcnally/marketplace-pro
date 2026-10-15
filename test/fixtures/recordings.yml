@@ -1,0 +1,7 @@
+person_one:
+  bucket: identity
+  recordable: one (PersonCard)
+
+person_two:
+  bucket: identity
+  recordable: two (PersonCard)

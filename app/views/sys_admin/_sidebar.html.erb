@@ -1,0 +1,9 @@
+<aside class="management-sidebar">
+  <%= render "layouts/sidebar_identity" %>
+  <nav class="management-sidebar__nav" aria-label="Sys Admin">
+    <%= sys_admin_sidebar_actions.dashboard_link %>
+    <%= sys_admin_sidebar_actions.buckets_link %>
+    <%= sys_admin_sidebar_actions.users_link %>
+  </nav>
+  <%= render "layouts/sidebar_note" %>
+</aside>

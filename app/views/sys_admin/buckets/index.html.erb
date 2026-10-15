@@ -1,0 +1,30 @@
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-header__title">Buckets</h1>
+    <%= sys_admin_bucket_actions.new_link %>
+  </div>
+
+  <% if @buckets.any? %>
+    <div class="bucket-list">
+      <% @buckets.each do |bucket| %>
+        <div class="bucket-list__item">
+          <div>
+            <h2 class="bucket-list__name"><%= bucket.name %></h2>
+            <p class="bucket-list__meta"><%= pluralize(bucket.recordings.count, "recording") %></p>
+          </div>
+
+          <div class="bucket-list__actions">
+            <%= sys_admin_bucket_actions.show_link_for(bucket) %>
+            <%= sys_admin_bucket_actions.switch_button_for(bucket) %>
+            <%= sys_admin_bucket_actions.edit_link_for(bucket) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <p class="empty-state__message">No buckets yet.</p>
+      <p class="empty-state__hint">Create a bucket to organize recordings.</p>
+    </div>
+  <% end %>
+</div>

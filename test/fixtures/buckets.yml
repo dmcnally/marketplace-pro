@@ -1,0 +1,8 @@
+system:
+  name: system
+
+identity:
+  name: identity
+
+default:
+  name: Default

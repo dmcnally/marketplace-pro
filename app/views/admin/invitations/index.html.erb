@@ -1,0 +1,30 @@
+<% content_for :title, "Invitations" %>
+
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-header__title">Invitations</h1>
+    <%= admin_invitation_actions.new_link %>
+  </div>
+
+  <% if @invitations.any? %>
+    <section class="invitation-section">
+      <h2 class="invitation-section__title">Sent</h2>
+      <%= render "list", invitations: @sent_invitations, empty_message: "No sent invitations.", cancellable: true %>
+    </section>
+
+    <section class="invitation-section">
+      <h2 class="invitation-section__title">Recently accepted</h2>
+      <%= render "list", invitations: @accepted_invitations, empty_message: "No accepted invitations.", cancellable: false %>
+    </section>
+
+    <section class="invitation-section">
+      <h2 class="invitation-section__title">Expired</h2>
+      <%= render "list", invitations: @expired_invitations, empty_message: "No expired invitations.", cancellable: false %>
+    </section>
+  <% else %>
+    <div class="empty-state">
+      <p class="empty-state__message">No invitations yet.</p>
+      <p class="empty-state__hint">Pending bucket invitations will appear here.</p>
+    </div>
+  <% end %>
+</div>

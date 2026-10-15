@@ -1,0 +1,36 @@
+<% content_for :title, @bucket.name %>
+
+<div class="page page--medium">
+  <%= link_to "&larr; Back to Buckets".html_safe, sys_admin_buckets_path, class: "back-link" %>
+
+  <div class="page-header">
+    <h1 class="page-header__title bucket-detail__title"><%= @bucket.name %></h1>
+
+    <div class="bucket-detail__actions">
+      <%= sys_admin_bucket_actions.switch_button_for(@bucket) %>
+      <%= sys_admin_bucket_actions.edit_link_for(@bucket) %>
+    </div>
+  </div>
+
+  <dl class="bucket-detail">
+    <div class="bucket-detail__row">
+      <dt class="bucket-detail__term">Name</dt>
+      <dd class="bucket-detail__description"><%= @bucket.name %></dd>
+    </div>
+
+    <div class="bucket-detail__row">
+      <dt class="bucket-detail__term">Recordings</dt>
+      <dd class="bucket-detail__description"><%= pluralize(@bucket.recordings.count, "recording") %></dd>
+    </div>
+
+    <div class="bucket-detail__row">
+      <dt class="bucket-detail__term">Events</dt>
+      <dd class="bucket-detail__description"><%= pluralize(@bucket.events.count, "event") %></dd>
+    </div>
+
+    <div class="bucket-detail__row">
+      <dt class="bucket-detail__term">Members</dt>
+      <dd class="bucket-detail__description"><%= pluralize(@bucket.memberships.count, "member") %></dd>
+    </div>
+  </dl>
+</div>

@@ -1,0 +1,13 @@
+<%= form_with model: [:admin, import], class: "form" do |form| %>
+  <%= form.hidden_field :import_type %>
+
+  <div class="form-field">
+    <%= form.label :source_file, "CSV file", class: "form-field__label" %>
+    <%= form.file_field :source_file, accept: ".csv", class: "form-field__input", autofocus: true %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit "Upload CSV", class: "btn btn--primary" %>
+    <%= admin_import_actions.form_cancel_link %>
+  </div>
+<% end %>

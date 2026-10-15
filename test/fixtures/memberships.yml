@@ -1,0 +1,4 @@
+sys_admin:
+  person: one
+  bucket: system
+  role: admin

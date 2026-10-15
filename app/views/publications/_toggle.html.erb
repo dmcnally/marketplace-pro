@@ -1,0 +1,19 @@
+<% if publishable.publishable? %>
+    <div id="<%= dom_id(publishable, :publication) %>" class="publication-toggle">
+    <% if publishable.published? %>
+        <%= button_to "Unpublish",
+            publication_path,
+            method: :delete,
+            params: { publishable: publishable.to_sgid(for: "publication", expires_in: nil) },
+            form: { data: { turbo_stream: true } },
+            class: "publication-toggle__button publication-toggle__button--unpublish" %>
+    <% else %>
+        <%= button_to "Publish",
+            publication_path,
+            method: :post,
+            params: { publishable: publishable.to_sgid(for: "publication", expires_in: nil) },
+            form: { data: { turbo_stream: true } },
+            class: "publication-toggle__button publication-toggle__button--publish" %>
+    <% end %>
+    </div>
+<% end %>

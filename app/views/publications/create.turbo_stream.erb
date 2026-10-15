@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@publishable, :publication) do %>
+  <%= render "publications/toggle", publishable: @publishable %>
+<% end %>

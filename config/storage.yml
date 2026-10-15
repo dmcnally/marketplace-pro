@@ -1,0 +1,45 @@
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
+# Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
+# amazon:
+#   service: S3
+#   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
+#   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
+#   region: us-east-1
+#   bucket: your_own_bucket-<%= Rails.env %>
+
+# Remember not to checkin your GCS keyfile to a repository
+# google:
+#   service: GCS
+#   project: your_project
+#   credentials: <%= Rails.root.join("path/to/gcs.keyfile") %>
+#   bucket: your_own_bucket-<%= Rails.env %>
+
+# mirror:
+#   service: Mirror
+#   primary: local
+#   mirrors: [ amazon, google, microsoft ]
+
+# MinIO is for development use only.
+minio:
+  service: S3
+  access_key_id: <%= ENV["MINIO_ACCESS_KEY"] %>
+  secret_access_key: <%= ENV["MINIO_SECRET_KEY"] %>
+  region: <%= ENV.fetch("MINIO_REGION", "eu-west-2") %>
+  bucket: <%= ENV["MINIO_BUCKET"] %>
+  endpoint: <%= ENV["MINIO_ENDPOINT"] %>
+  force_path_style: true
+
+# Bucketeer is used in production.
+bucketeer:
+  service: S3
+  access_key_id: <%= ENV["BUCKETEER_AWS_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["BUCKETEER_AWS_SECRET_ACCESS_KEY"] %>
+  region: <%= ENV["BUCKETEER_AWS_REGION"] %>
+  bucket: <%= ENV["BUCKETEER_BUCKET_NAME"] %>

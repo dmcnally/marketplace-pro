@@ -1,0 +1,13 @@
+<p>
+  You have been invited to <strong><%= @invitation.bucket.name %></strong>
+  as <strong><%= @invitation.role.titleize %></strong>.
+</p>
+
+<p>
+  <%= link_to "View your invitation", invitation_url(@token) %>.
+</p>
+
+<p>
+  This invitation expires in
+  <%= distance_of_time_in_words(Time.current, @invitation.expires_at) %>.
+</p>

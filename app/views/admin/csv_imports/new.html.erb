@@ -1,0 +1,17 @@
+<% content_for :title, "New Import" %>
+<div class="page page--narrow">
+  <%= admin_import_actions.index_back_link %>
+  <h1 class="page-header__title">New Import</h1>
+  <nav class="form-actions" aria-label="Import types">
+    <% Imports::Csv::Types.keys.each do |import_type| %>
+      <%= admin_import_actions.type_link_for(import_type, selected_type: @import.import_type) %>
+    <% end %>
+  </nav>
+  <%= render "errors", import: @import %>
+  <% if Imports::Csv::Types.keys.include?(@import.import_type) %>
+    <p>Required columns: <%= @import.headers.join(", ") %></p>
+    <%= render "form", import: @import %>
+  <% elsif Imports::Csv::Types.keys.empty? %>
+    <p>No import types are available.</p>
+  <% end %>
+</div>

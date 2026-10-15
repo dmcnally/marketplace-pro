@@ -1,0 +1,28 @@
+<div class="page page--medium">
+  <%= link_to "&larr; Back".html_safe, request.referer || root_path, class: "back-link" %>
+
+  <div class="page-header">
+    <h1 class="page-header__title">Compare <%= @recording.recordable.class.model_name.human %> Changes</h1>
+  </div>
+
+  <% if @diff.previous.nil? %>
+    <div class="empty-state">
+      <p class="empty-state__message">No previous version.</p>
+      <p class="empty-state__hint">Changes will appear after this recording is updated.</p>
+    </div>
+  <% elsif @diff.changes.empty? %>
+    <div class="empty-state">
+      <p class="empty-state__message">No field changes.</p>
+      <p class="empty-state__hint">The latest version matches the previous comparable fields.</p>
+    </div>
+  <% else %>
+    <div class="recordable-diff">
+      <% @diff.changes.each do |field, (previous_value, current_value)| %>
+        <section class="recordable-diff__field">
+          <h2 class="recordable-diff__field-name"><%= field.humanize %></h2>
+          <%= inline_diff_for(previous_value, current_value) %>
+        </section>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,85 @@
+/* Block: management-layout */
+.management-body .site-header {
+  margin-bottom: 0;
+}
+
+.management-layout {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100vh;
+}
+
+.management-layout__main {
+  min-width: 0;
+}
+
+/* Block: management-sidebar */
+.management-sidebar {
+  min-width: 0;
+  background-color: var(--color-ink);
+  color: white;
+  padding: 24px;
+}
+
+.management-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.management-sidebar__link {
+  border-radius: var(--radius-control);
+  color: white;
+  font-weight: 500;
+  padding: 12px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.management-sidebar__link:hover {
+  background-color: #293650;
+  color: white;
+}
+
+.management-sidebar__link--active {
+  background-color: var(--color-brand);
+  color: white;
+}
+
+.management-sidebar__brand { display: block; color: white; font-size: 24px; font-weight: 700; text-decoration: none; white-space: pre; }
+.management-sidebar__eyebrow { margin: 28px 0; color: #a4aec1; font-size: 10px; font-weight: 600; }
+.management-sidebar__note { margin-top: 28px; padding: 16px; border: 1px solid var(--color-muted); border-radius: 12px; }
+.management-sidebar__note strong { font-weight: 600; }
+.management-sidebar__note p { margin: 16px 0 0; color: #a4aec1; font-size: 12px; }
+.management-sidebar :focus-visible { outline-color: white; }
+
+@media (max-width: 48rem) {
+  .management-layout {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+  }
+
+  .management-sidebar {
+    border-bottom: 1px solid var(--color-line);
+    border-right: 0;
+    padding: 0.75rem 1rem;
+  }
+
+  .management-sidebar__nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .management-sidebar__link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .management-sidebar__eyebrow, .management-sidebar__note { display: none; }
+}

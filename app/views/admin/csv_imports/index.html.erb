@@ -1,0 +1,13 @@
+<% content_for :title, "Imports" %>
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-header__title">Imports</h1>
+    <%= admin_import_actions.new_import %>
+  </div>
+  <div class="import-list">
+  <% @imports.each do |import| %>
+    <div class="import-list__item"><%= link_to import.source_file.filename.to_s, admin_csv_import_path(import) %><span class="import-list__status"><%= import.status.humanize %></span></div>
+  <% end %>
+  </div>
+  <% if @imports.empty? %><div class="empty-state"><p class="empty-state__message">No imports yet.</p></div><% end %>
+</div>

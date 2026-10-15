@@ -1,0 +1,27 @@
+<% content_for :title, "Users" %>
+
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-header__title">Users</h1>
+  </div>
+
+  <% if @users.any? %>
+    <div class="user-list">
+      <% @users.each do |user| %>
+        <div class="user-list__item">
+          <div>
+            <h2 class="user-list__email"><%= user.email_address %></h2>
+            <p class="user-list__meta"><%= user.person.person_card.name.presence || "Unnamed person" %></p>
+          </div>
+
+          <%= sys_admin_user_actions.show_link_for(user) %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <p class="empty-state__message">No users yet.</p>
+      <p class="empty-state__hint">Users will appear here after accounts are created.</p>
+    </div>
+  <% end %>
+</div>

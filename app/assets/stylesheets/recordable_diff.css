@@ -1,0 +1,64 @@
+/* Block: recordable-diff */
+.recordable-diff {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.recordable-diff__field {
+  background-color: white;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.recordable-diff__field-name {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--color-line);
+  background-color: var(--color-background);
+  color: var(--color-ink);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.recordable-diff .html-diff {
+  padding: 1rem;
+  color: var(--color-ink);
+  font-size: 1.125rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.recordable-diff .html-diff del {
+  text-decoration: line-through;
+  text-decoration-thickness: 0.08em;
+}
+
+.recordable-diff .html-diff ins {
+  text-decoration: none;
+}
+
+.recordable-diff .html-diff del,
+.recordable-diff .html-diff .diffdel,
+.recordable-diff .html-diff .diffmod del,
+.recordable-diff .html-diff del.diffmod {
+  color: #7f1d1d;
+  background-color: #fecaca;
+}
+
+.recordable-diff .html-diff ins,
+.recordable-diff .html-diff .diffins,
+.recordable-diff .html-diff .diffmod ins,
+.recordable-diff .html-diff ins.diffmod {
+  color: #064e3b;
+  background-color: #a7f3d0;
+}
+
+@media (max-width: 40rem) {
+  .recordable-diff__field-name,
+  .recordable-diff .html-diff {
+    padding: 0.75rem;
+  }
+}

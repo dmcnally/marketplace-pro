@@ -1,0 +1,191 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  scan_ruby:
+    name: Ruby security (Brakeman & Bundler Audit)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Scan for common Rails security vulnerabilities using static analysis
+        run: bin/brakeman --no-pager
+      
+      - name: Scan for known security vulnerabilities in gems used
+        run: bin/bundler-audit
+      
+  scan_js:
+    name: JavaScript dependency security
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Scan for security vulnerabilities in JavaScript dependencies
+        run: bin/importmap audit
+
+  lint:
+    name: Ruby code style (RuboCop)
+    runs-on: ubuntu-latest
+    env:
+      RUBOCOP_CACHE_ROOT: tmp/rubocop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Prepare RuboCop cache
+        uses: actions/cache@v6
+        env:
+          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
+        with:
+          path: ${{ env.RUBOCOP_CACHE_ROOT }}
+          key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
+          restore-keys: |
+            rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-
+
+      - name: Lint code for consistent style
+        run: bin/rubocop -f github
+
+  archspec:
+    name: Architecture rules (Archspec)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Check architectural consistency
+        run: bin/archspec check
+
+  test:
+    name: Rails unit & integration tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready -h 127.0.0.1 -U postgres" --health-interval=2s --health-timeout=5s --health-retries=15
+
+      # redis:
+      #   image: valkey/valkey:8
+      #   ports:
+      #     - 6379:6379
+      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Ensure PostgreSQL development package is installed
+        run: |
+          if ! dpkg-query -W -f='${Status}' libpq-dev 2>/dev/null | grep -qx 'install ok installed'; then
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends -y libpq-dev
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_test
+          TEST_CACHE_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_cache_test
+          TEST_QUEUE_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_queue_test
+          TEST_CABLE_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_cable_test
+          # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          # REDIS_URL: redis://localhost:6379/0
+        run: bin/rails db:test:prepare test
+
+  system-test:
+    name: Browser system tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready -h 127.0.0.1 -U postgres" --health-interval=2s --health-timeout=5s --health-retries=15
+
+      # redis:
+      #   image: valkey/valkey:8
+      #   ports:
+      #     - 6379:6379
+      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Ensure PostgreSQL development package is installed
+        run: |
+          if ! dpkg-query -W -f='${Status}' libpq-dev 2>/dev/null | grep -qx 'install ok installed'; then
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends -y libpq-dev
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Run System Tests
+        env:
+          RAILS_ENV: test
+          TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_test
+          TEST_CACHE_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_cache_test
+          TEST_QUEUE_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_queue_test
+          TEST_CABLE_DATABASE_URL: postgres://postgres:postgres@localhost:5432/blogger_cable_test
+          # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          # REDIS_URL: redis://localhost:6379/0
+        run: bin/rails db:test:prepare test:system
+
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore

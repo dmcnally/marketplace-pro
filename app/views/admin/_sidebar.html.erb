@@ -1,0 +1,11 @@
+<aside class="management-sidebar">
+  <%= render "layouts/sidebar_identity" %>
+  <nav class="management-sidebar__nav" aria-label="Admin">
+    <%= admin_sidebar_actions.dashboard_link %>
+    <%= link_to "Articles", articles_path, class: "management-sidebar__link" %>
+    <%= admin_sidebar_actions.members_link %>
+    <%= admin_sidebar_actions.invitations_link %>
+    <%= admin_sidebar_actions.imports_link %>
+  </nav>
+  <%= render "layouts/sidebar_note" %>
+</aside>

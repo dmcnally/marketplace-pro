@@ -1,0 +1,41 @@
+<% content_for :title, "Invitation" %>
+
+<div class="page page--narrow">
+  <% if flash[:alert] %>
+    <div class="login__alert"><%= flash[:alert] %></div>
+  <% end %>
+
+  <% if flash[:notice] %>
+    <div class="login__notice"><%= flash[:notice] %></div>
+  <% end %>
+
+  <% if @invitation&.active? %>
+    <div class="empty-state">
+      <h1 class="empty-state__message">You have been invited to <%= @invitation.bucket.name %></h1>
+      <p class="empty-state__hint">This invitation grants <%= @invitation.role.titleize.downcase %> access after it is accepted.</p>
+      <div class="empty-state__actions">
+        <%= invitation_actions.accept_button_for(params[:token]) %>
+      </div>
+    </div>
+  <% elsif @invitation&.accepted? %>
+    <div class="empty-state">
+      <h1 class="empty-state__message">Invitation already accepted</h1>
+      <p class="empty-state__hint">This invitation has already been used.</p>
+    </div>
+  <% elsif @invitation&.revoked? %>
+    <div class="empty-state">
+      <h1 class="empty-state__message">Invitation revoked</h1>
+      <p class="empty-state__hint">Ask an admin for a new invitation.</p>
+    </div>
+  <% elsif @invitation&.expired? %>
+    <div class="empty-state">
+      <h1 class="empty-state__message">Invitation expired</h1>
+      <p class="empty-state__hint">Ask an admin for a new invitation.</p>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <h1 class="empty-state__message">Invitation not found</h1>
+      <p class="empty-state__hint">Check the link or ask an admin for a new invitation.</p>
+    </div>
+  <% end %>
+</div>

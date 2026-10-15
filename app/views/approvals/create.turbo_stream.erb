@@ -1,0 +1,7 @@
+<%= turbo_stream.replace dom_id(@approvable, :approval_button) do %>
+  <%= button_tag "Approving",
+    id: dom_id(@approvable, :approval_button),
+    type: "button",
+    disabled: true,
+    class: "btn btn--primary btn--pending" %>
+<% end %>

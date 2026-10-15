@@ -1,0 +1,21 @@
+<div id="<%= dom_id(import) %>" class="import-records">
+  <p>Processing: <%= import.status.humanize %></p>
+  <% if import.failure_reason.present? %><p role="alert"><%= import.failure_reason %></p><% end %>
+  <% rows = import.csv_import_rows.order(:row_number) %>
+  <% rows = rows.select(&:validation_failed?) if selected_filter == "errors" %>
+  <% rows = rows.select(&:validated_successfully?) if selected_filter == "valid" %>
+  <p><%= pluralize(rows.size, "row") %></p>
+  <% rows.each do |row| %>
+    <section class="import-records__row" aria-label="Row <%= row.row_number %>">
+      <h2>Row <%= row.row_number %></h2>
+      <dl>
+        <% row.raw_data.each do |field, value| %>
+          <dt><%= field.humanize %></dt><dd><%= value %></dd>
+        <% end %>
+      </dl>
+      <% (row.validation_errors || {}).each do |field, messages| %>
+        <p role="alert"><%= field.humanize %>: <%= Array(messages).join(", ") %></p>
+      <% end %>
+    </section>
+  <% end %>
+</div>

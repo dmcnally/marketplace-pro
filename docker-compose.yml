@@ -1,0 +1,105 @@
+services:
+  web:
+    image: dmcnally/common-ruby:development-${APP_VERSION}
+    env_file:
+      - .env
+    command: sleep infinity
+    volumes:
+      - .:/app
+      - rubygems:/rubygems
+    ports:
+      - "3000:3000"
+      - "5900:5901"
+    environment: &environment
+      DEVELOPMENT_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_development"
+      TEST_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_test"
+      DEVELOPMENT_CACHE_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_cache_development"
+      TEST_CACHE_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_cache_test"
+      DEVELOPMENT_QUEUE_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_queue_development"
+      TEST_QUEUE_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_queue_test"
+      DEVELOPMENT_CABLE_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_cable_development"
+      TEST_CABLE_DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_cable_test"
+      DATABASE_URL: "postgres://postgres:@postgres:5432/blogger_development"
+      REDIS_URL: "redis://redis:6379"
+      ENCRYPT_SECRET_KEY: "QRDUGL+6BlKart8/U4o2kMiHpPgAoNrEIPX1KKVaR1c="
+      ENCRYPT_IV: "gwYE42O06SriGPeX"
+      ENCRYPT_SALT: "P2HuKHAOHzqK6kHn9+Py/8Qt2E9Q1rMojhb2Z27Ul15L5DKzIwD4aElYiz1xhqb+ZdifYiVrkffgnQnfaxHBcrNzS7kUQHbBtPhRGgCTOdsNQzPhBrVvAUe9Ms5B6bFIFL1DdTczJEtOr8s13s6gcKnJHdEP5T7lsn1421hm35Y="
+      PARALLEL_PROCESSOR_COUNT: ${PARALLEL_PROCESSOR_COUNT}
+      APPLICATION_NAME: Aka Ao
+      DOMAIN_NAME: localhost:3000
+      NOTIFICATION_EMAILS_SENDER: notifications@localhost.dev
+      ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: blogger-development
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_REGION: eu-west-2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailcatcher:
+        condition: service_started
+    tty: true
+    stdin_open: true
+    pid: host
+
+  postgres:
+    image: postgres:16.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "9876:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "--username=postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1025"
+      - "1080:1080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:1080 || exit 1"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    profiles: [storage]
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio_setup:
+    profiles: [storage]
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - -c
+      - >-
+        mc alias set local http://minio:9000 minioadmin minioadmin &&
+        mc mb --ignore-existing local/blogger-development
+
+volumes:
+  minio-data:
+  db-data:
+  es-data:
+  rubygems:

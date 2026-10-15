@@ -1,0 +1,48 @@
+# Omakase Ruby styling for Rails
+inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+
+require:
+  - ./lib/rubocop/cop/recordables/no_direct_recording_access
+  - ./lib/rubocop/cop/actions/no_current_access
+  - ./lib/rubocop/cop/actions/no_domain_mutation
+  - ./lib/rubocop/cop/actions/no_helper_includes
+  - ./lib/rubocop/cop/actions/no_request_state_access
+  - ./lib/rubocop/cop/controllers/multiple_instance_variables
+  - ./lib/rubocop/cop/policies/no_current_access
+  - ./lib/rubocop/cop/policies/no_request_state_access
+  - ./lib/rubocop/cop/policies/no_side_effects
+
+# Overwrite or add rules to create your own house style
+#
+# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
+# Layout/SpaceInsideArrayLiteralBrackets:
+#   Enabled: false
+
+Recordables/NoDirectRecordingAccess:
+  Enabled: true
+  Exclude:
+    - test/**/*.rb
+
+Actions/NoCurrentAccess:
+  Enabled: true
+
+Actions/NoDomainMutation:
+  Enabled: true
+
+Actions/NoHelperIncludes:
+  Enabled: true
+
+Actions/NoRequestStateAccess:
+  Enabled: true
+
+Controllers/MultipleInstanceVariables:
+  Enabled: true
+
+Policies/NoCurrentAccess:
+  Enabled: true
+
+Policies/NoRequestStateAccess:
+  Enabled: true
+
+Policies/NoSideEffects:
+  Enabled: true
