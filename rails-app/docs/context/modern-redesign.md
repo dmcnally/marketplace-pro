@@ -8,6 +8,10 @@ precedence over the historical editorial redesign scope below.
 
 - A bucket is the owner boundary for content and membership access. Do not model a bucket as containing multiple sites.
 - Each bucket may have at most one published menu at a time.
+- Publishing atomically replaces the current menu. Published content, prices, and allergens are snapshots; availability remains live. Editors and admins may unpublish without replacement.
+- Products, variants, and menus are archived, never deleted. Products, variants, and menu content use immutable recordables.
+- All domain changes must be tracked through events, including every product, variant, and allergen change, relationship changes, availability, archiving, and publication transitions.
+- Each bucket uses one currency. Products have a required name, optional description, and optional image; variants have a required name and price, availability, and allergens.
 - The admin sidebar contains Products, Categories, Allergens, and Menus, in that order.
 - The main sidebar contains Overview and Orders, in that order. Editors and admins also see an Admin link. Orders links to an Orders page.
 - The admin area includes a Back to Overview link. Editors and admins can manage all four admin sections and publish menus.

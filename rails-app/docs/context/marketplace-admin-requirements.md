@@ -9,11 +9,29 @@ earlier editorial navigation and any conflicting Marketplace design assumptions.
 - A bucket is the owner boundary for content and membership access.
 - Do not model a bucket as containing multiple sites.
 - Each bucket manages its own allergen list.
+- Each bucket uses one currency for all prices.
+
+## Invariants for history and archiving
+
+- All domain changes must be tracked through events. This includes every product,
+  variant, and allergen change, as well as category and menu changes.
+- Track creation, content and price edits, relationship and allergen assignment
+  changes, availability changes, archiving, and publication transitions. Bulk UI
+  operations must preserve the history of the affected records.
+- Products, variants, and menus are archived, never deleted. Preserve their
+  history and references from published snapshots.
+- Products, variants, and menu content use the existing immutable recordable
+  pattern: edits create new versions. Availability is separate operational state
+  and remains live, but its changes must also produce events.
 
 ## Products and variants
 
 - Products are food and drink only.
+- Products have a required name, optional description, and optional image.
 - Products have variants, each with its own price.
+- Variants have a required name and price, availability, and allergen assignments.
+  They use the product's description and image; variant-specific descriptions and
+  images are not required.
 - Every product has at least one variant. A product without choices uses a single
   default variant.
 - Availability is controlled per variant and applies across all menus in the
@@ -37,6 +55,9 @@ earlier editorial navigation and any conflicting Marketplace design assumptions.
 - Each variant's assignments can then be adjusted independently.
 - New variants copy allergens from an existing variant rather than starting
   with no assignments. The copied assignments remain editable.
+- An Add variant from control selects the source variant, with the default
+  variant preselected. The first variant starts with no allergens assigned and
+  must be reviewed.
 - The allergen list is owned and managed by the bucket, not shared globally
   across the application.
 
@@ -49,11 +70,17 @@ earlier editorial navigation and any conflicting Marketplace design assumptions.
   sections require republishing before they appear on the published menu.
 - Variant availability remains live, so availability changes take effect without
   republishing.
+- Allergen changes also require republishing; they do not change the live
+  snapshot automatically.
+- Editors and admins can unpublish without a replacement, leaving no published
+  menu. A future customer-facing message such as "We're updating the menu" is
+  outside the current requirements.
 
 ## Permissions
 
 - Bucket editors and admins can manage Products, Categories, Allergens, and Menus.
-- Editors and admins can publish menus and replace the live menu.
+- Editors and admins can publish menus, replace the live menu, and unpublish
+  without replacement.
 - Other users do not gain management access merely by being bucket members.
 
 ## Navigation
@@ -67,17 +94,12 @@ earlier editorial navigation and any conflicting Marketplace design assumptions.
 
 ## Decisions still to make
 
-- The full product and variant field list, including required descriptions,
-  images, variant labels, and pricing currency rules.
-- Whether and how product and menu content use the existing immutable recordable
-  architecture.
-- Which existing variant supplies allergens when creating a new variant, and
-  the initial allergen editing flow for a product's first variant.
-- Whether allergen corrections have any special publication behavior; the agreed
-  general rule snapshots content and keeps only availability live.
 - Orders page behavior and whose orders each role can access.
-- Unpublishing without replacement, and deletion or archival of products and
-  variants referenced by published snapshots.
+- Whether archiving a product or variant immediately marks affected live variants
+  unavailable, and how archived items are excluded from future menu selection.
+- Whether archiving the currently published menu automatically unpublishes it or
+  requires unpublishing first.
+- Whether archived records can be restored.
 
 ## Implementation status
 
