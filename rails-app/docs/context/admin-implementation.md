@@ -8,7 +8,8 @@ implementation and focused verification. Design coverage alone is not completion
 
 - [x] Categories: create/edit, validation, archive/restore, history, stale saves, permissions.
 - [x] Allergens: bucket-owned management, archive/restore, history and permissions.
-- [ ] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
+- [x] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
+- [ ] Product copying and catalogue filters: unpublished copies, category/publication filters, archive listing.
 - [ ] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
 - [ ] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
 - [ ] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
@@ -46,9 +47,8 @@ Full RuboCop and Archspec passed (Archspec reports existing analysis gaps).
 
 Design context and screenshots reviewed for categories `4:2` and edit `4:67`.
 The new shell/components follow their dimensions, tokens and field treatment.
-Runtime visual verification remains blocked: the connected browser inventory is
-empty; the container Chrome symlink points to an unavailable `/resources` binary.
-Do not treat design-context inspection as a rendered comparison. Navigation is
+Initial connected-browser verification was unavailable; later headless Docker
+verification succeeded (see below). Navigation is
 temporarily limited to implemented routes; the full main/admin split remains a
 separate pending feature. Product counts await product assignments.
 
@@ -69,4 +69,46 @@ Archspec passed. Category presenter/navigation checks also passed: 29 tests,
 Figma allergen list `7:85` and edit `7:144` inspected via design context and
 screenshots. Affected-product warnings depend on product publication and remain
 in the separate pending feature above; no sample affected products are displayed.
-The rendered visual verification blocker remains unchanged.
+The later headless verification below covers the rendered allergen list.
+
+### Products and variants
+
+Migration `20261016000200` applied: product/variant immutable content, separate
+variant availability rows (default false), and bucket currency (default GBP).
+Implemented product creation with a required first variant, immutable editing,
+nonnegative prices, optional version-preserving images, category selection,
+variant copying from a selected source, per-variant allergens, bulk assignment
+and removal, ordering, and product history including variant changes. History
+comparisons resolve relationship IDs to names at the event time. New assignments
+reject retired/foreign classifiers; retained archived assignments remain valid.
+Workspace locks serialize classifier retirement with assignment changes.
+
+Product workflow tests: 8 tests, 91 assertions passed, including image retention
+and removal. Full regression: 596 tests, 2,049 assertions passed. After the final
+locking adjustment, 22 focused tests with 229 assertions passed; full RuboCop
+passed (310 files), and Archspec passed. Design
+context/screenshot for product editor `4:175` inspected in addition to list
+`4:101`; forms use the two-column editor layout and shared controls. Publication,
+copying, filters and archive actions are still pending and are not represented as
+working controls.
+
+### Rendered verification
+
+Docker's `/usr/bin/chrome` is available (the initial assumption about its symlink
+was incorrect). Selenium Manager resolves its driver. A temporary system test at
+`tmp/catalogue_visual_test.rb` passed 21 assertions: category creation through the
+browser and no horizontal overflow on category/allergen lists and product/variant
+editors at 1440px and 390px. Screenshots `tmp/catalogue-*.png` were inspected
+against the retrieved Figma renders; they are ignored local artifacts.
+
+Use a 1600×1200 Chrome window before CDP viewport emulation to avoid screenshot
+surface clipping. Perform keyboard workflow checks before toggling mobile device
+emulation: Chrome 141 lost Selenium input after toggling emulation. This was
+isolated to the harness; the initial desktop form workflow passes.
+
+Remaining visual differences: full navigation/mobile drawer is pending; Inter
+is not bundled; publication controls and warnings await their domain features;
+product bulk-allergen controls currently span a full row until the lifecycle
+panel is added. Archive, history, validation and all final lifecycle states still
+need final screenshot coverage. No static Figma image assets were present in
+the inspected catalogue screens.

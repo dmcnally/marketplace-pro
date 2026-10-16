@@ -1,4 +1,16 @@
 module CatalogueHelper
+  def catalogue_history_value(event, field, value)
+    return value.presence || "Empty" unless %w[category_ids allergen_ids variant_order].include?(field)
+    return "None" if value.blank?
+
+    records = event.bucket.recordings.where(id: value).index_by(&:id)
+    value.map { |id| records[id]&.subject_at(event)&.name || "Record #{id}" }.join(", ")
+  end
+
+  def product_actions
+    @product_actions ||= ProductActions.new(view: self, person: Current.person, bucket: Current.bucket)
+  end
+
   def allergen_actions
     @allergen_actions ||= AllergenActions.new(view: self, person: Current.person, bucket: Current.bucket)
   end

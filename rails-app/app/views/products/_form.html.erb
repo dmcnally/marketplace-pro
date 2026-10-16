@@ -1,0 +1,29 @@
+<%= form_with scope: :product, url: draft.recording ? admin_product_path(draft.recording) : admin_products_path, method: draft.recording ? :patch : :post, class: "catalogue__panel" do |form| %>
+  <h2>Product details</h2>
+  <%= render "catalogue/errors", object: draft %>
+  <%= hidden_field_tag :revision, draft.revision if draft.recording %>
+  <div class="catalogue__field"><%= form.label :name, "Name *" %><%= form.text_field :name, value: draft.name, required: true %></div>
+  <div class="catalogue__field"><%= form.label :description, "Description · optional" %><%= form.text_area :description, value: draft.description, rows: 3 %></div>
+  <fieldset class="catalogue__field">
+    <legend>Categories · select multiple</legend>
+    <%= hidden_field_tag "product[category_ids][]", "" %>
+    <% draft.categories.each do |category| %>
+      <label class="catalogue__choice"><%= check_box_tag "product[category_ids][]", category.id, Array(draft.category_ids).map(&:to_i).include?(category.id), id: "product_category_#{category.id}" %><%= category.recordable.name %><%= " (archived)" if category.discarded? %></label>
+    <% end %>
+  </fieldset>
+  <div class="catalogue__field">
+    <%= form.label :image, "Image · optional" %>
+    <% if draft.recording&.recordable&.image&.attached? %>
+      <%= image_tag draft.recording.recordable.image, class: "catalogue__image", alt: draft.name %>
+      <label class="catalogue__choice"><%= form.check_box :remove_image %>Remove image from draft</label>
+    <% end %>
+    <%= form.file_field :image, accept: "image/*" %>
+  </div>
+  <% unless draft.recording %>
+    <h2>First variant</h2>
+    <div class="catalogue__field"><%= form.label :variant_name, "Variant name *" %><%= form.text_field :variant_name, value: draft.variant_name, required: true %></div>
+    <div class="catalogue__field"><%= form.label :price, "Price (#{draft.bucket.currency}) *" %><%= form.number_field :price, value: draft.price, required: true, min: 0, step: "0.01" %></div>
+    <p class="catalogue__notice">The first variant starts unavailable with no allergens assigned. Review its allergens before publishing.</p>
+  <% end %>
+  <div class="catalogue__actions"><%= form.submit "Save draft", class: "btn btn--primary" %><%= link_to "Cancel", admin_products_path, class: "btn btn--secondary" %></div>
+<% end %>

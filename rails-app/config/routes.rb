@@ -40,6 +40,11 @@ Rails.application.routes.draw do
   end
 
   scope path: "admin", as: "admin" do
+    resources :products, except: :destroy do
+      resources :variants, only: %i[new create edit update]
+      resource :variant_order, only: :create, controller: "products/variant_orders"
+      resource :allergen_assignment, only: :create, controller: "products/allergen_assignments"
+    end
     resources :allergens, except: :destroy do
       resource :archive, only: %i[create destroy], controller: "allergens/archives"
     end

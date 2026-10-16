@@ -1,0 +1,19 @@
+<h1><%= @draft.name %></h1>
+<p class="catalogue__muted">Draft · Availability stays live and is managed separately.</p>
+<div class="catalogue__actions"><%= product_actions.history_link_for(@draft.recording) %></div>
+<div class="catalogue__columns">
+  <%= product_actions.form_for(@draft) %>
+  <section class="catalogue__panel">
+    <h2>Variants</h2>
+    <p class="catalogue__muted">Each variant has its own price and allergens. Description and image come from this product. Currency: <%= @draft.bucket.currency %>.</p>
+    <% @draft.variants.each do |variant| %>
+      <div class="catalogue__row">
+        <div class="catalogue__record"><strong><%= variant.recordable.name %> · <%= number_with_precision variant.recordable.price, precision: 2 %> <%= @draft.bucket.currency %></strong><p class="catalogue__muted"><%= variant.discarded? ? "Archived" : "Draft" %></p></div>
+        <%= product_actions.variant_link_for(@draft.recording, variant) %>
+      </div>
+    <% end %>
+    <%= product_actions.new_variant_link_for(@draft.recording) %>
+    <%= product_actions.ordering_form_for(@draft) %>
+  </section>
+</div>
+<%= product_actions.allergen_form_for(@draft.recording) %>

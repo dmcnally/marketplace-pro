@@ -1,0 +1,4 @@
+<h1><%= @page[:recording].recordable.name %> · History</h1>
+<p class="catalogue__muted">Includes changes to this product and its variants.</p>
+<%= product_actions.edit_link_for(@page[:recording]) %>
+<%= render "catalogue/history", events: @page[:events] %>

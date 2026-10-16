@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_000100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_000200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -63,6 +63,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000100) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "currency", default: "GBP", null: false
     t.index ["name"], name: "index_buckets_on_name", unique: true
   end
 
@@ -190,6 +191,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000100) do
     t.string "last_name"
   end
 
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.bigint "category_ids", default: [], null: false, array: true
+    t.bigint "variant_order", default: [], null: false, array: true
+  end
+
   create_table "publications", force: :cascade do |t|
     t.string "publishable_type", null: false
     t.bigint "publishable_id", null: false
@@ -241,6 +249,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000100) do
     t.index ["person_id"], name: "index_users_on_person_id"
   end
 
+  create_table "variant_availabilities", force: :cascade do |t|
+    t.bigint "recording_id", null: false
+    t.boolean "available", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recording_id"], name: "index_variant_availabilities_on_recording_id", unique: true
+  end
+
+  create_table "variants", force: :cascade do |t|
+    t.string "name", null: false
+    t.decimal "price", precision: 12, scale: 2, null: false
+    t.bigint "allergen_ids", default: [], null: false, array: true
+    t.check_constraint "price >= 0::numeric", name: "variants_nonnegative_price"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "people"
@@ -262,4 +285,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000100) do
   add_foreign_key "search_indices", "recordings"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "people"
+  add_foreign_key "variant_availabilities", "recordings"
 end

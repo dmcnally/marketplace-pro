@@ -1,0 +1,19 @@
+<h1>Products</h1>
+<p class="catalogue__muted">Food and drink · <%= Current.bucket.name %> · Prices in <%= Current.bucket.currency %></p>
+<div class="catalogue__actions"><%= product_actions.new_link %></div>
+<section class="catalogue__panel">
+  <h2>Catalogue</h2>
+  <%= form_with url: admin_products_path, method: :get, class: "catalogue__field" do |form| %>
+    <%= form.label :q, "Search products" %>
+    <%= form.search_field :q, value: @page[:query], placeholder: "Search by name" %>
+    <%= form.submit "Search", class: "btn btn--secondary" %>
+  <% end %>
+  <% if @page[:recordings].empty? %><p>No products found. Add a product or try another search.</p><% end %>
+  <% @page[:recordings].each do |recording| %>
+    <div class="catalogue__row">
+      <div class="catalogue__record"><strong><%= recording.recordable.name %></strong><p class="catalogue__muted"><%= pluralize recording.children.variants.kept.count, "variant" %> · Draft</p></div>
+      <%= product_actions.edit_link_for(recording) %>
+    </div>
+  <% end %>
+</section>
+<section class="catalogue__panel"><h2>Availability is managed in Overview</h2><p class="catalogue__muted">Only products and variants included in the currently published menu have availability controls.</p></section>

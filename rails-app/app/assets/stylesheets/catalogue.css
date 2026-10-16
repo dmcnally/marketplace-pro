@@ -35,7 +35,15 @@
 .catalogue__notice { padding: 16px; border-radius: 9px; background: #fff4e5; }
 .catalogue__comparison { overflow-wrap: anywhere; }
 .catalogue__comparison dd { margin: 8px 0 16px; }
+.catalogue__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.catalogue__columns .catalogue__row { flex-wrap: wrap; }
+.catalogue__image { width: 100%; max-height: 240px; object-fit: contain; }
+.catalogue__choice { display: flex; align-items: center; gap: 8px; }
+.catalogue__choice input { width: auto; }
+.catalogue fieldset { border: 1px solid var(--color-line); min-width: 0; }
+.catalogue select { max-width: 100%; min-height: 40px; }
 @media (max-width: 700px) {
+  .catalogue__columns { grid-template-columns: minmax(0, 1fr); }
   .catalogue { flex-direction: column; }
   .catalogue__sidebar { width: 100%; }
   .catalogue__navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }

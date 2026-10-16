@@ -10,7 +10,7 @@
           <dl class="catalogue__comparison">
             <% RecordableDiff.new(current: event.subject, previous: event.subject_previous, event: event).changes.each do |field, values| %>
               <dt><%= field.humanize %></dt>
-              <dd><del><%= values.first.presence || "Empty" %></del> → <ins><%= values.last.presence || "Empty" %></ins></dd>
+              <dd><del><%= catalogue_history_value(event, field, values.first) %></del> → <ins><%= catalogue_history_value(event, field, values.last) %></ins></dd>
             <% end %>
           </dl>
         </details>

@@ -13,6 +13,7 @@ class Bucket < ApplicationRecord
   scope :content, -> { where.not(name: RESERVED_NAMES) }
 
   validates :name, presence: true, uniqueness: true
+  validates :currency, format: { with: /\A[A-Z]{3}\z/ }
   validate :system_name_cannot_change, if: :will_save_change_to_name?
 
   def self.system_bucket
