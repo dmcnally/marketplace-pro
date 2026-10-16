@@ -76,10 +76,21 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     patch admin_product_path(product), params: { revision: product.draft_revision, product: { name: "Still illustrated" } }
     assert_response :see_other
     assert_equal old_content.image.blob, product.reload.recordable.image.blob
-    patch admin_product_path(product), params: { revision: product.draft_revision, product: { name: "No image", remove_image: "1" } }
+    patch admin_product_path(product), params: { revision: product.draft_revision, product: { name: "Still illustrated", remove_image: "1" } }
     assert_response :see_other
     refute product.reload.recordable.image.attached?
     assert old_content.reload.image.attached?
+    get admin_product_path(product)
+    assert_response :success
+    assert_select "section[aria-label='Image changes']" do
+      assert_select "h4", text: "Before"
+      assert_select "h4", text: "After"
+      assert_select "img[alt='Before: icon.png']"
+      assert_select "p", text: "No image"
+    end
+    get recording_diff_path(product)
+    assert_response :success
+    assert_select "section[aria-label='Image changes'] img[alt='Before: icon.png']"
   end
 
   test "variant copying bulk allergens independent edits ordering and history" do

@@ -10,7 +10,7 @@
       <p class="empty-state__message">No previous version.</p>
       <p class="empty-state__hint">Changes will appear after this recording is updated.</p>
     </div>
-  <% elsif @diff.changes.empty? %>
+  <% elsif @diff.changes.empty? && @diff.image_change.nil? %>
     <div class="empty-state">
       <p class="empty-state__message">No field changes.</p>
       <p class="empty-state__hint">The latest version matches the previous comparable fields.</p>
@@ -22,6 +22,9 @@
           <h2 class="recordable-diff__field-name"><%= field.humanize %></h2>
           <%= inline_diff_for(previous_value, current_value) %>
         </section>
+      <% end %>
+      <% if @diff.image_change %>
+        <%= render "catalogue/image_change", images: @diff.image_change %>
       <% end %>
     </div>
   <% end %>

@@ -27,14 +27,18 @@
         </details>
       <% end %>
       <% if event.subject_previous %>
+        <% content_diff = RecordableDiff.new(current: event.subject, previous: event.subject_previous, event: event) %>
         <details class="catalogue__history-comparison">
           <summary class="btn btn--secondary">Compare changes</summary>
           <dl class="catalogue__comparison">
-            <% RecordableDiff.new(current: event.subject, previous: event.subject_previous, event: event).changes.each do |field, values| %>
+            <% content_diff.changes.each do |field, values| %>
               <dt><%= field.humanize %></dt>
               <dd><del><%= catalogue_history_value(event, field, values.first) %></del> → <ins><%= catalogue_history_value(event, field, values.last) %></ins></dd>
             <% end %>
           </dl>
+          <% if content_diff.image_change %>
+            <%= render "catalogue/image_change", images: content_diff.image_change %>
+          <% end %>
         </details>
       <% end %>
     </article>

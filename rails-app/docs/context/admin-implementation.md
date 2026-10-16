@@ -25,6 +25,20 @@ before starting another. The user explicitly requested shorter gaps between comm
 
 ## Evidence and remaining work
 
+Image-history checkpoint: content comparisons now show retained before/after
+images and explicit removal, including edits that change only the image. This
+works in catalogue history and the existing recording comparison route. Direct
+RecordableDiff coverage exercises additions, same-filename replacements, removal
+and unchanged images for Product, Menu and MenuSection, while request coverage
+verifies the rendered previews. Full suite: 756 tests / 3,860 assertions; subsequent
+product/recording comparison checks passed after wiring the standalone route.
+RuboCop clean (398 files), Archspec passed (204 files; analysis gaps remain).
+No migration needed. Temporary history browser check passed 16 assertions with
+expanded image/publication comparisons at 1440px/390px; full-page renders inspected
+with no horizontal overflow. Images remain dynamic uploads; comparison thumbnails
+use the existing responsive columns. Menu replacement context and the final
+cross-resource history audit remain before History can be marked complete.
+
 Publication history checkpoint: published product/menu events now offer a
 read-only comparison with that record's immediately preceding published snapshot.
 First publication shows the initial values; unchanged republication says so.

@@ -14,6 +14,24 @@ class RecordableDiffTest < ActiveSupport::TestCase
     assert_equal({}, diff.changes)
   end
 
+  test "image comparisons preserve additions replacements and removals for catalogue content" do
+    [ Product, Menu, MenuSection ].each do |klass|
+      original = klass.create!(name: "Original")
+      illustrated = klass.new(name: "Original")
+      illustrated.image.attach(io: File.open(Rails.root.join("public/icon.png")), filename: "image.png", content_type: "image/png")
+      illustrated.save!
+      replaced = klass.new(name: "Original")
+      replaced.image.attach(io: File.open(Rails.root.join("public/icon.png")), filename: "image.png", content_type: "image/png")
+      replaced.save!
+      assert_equal [ nil, illustrated.image.blob ], RecordableDiff.new(previous: original, current: illustrated, event: nil).image_change
+      assert_equal [ illustrated.image.blob, replaced.image.blob ], RecordableDiff.new(previous: illustrated, current: replaced, event: nil).image_change
+      assert_equal [ replaced.image.blob, nil ], RecordableDiff.new(previous: replaced, current: original, event: nil).image_change
+      assert_nil RecordableDiff.new(previous: illustrated, current: illustrated, event: nil).image_change
+      assert illustrated.reload.image.attached?
+    end
+    assert_nil RecordableDiff.previous(@recording).image_change
+  end
+
   test "finds the latest updated event with a previous subject" do
     first_article = @recording.recordable
 

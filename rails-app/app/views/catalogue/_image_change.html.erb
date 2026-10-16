@@ -1,0 +1,16 @@
+<section aria-label="Image changes">
+  <h3>Image</h3>
+  <div class="catalogue__columns">
+    <% images.zip([ "Before", "After" ]).each do |blob, label| %>
+      <div>
+        <h4><%= label %></h4>
+        <% if blob %>
+          <%= image_tag blob, class: "catalogue__image", alt: "#{label}: #{blob.filename}" %>
+          <p><%= link_to blob.filename.to_s, rails_blob_path(blob) %></p>
+        <% else %>
+          <p>No image</p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>
