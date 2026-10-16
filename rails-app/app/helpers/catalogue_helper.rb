@@ -1,6 +1,6 @@
 module CatalogueHelper
   def catalogue_history_value(event, field, value)
-    return value.presence || "Empty" unless %w[category_ids allergen_ids variant_order].include?(field)
+    return value.presence || "Empty" unless %w[category_ids allergen_ids variant_order section_order product_ids].include?(field)
     return "None" if value.blank?
 
     records = event.bucket.recordings.where(id: value).index_by(&:id)
@@ -9,6 +9,10 @@ module CatalogueHelper
 
   def product_actions
     @product_actions ||= ProductActions.new(view: self, person: Current.person, bucket: Current.bucket)
+  end
+
+  def menu_actions
+    @menu_actions ||= MenuActions.new(view: self, person: Current.person, bucket: Current.bucket)
   end
 
   def allergen_actions

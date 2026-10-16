@@ -11,7 +11,7 @@ implementation and focused verification. Design coverage alone is not completion
 - [x] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
 - [ ] Product copying and catalogue filters: unpublished copies, category/publication filters, archive listing.
 - [x] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
-- [ ] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
+- [x] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
 - [ ] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
 - [ ] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
 - [ ] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
@@ -21,6 +21,32 @@ implementation and focused verification. Design coverage alone is not completion
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Menu editing: immutable Menu/MenuSection recordables, bucket-owned draft forms,
+optional images, ordered sections and per-section product placements, removal
+without deleting history, duplicate guards, and notices naming other sections.
+Move-up/down controls prepare ordering changes; Save order persists them with
+stale-save protection and events. Empty drafts are allowed. Preview combines
+draft menu/section presentation with published product versions, flags missing
+publications, filters archived items/empty visible sections, and shows live
+availability without changing it. Editors/admins alone can access management,
+preview, or generic recording diffs. Migration `20261016000400` is applied.
+
+Menu verification: full suite passed 675 tests / 2,736 assertions before the last
+three focused coverage additions; those additions passed in a 7-test / 101-assertion
+run. Full RuboCop clean (363 files), Archspec passed (186 files, reported analysis
+gaps remain). Temporary Chrome test `tmp/menu_visual_test.rb` passed 32 assertions
+covering menu/section saves with uploads, shared placements, Stimulus reordering,
+loaded image slots and no overflow at 1440px/390px. Six full-page screenshots
+(`tmp/catalogue-menu-*`, `tmp/catalogue-section-*`, `tmp/catalogue-menu-preview-*`)
+were inspected against Figma `5:2`, `5:38`, `48:582`, `48:639`.
+Images use uploaded content; Figma's labelled sample artwork is a data slot,
+not application decoration. The browser fixture uses an existing test image.
+Native headless input remains intermittent; affected inputs/buttons used DOM
+events, with real form handlers and HTTP responses. Product selection is included
+in the section form rather than a separate picker screen. Ordering is in expandable
+panels, with the design's up/down controls. Menu publication/status/revert controls
+and menu archive lifecycle remain in their separately tracked features.
 
 Product publication: immutable snapshots and release state have model coverage.
 The editor links to impact review with before/after prices and allergen wording,

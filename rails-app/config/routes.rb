@@ -40,6 +40,13 @@ Rails.application.routes.draw do
   end
 
   scope path: "admin", as: "admin" do
+    resources :menus, except: :destroy do
+      resources :sections, controller: "menu_sections", except: %i[index show] do
+        resource :product_order, only: :create, controller: "menu_sections/product_orders"
+      end
+      resource :section_order, only: :create, controller: "menus/section_orders"
+      resource :preview, only: :show, controller: "menus/previews"
+    end
     resources :products, except: :destroy do
       resources :variants, only: %i[new create edit update]
       resource :variant_order, only: :create, controller: "products/variant_orders"

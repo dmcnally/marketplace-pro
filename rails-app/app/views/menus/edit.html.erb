@@ -1,0 +1,36 @@
+<h1>Edit <%= @draft.name %></h1>
+<p class="catalogue__muted">Draft · Presentation and structure are published separately from products.</p>
+<div class="catalogue__actions"><%= menu_actions.preview_link_for(@draft.recording) %><%= menu_actions.history_link_for(@draft.recording) %></div>
+<div class="catalogue__columns">
+  <%= menu_actions.form_for(@draft) %>
+  <section class="catalogue__panel">
+    <h2>Sections · ordered</h2>
+    <% @draft.sections.each_with_index do |section, index| %>
+      <div class="catalogue__row">
+        <div class="catalogue__record"><strong><%= index + 1 %> · <%= section.recordable.name %></strong><p class="catalogue__muted"><%= pluralize section.recordable.product_ids.size, "product" %></p></div>
+        <%= menu_actions.edit_section_link_for(@draft.recording, section) %>
+      </div>
+    <% end %>
+    <% if @draft.sections.empty? %><p class="catalogue__muted">No sections yet. Empty sections can be saved as drafts.</p><% end %>
+    <%= menu_actions.new_section_link_for(@draft.recording) %>
+    <%= menu_actions.section_order_form_for(@draft.recording) %>
+  </section>
+</div>
+<div class="catalogue__columns">
+  <% @draft.sections.each do |section| %>
+    <section class="catalogue__panel">
+      <h2><%= section.recordable.name %> · Product placements</h2>
+      <p class="catalogue__muted">Each product can appear once per section. Other sections share its published variants, prices and live availability.</p>
+      <% @draft.structure.products_for(section).each do |placement| %>
+        <div class="catalogue__row"><div class="catalogue__record">
+          <strong><%= placement[:recording].recordable.name %></strong>
+          <p class="catalogue__muted"><%= placement[:status] %><%= " · Archived" if placement[:recording].discarded? %></p>
+          <% if placement[:other_sections].any? %><p class="catalogue__notice">Also in <%= placement[:other_sections].join(", ") %></p><% end %>
+        </div></div>
+      <% end %>
+      <% if section.recordable.product_ids.empty? %><p class="catalogue__muted">Empty draft section · Omitted at publication</p><% end %>
+      <%= menu_actions.product_order_form_for(@draft.recording, section) %>
+      <div class="catalogue__actions"><%= menu_actions.edit_section_link_for(@draft.recording, section) %><%= menu_actions.remove_section_button_for(@draft.recording, section) %></div>
+    </section>
+  <% end %>
+</div>

@@ -1,4 +1,16 @@
 module CatalogueTestHelper
+  def create_catalogue_menu(**attributes)
+    draft = Menu::Draft.new(bucket: Current.bucket, name: "Evening menu", **attributes)
+    assert draft.save, draft.errors.full_messages.join(", ")
+    draft.recording.reload
+  end
+
+  def add_menu_section(menu, **attributes)
+    draft = MenuSection::Draft.new(menu: menu, revision: menu.reload.draft_revision, name: "Starters", **attributes)
+    assert draft.save, draft.errors.full_messages.join(", ")
+    draft.recording.reload
+  end
+
   def with_class_method_replacement(klass, method_name, replacement)
     owned = klass.singleton_class.instance_methods(false).include?(method_name)
     original = klass.method(method_name)

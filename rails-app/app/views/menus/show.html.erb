@@ -1,0 +1,4 @@
+<h1><%= @page[:recording].recordable.name %> · History</h1>
+<p class="catalogue__muted">Includes menu presentation, sections, placements and ordering.</p>
+<%= menu_actions.edit_link_for(@page[:recording]) %>
+<%= render "catalogue/history", events: @page[:events] %>

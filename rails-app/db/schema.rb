@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_000300) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_000400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -198,6 +198,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000300) do
     t.index ["bucket_id"], name: "index_memberships_on_bucket_id"
     t.index ["person_id", "bucket_id"], name: "index_memberships_on_person_id_and_bucket_id", unique: true
     t.index ["person_id"], name: "index_memberships_on_person_id"
+  end
+
+  create_table "menu_sections", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.bigint "product_ids", default: [], null: false, array: true
+  end
+
+  create_table "menus", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.bigint "section_order", default: [], null: false, array: true
   end
 
   create_table "people", force: :cascade do |t|

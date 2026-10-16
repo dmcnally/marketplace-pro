@@ -1,0 +1,5 @@
+<% if sections.any? %>
+  <details><summary>Reorder sections</summary>
+    <%= render "catalogue/order", url: admin_menu_section_order_path(menu), revision: menu.draft_revision, items: sections, submit_label: "Save section order" %>
+  </details>
+<% end %>

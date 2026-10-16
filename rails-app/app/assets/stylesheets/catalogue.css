@@ -38,6 +38,7 @@
 .catalogue__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .catalogue__columns .catalogue__row { flex-wrap: wrap; }
 .catalogue__image { width: 100%; max-height: 240px; object-fit: contain; }
+.catalogue__preview-image { display: block; width: 100%; height: 180px; object-fit: contain; background: #f8f9fd; border-radius: 9px; margin: 8px 0; }
 .catalogue__choice { display: flex; align-items: center; gap: 8px; }
 .catalogue__choice input { width: auto; }
 .catalogue fieldset { border: 1px solid var(--color-line); min-width: 0; }
