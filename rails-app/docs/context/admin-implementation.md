@@ -20,10 +20,22 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
 - [x] Live allergen warnings: affected products, assignment/content changes, correct resolution.
 - [x] History: actor/time and before/after comparisons including relationships and variant events.
-- [ ] Navigation and Orders: main/admin split and mobile navigation implemented; user-confirmed deferred Orders destination implemented; default landing navigation remains.
+- [x] Navigation and Orders: main/admin split, mobile navigation, user-confirmed deferred Orders destination and default member landing at Overview.
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Landing flow complete: sign-in defaults to Overview, as do successful invitation
+acceptance and bucket switching. Explicit authentication return destinations still
+win, including Orders and pending invitations; no-bucket and system-admin flows
+retain their existing destinations. Public/editorial routes remain available.
+Focused authentication/registration/invitation/switch/authorization tests passed
+(34 tests, 178 assertions), including a new requested-Orders return test.
+Full suite: 762 tests / 3,928 assertions passed. RuboCop clean (403 files), Archspec
+passed (206 files; existing analysis gaps remain). The temporary navigation browser
+test passed 18 assertions, now asserting Overview immediately after sign-in.
+No migration needed. Final cross-feature verification and discrepancy reporting
+are the remaining tracked work.
 
 Navigation/Orders checkpoint: user explicitly chose “Deferred Orders page for now”.
 `/orders` is a GET-only destination with a clear deferred-work message, current

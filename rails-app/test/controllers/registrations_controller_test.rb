@@ -70,7 +70,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     user = User.find_by!(email_address: "accepting@example.com")
     membership = Membership.last
-    assert_redirected_to root_path
+    assert_redirected_to overview_path
     assert_equal user.person, membership.person
     assert_equal invitation.bucket, membership.bucket
     assert_predicate membership, :editor?

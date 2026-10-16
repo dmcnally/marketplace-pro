@@ -7,7 +7,7 @@ class Buckets::SwitchControllerTest < ActionDispatch::IntegrationTest
 
     post bucket_switch_path(selected_bucket), headers: { "HTTP_REFERER" => sys_admin_buckets_url }
 
-    assert_redirected_to root_path
+    assert_redirected_to overview_path
 
     get articles_path
 
@@ -22,7 +22,7 @@ class Buckets::SwitchControllerTest < ActionDispatch::IntegrationTest
 
     post bucket_switch_path(selected_bucket)
 
-    assert_redirected_to root_path
+    assert_redirected_to overview_path
 
     get articles_path
 

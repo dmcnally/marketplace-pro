@@ -14,7 +14,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     post session_path, params: { email_address: @user.email_address, password: "password" }
 
-    assert_redirected_to root_path
+    assert_redirected_to overview_path
     assert cookies[:session_id]
   end
 
@@ -23,6 +23,17 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to no_bucket_path
     assert cookies[:session_id]
+  end
+
+  test "sign in preserves the requested staff destination instead of using the default landing" do
+    Membership.create!(person: @user.person, bucket: Current.bucket, role: :viewer)
+    get orders_path
+    assert_redirected_to new_session_path
+    post session_path, params: { email_address: @user.email_address, password: "password" }
+    assert_redirected_to orders_path
+    follow_redirect!
+    assert_response :success
+    assert_select "h1", "Orders"
   end
 
   test "create with valid credentials redirects users without content buckets to pending invitation" do

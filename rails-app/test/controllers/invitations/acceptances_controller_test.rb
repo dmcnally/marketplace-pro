@@ -12,7 +12,7 @@ module Invitations
       end
 
       membership = Membership.last
-      assert_redirected_to root_path
+      assert_redirected_to overview_path
       assert_equal user.person, membership.person
       assert_equal buckets(:default), membership.bucket
       assert_predicate membership, :editor?
@@ -32,13 +32,13 @@ module Invitations
 
       sign_in_as user
       post accept_invitation_path(invitation.token)
-      assert_redirected_to root_path
+      assert_redirected_to overview_path
 
       delete session_path
 
       post session_path, params: { email_address: user.email_address, password: "password" }
 
-      assert_redirected_to root_path
+      assert_redirected_to overview_path
     end
 
     test "create redirects to invitation when acceptance fails" do

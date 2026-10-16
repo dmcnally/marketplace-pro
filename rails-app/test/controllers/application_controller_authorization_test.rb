@@ -62,7 +62,7 @@ class ApplicationControllerAuthorizationTest < ActionDispatch::IntegrationTest
 
     post bucket_switch_path(other_bucket)
 
-    assert_redirected_to root_path
+    assert_redirected_to overview_path
 
     get new_admin_csv_import_path
 
@@ -80,7 +80,7 @@ class ApplicationControllerAuthorizationTest < ActionDispatch::IntegrationTest
 
     post bucket_switch_path(other_bucket)
 
-    assert_redirected_to root_path
+    assert_redirected_to overview_path
 
     get new_admin_csv_import_path
 
