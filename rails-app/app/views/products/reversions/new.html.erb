@@ -1,0 +1,21 @@
+<h1>Revert all product changes?</h1>
+<section class="catalogue__panel">
+  <h2>Replace <%= @recording.recordable.name %>’s current draft</h2>
+  <p class="catalogue__muted">Restore content and variants, including prices, order and allergen assignments, to the most recently published product version. Current draft work is replaced.</p>
+  <div class="catalogue__notice">
+    <strong>History and live availability stay unchanged</strong>
+    <p>This does not publish the product or change its publication status. It also works when currently unpublished, provided it was published before. Shared allergen wording is not reverted.</p>
+  </div>
+  <div class="catalogue__actions">
+    <%= product_actions.revert_button_for(@publication) %>
+    <%= link_to "Keep editing", edit_admin_product_path(@recording), class: "btn btn--secondary" %>
+  </div>
+</section>
+<section class="catalogue__panel">
+  <h2>Archived references stay archived</h2>
+  <p class="catalogue__muted">Restoration is a separate action. Reverting content never silently undoes withdrawal from sale. Archived variants stay unavailable.</p>
+  <% @publication.archived_references.each do |name| %>
+    <div class="catalogue__row"><div class="catalogue__record"><strong><%= name %></strong><p class="catalogue__muted">Remains archived; existing references retained.</p></div></div>
+  <% end %>
+  <% if @publication.archived_references.empty? %><p class="catalogue__muted">The last published version has no archived references.</p><% end %>
+</section>

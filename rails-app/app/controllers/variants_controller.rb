@@ -5,7 +5,7 @@ class VariantsController < ApplicationController
   rescue_from Recording::CatalogueEditing::StaleDraft, with: :stale_draft
 
   def new
-    @draft = Product::VariantDraft.new(product: product, source_id: product.children.variants.kept.order(:id).first&.id, revision: product.draft_revision)
+    @draft = Product::VariantDraft.new(product: product, source_id: product.children.variants.kept.where(id: product.recordable.variant_order).order(:id).first&.id, revision: product.draft_revision)
   end
 
   def create
@@ -14,11 +14,11 @@ class VariantsController < ApplicationController
   end
 
   def edit
-    @draft = Product::VariantDraft.for(product, product.children.variants.kept.find(params[:id]))
+    @draft = Product::VariantDraft.for(product, product.children.variants.kept.where(id: product.recordable.variant_order).find(params[:id]))
   end
 
   def update
-    @draft = Product::VariantDraft.for(product, product.children.variants.kept.find(params[:id]))
+    @draft = Product::VariantDraft.for(product, product.children.variants.kept.where(id: product.recordable.variant_order).find(params[:id]))
     @draft.assign_attributes(variant_params.merge(revision: params[:revision]))
     save_draft(:edit)
   end

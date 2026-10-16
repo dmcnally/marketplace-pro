@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_000200) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_000300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -75,6 +75,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000200) do
   create_table "catalogue_categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
+  end
+
+  create_table "catalogue_releases", force: :cascade do |t|
+    t.bigint "bucket_id", null: false
+    t.bigint "recording_id", null: false
+    t.bigint "snapshot_id", null: false
+    t.string "kind", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bucket_id"], name: "index_catalogue_releases_on_bucket_id"
+    t.index ["bucket_id"], name: "one_active_menu_per_bucket", unique: true, where: "(((kind)::text = 'Menu'::text) AND active)"
+    t.index ["recording_id"], name: "index_catalogue_releases_on_recording_id", unique: true
+    t.index ["snapshot_id"], name: "index_catalogue_releases_on_snapshot_id"
+  end
+
+  create_table "catalogue_snapshots", force: :cascade do |t|
+    t.bigint "recording_id", null: false
+    t.jsonb "content", null: false
+    t.datetime "created_at", null: false
+    t.index ["recording_id"], name: "index_catalogue_snapshots_on_recording_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -267,6 +288,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000200) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "people"
+  add_foreign_key "catalogue_releases", "buckets"
+  add_foreign_key "catalogue_releases", "catalogue_snapshots", column: "snapshot_id"
+  add_foreign_key "catalogue_releases", "recordings"
+  add_foreign_key "catalogue_snapshots", "recordings"
   add_foreign_key "csv_import_rows", "csv_imports"
   add_foreign_key "csv_import_rows", "recordings", column: "imported_recording_id"
   add_foreign_key "csv_imports", "buckets"

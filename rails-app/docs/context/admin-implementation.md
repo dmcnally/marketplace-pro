@@ -10,7 +10,7 @@ implementation and focused verification. Design coverage alone is not completion
 - [x] Allergens: bucket-owned management, archive/restore, history and permissions.
 - [x] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
 - [ ] Product copying and catalogue filters: unpublished copies, category/publication filters, archive listing.
-- [ ] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
+- [x] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
 - [ ] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
 - [ ] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
 - [ ] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
@@ -21,6 +21,27 @@ implementation and focused verification. Design coverage alone is not completion
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Product publication: immutable snapshots and release state have model coverage.
+The editor links to impact review with before/after prices and allergen wording,
+live-menu impact, and publish/unpublish controls. Revert has its own confirmation,
+preserves history, availability and publication status, and identifies archived
+references before and after the operation. Server policies guard all endpoints;
+confirmations reject missing/stale tokens. Failed publication rolls back its
+snapshot, and live-menu references block unpublishing (model contract tested;
+end-to-end menu integration will be tested with menu publication).
+Full regression: 654 tests, 2,503 assertions; full RuboCop clean (333 files).
+Archspec passed (168 files, reported analysis gaps remain).
+Figma publication `11:2` and revert `14:684` were inspected with code context and
+screenshots; rendered desktop/mobile pages were visually compared. A temporary
+browser test (`tmp/publication_visual_test.rb`) passed 21 assertions, covering
+publish/revert/unpublish and no overflow at 1440px/390px. Chrome native input
+events were intermittently absent, so publication buttons used DOM click events
+through their real rendered form handlers; native pointer interaction remains
+a verification limitation. Screenshots are local ignored `tmp/catalogue-*.png`.
+The dynamic price/allergen review is taller than the sample, and shows explicit
+before/after wording. Navigation still lacks Menus and Back to Overview pending
+those tracked features. Migration `20261016000300` is applied.
 
 Model coverage correction: the initial features relied too heavily on controller
 workflow tests. Added direct tests for category, allergen, product, variant,

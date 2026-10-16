@@ -39,6 +39,10 @@ class Product::Draft
     bucket.recordings.categories.where("discarded_at IS NULL OR id IN (?)", normalized_category_ids).includes(:recordable)
   end
 
+  def publication_status
+    Product::Publication.new(recording).status
+  end
+
   def variants
     return [] unless recording
 

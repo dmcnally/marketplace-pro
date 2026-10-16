@@ -7,6 +7,14 @@ module Recording::CatalogueEditing
     updated_at.iso8601(6)
   end
 
+  def catalogue_published?
+    Catalogue::Release.active.exists?(recording: self)
+  end
+
+  def catalogue_previously_published?
+    Catalogue::Release.exists?(recording: self)
+  end
+
   def revise_content!(attributes, revision:)
     with_catalogue_lock do
       assert_draft_revision!(revision)

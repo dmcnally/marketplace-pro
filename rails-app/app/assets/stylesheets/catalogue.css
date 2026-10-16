@@ -32,7 +32,7 @@
 .catalogue__field label { font-weight: 600; }
 .catalogue__field input, .catalogue__field textarea { width: 100%; min-width: 0; border: 1px solid transparent; background: transparent; color: var(--color-ink); padding: 0; resize: vertical; }
 .catalogue__field input[aria-invalid="true"] { border-color: var(--color-danger); }
-.catalogue__notice { padding: 16px; border-radius: 9px; background: #fff4e5; }
+.catalogue__notice { padding: 16px; border-radius: 9px; background: #fff4e5; display: flex; flex-direction: column; gap: 8px; }
 .catalogue__comparison { overflow-wrap: anywhere; }
 .catalogue__comparison dd { margin: 8px 0 16px; }
 .catalogue__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }

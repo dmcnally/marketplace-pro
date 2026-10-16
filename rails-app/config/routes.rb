@@ -44,6 +44,8 @@ Rails.application.routes.draw do
       resources :variants, only: %i[new create edit update]
       resource :variant_order, only: :create, controller: "products/variant_orders"
       resource :allergen_assignment, only: :create, controller: "products/allergen_assignments"
+      resource :publication, only: %i[new create destroy], controller: "products/publications"
+      resource :reversion, only: %i[new create], controller: "products/reversions"
     end
     resources :allergens, except: :destroy do
       resource :archive, only: %i[create destroy], controller: "allergens/archives"

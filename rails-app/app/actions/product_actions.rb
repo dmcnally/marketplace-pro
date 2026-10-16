@@ -1,4 +1,34 @@
 class ProductActions < ActionsBase
+  def revert_link_for(recording)
+    return unless policy.can_revert?(recording)
+
+    view.link_to "Revert all changes", view.new_admin_product_reversion_path(recording), class: "btn btn--secondary"
+  end
+
+  def revert_button_for(publication)
+    return unless policy.can_revert?(publication.recording)
+
+    view.button_to "Revert all", view.admin_product_reversion_path(publication.recording), params: { review_token: publication.review_token }, class: "btn btn--primary"
+  end
+
+  def publication_link_for(recording)
+    return unless policy.can_publish?(recording)
+
+    view.link_to "Review publication", view.new_admin_product_publication_path(recording), class: "btn btn--primary"
+  end
+
+  def publish_button_for(publication)
+    return unless policy.can_publish?(publication.recording) && publication.blockers.empty?
+
+    view.button_to "Publish product", view.admin_product_publication_path(publication.recording), params: { review_token: publication.review_token }, class: "btn btn--primary"
+  end
+
+  def unpublish_button_for(publication)
+    return unless policy.can_unpublish?(publication.recording)
+
+    view.button_to "Unpublish product", view.admin_product_publication_path(publication.recording), method: :delete, params: { review_token: publication.review_token }, class: "btn btn--secondary"
+  end
+
   def new_link
     view.link_to("Add product", view.new_admin_product_path, class: "btn btn--primary") if policy.can_create?
   end

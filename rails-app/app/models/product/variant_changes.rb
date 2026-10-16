@@ -6,7 +6,7 @@ class Product::VariantChanges
   def reorder!(ids, revision:)
     change!(revision) do
       ids = Array(ids).map(&:to_i)
-      expected = product.children.variants.pluck(:id)
+      expected = product.recordable.variant_order
       raise ArgumentError, "Include every variant exactly once." unless ids.sort == expected.sort
 
       previous = product.recordable
@@ -21,7 +21,7 @@ class Product::VariantChanges
       scope = product.bucket.recordings.allergens
       scope = scope.kept unless remove
       allergen = scope.find(allergen_id)
-      product.children.variants.kept.each do |variant|
+      product.children.variants.kept.where(id: product.recordable.variant_order).each do |variant|
         old = variant.recordable
         ids = remove ? old.allergen_ids - [ allergen.id ] : old.allergen_ids | [ allergen.id ]
         next if ids == old.allergen_ids

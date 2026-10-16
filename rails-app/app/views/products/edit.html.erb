@@ -1,6 +1,6 @@
 <h1><%= @draft.name %></h1>
-<p class="catalogue__muted">Draft · Availability stays live and is managed separately.</p>
-<div class="catalogue__actions"><%= product_actions.history_link_for(@draft.recording) %></div>
+<p class="catalogue__muted"><%= @draft.publication_status %> · Availability stays live and is managed separately.</p>
+<div class="catalogue__actions"><%= product_actions.history_link_for(@draft.recording) %><%= product_actions.publication_link_for(@draft.recording) %><%= product_actions.revert_link_for(@draft.recording) %></div>
 <div class="catalogue__columns">
   <%= product_actions.form_for(@draft) %>
   <section class="catalogue__panel">
