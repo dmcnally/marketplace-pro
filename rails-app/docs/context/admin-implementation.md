@@ -20,10 +20,31 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
 - [x] Live allergen warnings: affected products, assignment/content changes, correct resolution.
 - [x] History: actor/time and before/after comparisons including relationships and variant events.
-- [ ] Navigation and Orders: main/admin split, mobile navigation, read-only bucket orders.
+- [ ] Navigation and Orders: main/admin split and mobile navigation implemented; user-confirmed deferred Orders destination implemented; default landing navigation remains.
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Navigation/Orders checkpoint: user explicitly chose “Deferred Orders page for now”.
+`/orders` is a GET-only destination with a clear deferred-work message, current
+bucket context and member authorization through OrderPolicy. It contains no sample
+orders or mutation controls. Main links are Overview, Orders, then Admin for
+editors/admins; active states follow the current controller. Both main/admin
+sidebars now use a native disclosure on mobile, initially collapsed by Stimulus,
+and remain expanded on desktop. Breakpoint changes and Turbo navigation reset
+the disclosure appropriately; without JavaScript navigation remains available.
+Mobile headings use the Figma 26px size and sidebar spacing is restored.
+
+Verification: 761 tests / 3,919 assertions passed; RuboCop clean (403 files),
+Archspec passed (206 files; analysis gaps remain). No migration needed. Policy
+and request tests cover roles, guests, revoked access, active state and no forms.
+Figma `14:1044` mobile navigation and `44:168` Orders contexts/renders inspected;
+temporary `tmp/navigation_visual_test.rb` passed 17 assertions for mobile opening,
+Orders/Admin navigation, Turbo arrival and desktop/mobile resizing. Desktop and
+mobile screenshots inspected. Native headless click limitation required DOM
+activation. Mobile navigation opens inline rather than a separate navigation
+screen; no overlay/drawer was specified in the inspected design. Default landing
+navigation still needs updating in a separate small commit.
 
 History completion audit: menu replacement now records the published names on
 both transition events and renders “Replaced …” / “Replaced by …”. Unpublished

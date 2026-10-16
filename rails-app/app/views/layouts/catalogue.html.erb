@@ -9,13 +9,18 @@
     <%= javascript_importmap_tags %>
   </head>
   <body class="catalogue">
-    <aside class="catalogue__sidebar">
+    <aside class="catalogue__sidebar" data-controller="catalogue-navigation">
       <strong class="catalogue__brand">marketplace</strong>
       <p><%= Current.bucket.name %></p>
-      <nav aria-label="Admin" class="catalogue__navigation">
-        <%= catalogue_navigation_actions.links %>
-      </nav>
-      <p><%= Current.person.person_card.name %></p>
+      <details class="catalogue__navigation-disclosure" data-catalogue-navigation-target="disclosure" open>
+        <summary>Admin navigation · Menu</summary>
+        <div class="catalogue__navigation-panel">
+          <nav aria-label="Admin" class="catalogue__navigation">
+            <%= catalogue_navigation_actions.links %>
+          </nav>
+          <p><%= Current.person.person_card.name %></p>
+        </div>
+      </details>
     </aside>
     <main class="catalogue__main" id="main-content">
       <% flash.each do |type, message| %>

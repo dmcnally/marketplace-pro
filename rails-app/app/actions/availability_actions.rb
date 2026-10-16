@@ -15,7 +15,11 @@ class AvailabilityActions < ActionsBase
   end
 
   def overview_link
-    view.link_to "Overview", view.overview_path, class: "catalogue__nav-link catalogue__nav-link--active", aria: { current: "page" } if policy.can_view?
+    navigation_link("Overview", view.overview_path, "catalogue/overviews") if policy.can_view?
+  end
+
+  def orders_link
+    navigation_link("Orders", view.orders_path, "orders") if OrderPolicy.new(person: person, bucket: bucket).can_view?
   end
 
   def admin_link
@@ -23,6 +27,11 @@ class AvailabilityActions < ActionsBase
   end
 
   private
+
+  def navigation_link(label, path, controller)
+    active = view.controller_path == controller
+    view.link_to label, path, class: [ "catalogue__nav-link", ("catalogue__nav-link--active" if active) ], aria: { current: ("page" if active) }
+  end
 
   def policy
     @policy ||= AvailabilityPolicy.new(availability: Catalogue::Availability.new(person: person, bucket: bucket))

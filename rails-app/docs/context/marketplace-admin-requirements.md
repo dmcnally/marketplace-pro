@@ -306,6 +306,13 @@ for "sold out today" and archive for "we no longer offer this."
 
 ## Orders
 
+Implementation scope confirmed on 16 October 2026: the user selected **“Deferred
+Orders page for now”** after confirming that no order model/data source exists.
+Provide the clearly labelled navigation destination, accessible to every bucket
+member. Order storage, listing and processing belong to a later phase. The
+requirements below describe that future order view, not a requirement to invent
+an order backend for this build.
+
 - Orders is a staff view of all orders in the current bucket.
 - Every bucket member can view those orders, regardless of membership role.
 - Viewing orders does not grant permission to change them; order actions and
