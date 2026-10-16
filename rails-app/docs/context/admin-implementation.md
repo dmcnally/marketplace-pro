@@ -22,6 +22,19 @@ implementation and focused verification. Design coverage alone is not completion
 
 ## Evidence and remaining work
 
+Model coverage correction: the initial features relied too heavily on controller
+workflow tests. Added direct tests for category, allergen, product, variant,
+availability, draft editing, ordering/bulk assignments, and recording lifecycle.
+These cover immutable history, validation, bucket/parent ownership, stale writes,
+retired references, attachments, and transaction rollback with successful retry.
+The tests exposed and fixed cross-bucket product edits, cross-product variant
+edits, initial variant validation, and variant retry state after rollback.
+Publication model tests also cover the backend currently in progress; publication
+remains incomplete until its UI and controller flows are implemented.
+Verification: 301 model tests / 928 assertions; full suite 641 tests / 2,366
+assertions; RuboCop clean (327 files); Archspec passed (166 files, with reported
+analysis gaps). All migration files in this checkout are applied.
+
 Initial inspection: existing Rails application has editorial/admin infrastructure
 and Modern shared styles, but no marketplace domain tables or routes. Working
 tree was clean. Figma Products frame `4:101` inspected with design context and

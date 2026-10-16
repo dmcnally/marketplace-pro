@@ -6,6 +6,8 @@ class Product::Draft
 
   validates :name, presence: true
   validate :valid_categories
+  validate :consistent_recording
+  validate :valid_first_variant, unless: :recording
 
   def self.for(recording)
     new(bucket: recording.bucket, recording: recording, revision: recording.draft_revision,
@@ -41,10 +43,21 @@ class Product::Draft
     return [] unless recording
 
     order = recording.recordable.variant_order
-    recording.children.variants.includes(:recordable).sort_by { |variant| order.index(variant.id) || order.length }
+    recording.children.variants.where(id: order).includes(:recordable).sort_by { |variant| order.index(variant.id) }
   end
 
   private
+
+  def consistent_recording
+    return unless recording
+
+    errors.add(:recording, "must be a product in this workspace") unless recording.product? && recording.bucket == bucket
+  end
+
+  def valid_first_variant
+    variant = Variant.new(name: variant_name.presence || "Default", price: price)
+    errors.merge!(variant.errors) unless variant.valid?
+  end
 
   def normalized_category_ids
     Array(category_ids).reject(&:blank?).map(&:to_i).uniq

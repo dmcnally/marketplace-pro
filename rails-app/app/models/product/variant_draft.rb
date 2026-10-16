@@ -6,6 +6,7 @@ class Product::VariantDraft
   validates :name, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }
   validate :valid_assignments
+  validate :consistent_recording
 
   def self.for(product, recording)
     new(product: product, recording: recording, revision: product.draft_revision,
@@ -24,9 +25,10 @@ class Product::VariantDraft
         if recording
           recording.update!(recordable: content)
         else
-          self.recording = product.children.create!(bucket: product.bucket, recordable: content)
-          VariantAvailability.create!(recording: recording)
-          update_order!
+          created_variant = product.children.create!(bucket: product.bucket, recordable: content)
+          VariantAvailability.create!(recording: created_variant)
+          update_order!(created_variant)
+          self.recording = created_variant
         end
       end
     end
@@ -41,10 +43,18 @@ class Product::VariantDraft
   end
 
   def sources
-    product.children.variants.kept.includes(:recordable).order(:id)
+    product.children.variants.kept.where(id: product.recordable.variant_order).includes(:recordable).order(:id)
   end
 
   private
+
+  def consistent_recording
+    return unless recording
+
+    unless recording.variant? && recording.parent_id == product.id && recording.bucket_id == product.bucket_id && product.recordable.variant_order.include?(recording.id)
+      errors.add(:recording, "must be a current variant of this product")
+    end
+  end
 
   def selected_allergen_ids
     return source.recordable.allergen_ids if recording.nil? && source
@@ -65,9 +75,9 @@ class Product::VariantDraft
     errors.add(:allergen_ids, "must belong to this workspace and be active when newly assigned") if (selected_allergen_ids - allowed).any?
   end
 
-  def update_order!
+  def update_order!(variant)
     previous = product.recordable
-    content = Product.new(previous.attributes.except("id").merge("variant_order" => previous.variant_order + [ recording.id ]))
+    content = Product.new(previous.attributes.except("id").merge("variant_order" => previous.variant_order + [ variant.id ]))
     content.image.attach(previous.image.blob) if previous.image.attached?
     product.update!(recordable: content)
   end
