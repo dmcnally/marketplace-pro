@@ -1,6 +1,8 @@
 <h1>Edit allergen</h1>
 <p class="catalogue__muted"><%= @recording.recordable.name %> · Changes apply to draft allergen information</p>
 <%= allergen_actions.form_for(@recording) %>
+<%= allergen_actions.impact_for(@recording) %>
+<%= product_actions.allergen_warning %>
 <section class="catalogue__panel">
   <h2>Manage allergen</h2>
   <div class="catalogue__actions">

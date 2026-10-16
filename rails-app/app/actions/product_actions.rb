@@ -1,4 +1,16 @@
 class ProductActions < ActionsBase
+  def allergen_warning
+    return unless policy.can_create?
+
+    render_allergen_warning(allergen_warnings.entries)
+  end
+
+  def allergen_warning_for(recording)
+    return unless policy.can_view?(recording)
+
+    render_allergen_warning(allergen_warnings.entries.select { |entry| entry[:recording].id == recording.id })
+  end
+
   def copy_link_for(recording)
     view.link_to "Copy product", view.new_admin_product_copy_path(recording), class: "btn btn--secondary" if policy.can_copy?(recording)
   end
@@ -124,6 +136,14 @@ class ProductActions < ActionsBase
   end
 
   private
+
+  def allergen_warnings
+    @allergen_warnings ||= Catalogue::AllergenWarnings.new(bucket)
+  end
+
+  def render_allergen_warning(entries)
+    view.render "catalogue/allergen_warning", entries: entries, menu_name: allergen_warnings.menu_name if entries.any?
+  end
 
   def policy
     @policy ||= ProductPolicy.new(person: person, bucket: bucket)

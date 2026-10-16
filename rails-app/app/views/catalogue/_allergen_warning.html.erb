@@ -1,0 +1,11 @@
+<section class="catalogue__notice" role="alert">
+  <h2>Review live allergen information</h2>
+  <p><%= entries.map { |entry| entry[:name] }.to_sentence %> <%= entries.one? ? "has" : "have" %> unpublished allergen changes on <%= menu_name %>. Live allergen information may be inaccurate.</p>
+  <p>Review and republish each affected product. Menu publication alone will not resolve this warning.</p>
+  <% entries.each do |entry| %>
+    <div class="catalogue__record"><strong><%= entry[:name] %></strong>
+      <% entry[:changes].each do |change| %><p><%= change[:variant_name] %> · Published: <%= change[:before] %> → Draft: <%= change[:after] %></p><% end %>
+      <div class="catalogue__actions"><%= product_actions.publication_link_for(entry[:recording]) %><%= product_actions.edit_link_for(entry[:recording]) %></div>
+    </div>
+  <% end %>
+</section>

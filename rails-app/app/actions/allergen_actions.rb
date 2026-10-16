@@ -1,4 +1,11 @@
 class AllergenActions < ActionsBase
+  def impact_for(recording)
+    return unless policy.can_edit?(recording)
+
+    affected = Catalogue::AllergenWarnings.new(bucket).affected_by(recording)
+    view.render "allergens/impact", affected: affected
+  end
+
   def new_link
     return unless policy.can_create?
 

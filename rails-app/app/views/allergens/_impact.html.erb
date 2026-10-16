@@ -1,0 +1,7 @@
+<section class="catalogue__panel">
+  <h2>Live products affected</h2>
+  <% if affected.any? %>
+    <div class="catalogue__notice"><strong>Review <%= affected.map(&:name).to_sentence %></strong><p>Saving changed allergen wording leaves affected products with unpublished changes. Published wording stays unchanged until each product is reviewed and republished. Menu publication alone does not update it.</p></div>
+    <% affected.each do |product| %><div class="catalogue__row"><div class="catalogue__record"><strong><%= product.name %></strong></div><%= product_actions.edit_link_for(product.recording) %></div><% end %>
+  <% else %><p class="catalogue__muted">No visible products on the live menu use this allergen in their published or draft variants.</p><% end %>
+</section>

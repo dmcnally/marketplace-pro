@@ -18,12 +18,32 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
 - [x] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
 - [ ] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
-- [ ] Live allergen warnings: affected products, assignment/content changes, correct resolution.
+- [x] Live allergen warnings: affected products, assignment/content changes, correct resolution.
 - [ ] History: actor/time and before/after comparisons including relationships and variant events.
 - [ ] Navigation and Orders: main/admin split, mobile navigation, read-only bucket orders.
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Live allergen warnings: admin product/allergen lists and product editors identify
+affected products on the visible published menu, with published/draft wording and
+review links. Allergen editing identifies affected products before saving. The
+comparison includes name/description edits and individual/bulk assignments,
+deduplicates repeated placements, ignores price-only changes and assignment order,
+and filters archived products/variants. Published wording is retained until product
+republication; menu republication does not clear the warning. Assignment reversion
+can resolve it. Warning presenters enforce editor/admin permissions and are only
+mounted in admin views; the upcoming staff Overview must not render them.
+
+Verification: 733 tests / 3,530 assertions passed; full RuboCop clean (385 files),
+Archspec passed (197 files; reported analysis gaps remain). No migration needed.
+Figma allergen editor `7:144` inspected alongside the previously inspected product
+editor/list designs. `tmp/allergen_warning_visual_test.rb` passed 19 assertions:
+edit/save, review/republication, warning resolution and desktop/mobile overflow.
+Four `tmp/catalogue-allergen-{impact,warning}-*.png` renders were inspected.
+Warnings include explicit before/after wording and actionable product links,
+making them taller than Figma's compact summary. Existing font/navigation
+differences and native headless input limitations remain tracked below.
 
 Catalogue filters: category and publication state combine with literal name
 search. Published, unpublished, never-published and unpublished-change filters
