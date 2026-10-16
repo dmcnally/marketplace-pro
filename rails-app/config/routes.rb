@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   resource :session
+  resource :overview, only: :show, controller: "catalogue/overviews"
+  resource :availability, only: %i[create destroy], controller: "catalogue/availabilities"
   resource :registration, only: [ :new, :create ]
   resources :passwords, param: :token
   resources :invitations, only: [ :show ], param: :token

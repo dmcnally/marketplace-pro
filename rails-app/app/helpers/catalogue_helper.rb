@@ -1,4 +1,8 @@
 module CatalogueHelper
+  def availability_actions
+    @availability_actions ||= AvailabilityActions.new(view: self, person: Current.person, bucket: Current.bucket)
+  end
+
   def catalogue_price(row)
     return "No active variants" unless row[:minimum_price]
 

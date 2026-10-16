@@ -17,13 +17,46 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
 - [x] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
 - [x] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
-- [ ] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
+- [x] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
 - [x] Live allergen warnings: affected products, assignment/content changes, correct resolution.
 - [ ] History: actor/time and before/after comparisons including relationships and variant events.
 - [ ] Navigation and Orders: main/admin split, mobile navigation, read-only bucket orders.
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Staff Overview: `/overview` shows each visible live-menu product once, using
+published names/prices/allergens and current availability. Individual and bulk
+controls POST/DELETE explicit states to `/availability`, with controller policy
+checks plus transaction-time model checks. Turbo replaces the complete overview
+with fresh counts and feedback; HTML requests redirect. Stale controls receive
+an explanatory error and fresh menu state. No-live-menu and no-visible-product
+states contain no controls. Staff do not receive admin links or allergen warnings;
+editors/admins get Admin, and admin navigation now returns to Overview. Orders,
+default landing navigation and the mobile drawer remain in the navigation feature.
+
+Verification: 746 tests / 3,752 assertions passed in the isolated environment
+described below. Full RuboCop clean (396 files), Archspec passed (203 files;
+reported analysis gaps remain). Figma Overview `3:47` context/render inspected.
+Temporary Chrome `tmp/overview_visual_test.rb` passed 29 assertions covering
+individual/bulk Turbo changes, deduplication, empty states and 1440px/390px
+overflow. Live desktop/mobile and representative empty-state screenshots in
+`tmp/catalogue-overview*.png` were visually inspected. Currency uses the explicit
+bucket code; Orders/mobile navigation and the font fallback remain differences.
+Native headless input limitations persist; controls were exercised with DOM clicks.
+
+Environment correction: another checkout (`harden-rubocop`) replaced the shared
+`rails-app-web-1` container during verification. Its 568-test baseline run was
+discarded as evidence for this checkout. Do not use bare `docker compose exec`
+until its mount is verified. This work now uses the isolated project command:
+`docker compose -p marketplace-admin -f docker-compose.yml -f /tmp/marketplace-admin-compose.yml exec web ...`
+from `rails-app`. The temporary override resets web/postgres/mailcatcher ports
+and reuses only the `rails-app_rubygems` volume; database/network are isolated.
+Development databases were prepared and all checkout migrations are up through
+`20261016000400`. Test databases were schema-loaded without development seeds.
+The other checkout's containers and databases were left untouched. Port 3000
+currently belongs to that other checkout; this project's isolated web has no
+published host port. No new migration was needed for Overview.
 
 Availability backend checkpoint (Overview UI remains pending): explicit bucket/
 person context, member permissions, live-menu eligibility rechecked under the
