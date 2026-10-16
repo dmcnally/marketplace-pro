@@ -1,0 +1,18 @@
+<h1>Archived products &amp; variants</h1>
+<p class="catalogue__muted">Archives preserve published versions, assignments and event history.</p>
+<section class="catalogue__panel">
+  <h2>Withdrawn items</h2>
+  <% @page[:variants].each do |variant| %>
+    <div class="catalogue__row"><div class="catalogue__record"><strong><%= variant.parent.recordable.name %> · <%= variant.recordable.name %></strong><p class="catalogue__muted">Archived variant · Unavailable<%= " · Parent product archived" if variant.parent.discarded? %></p></div><%= product_actions.restore_variant_button_for(variant.parent, variant) %></div>
+  <% end %>
+  <% @page[:products].each do |product| %>
+    <div class="catalogue__row"><div class="catalogue__record"><strong><%= product.recordable.name %></strong><p class="catalogue__muted">Archived product · All variants unavailable</p></div><div class="catalogue__actions"><%= product_actions.restore_button_for(product) %><%= product_actions.history_link_for(product) %></div></div>
+  <% end %>
+  <% if @page.values.all?(&:empty?) %><p class="catalogue__muted">No archived products or variants.</p><% end %>
+</section>
+<section class="catalogue__panel">
+  <h2>After restoration</h2>
+  <p class="catalogue__muted">Restoring a visible variant can reveal its product and section again. Availability must then be enabled explicitly in Overview.</p>
+  <div class="catalogue__notice"><strong>Restoration does not resume sales</strong><p>If still included in the published menu and product version, restored items reappear automatically as sold out. A variant stays hidden if its parent product remains archived.</p></div>
+  <%= link_to "Back to products", admin_products_path, class: "btn btn--secondary" %>
+</section>

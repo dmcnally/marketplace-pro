@@ -11,8 +11,9 @@ class Recording < ApplicationRecord
   include Broadcaster
   include Searcher
   include Permissible
+  include CatalogueEditing
 
-  RECORDABLE_TYPES = %w[Article Comment PersonCard].freeze
+  RECORDABLE_TYPES = %w[Article Comment PersonCard Category Allergen Product Variant Menu MenuSection].freeze
 
   delegated_type :recordable, types: RECORDABLE_TYPES, autosave: true
 

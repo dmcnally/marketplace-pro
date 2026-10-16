@@ -1,0 +1,50 @@
+<section class="catalogue__panel">
+  <h2>Who changed what</h2>
+  <p class="catalogue__muted">Newest changes first · Read-only history</p>
+  <% events.each do |event| %>
+    <div class="catalogue__row">
+    <article class="catalogue__record" id="<%= dom_id(event, :history) %>">
+      <strong><%= event.action == "discarded" ? "Archived" : event.action.humanize %> · <%= event.subject.timeline_description(event) %></strong>
+      <p class="catalogue__muted"><%= event.person&.person_card&.name.presence || "System" %> · <%= time_tag event.created_at, event.created_at.strftime("%d %b %Y, %H:%M %Z") %></p>
+      <% if (availability_change = catalogue_availability_change(event)) %>
+        <p><%= availability_change %></p>
+      <% end %>
+      <% if (menu_transition = catalogue_menu_transition(event)) %>
+        <p><%= menu_transition %></p>
+      <% end %>
+      <% publication = Catalogue::PublicationDiff.new(event) %>
+      <% if publication.available? %>
+        <details class="catalogue__history-comparison">
+          <summary class="btn btn--secondary">Compare published versions</summary>
+          <p class="catalogue__muted"><%= publication.first_publication? ? "First publication" : "Changes since the previous publication" %></p>
+          <% if publication.changes.empty? %>
+            <p>No content changes since the previous publication.</p>
+          <% else %>
+            <dl class="catalogue__comparison">
+              <% publication.changes.each do |change| %>
+                <dt><%= change[:field] %></dt>
+                <dd><del><%= catalogue_publication_value(change[:field], change[:before]) %></del> → <ins><%= catalogue_publication_value(change[:field], change[:after]) %></ins></dd>
+              <% end %>
+            </dl>
+          <% end %>
+        </details>
+      <% end %>
+      <% if event.subject_previous %>
+        <% content_diff = RecordableDiff.new(current: event.subject, previous: event.subject_previous, event: event) %>
+        <details class="catalogue__history-comparison">
+          <summary class="btn btn--secondary">Compare changes</summary>
+          <dl class="catalogue__comparison">
+            <% content_diff.changes.each do |field, values| %>
+              <dt><%= field.humanize %></dt>
+              <dd><del><%= catalogue_history_value(event, field, values.first) %></del> → <ins><%= catalogue_history_value(event, field, values.last) %></ins></dd>
+            <% end %>
+          </dl>
+          <% if content_diff.image_change %>
+            <%= render "catalogue/image_change", images: content_diff.image_change %>
+          <% end %>
+        </details>
+      <% end %>
+    </article>
+    </div>
+  <% end %>
+</section>

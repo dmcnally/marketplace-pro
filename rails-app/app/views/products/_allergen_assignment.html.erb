@@ -1,0 +1,9 @@
+<section class="catalogue__panel">
+  <h2>Allergens across all active variants</h2>
+  <p class="catalogue__muted">Bulk edit individual assignments; there is no product-level inheritance. Archived allergens can only be removed.</p>
+  <%= form_with url: admin_product_allergen_assignment_path(product), class: "catalogue__panel" do |form| %>
+    <%= hidden_field_tag :revision, product.draft_revision %>
+    <div class="catalogue__field"><%= form.label :allergen_id, "Allergen" %><%= form.select :allergen_id, allergens.map { |allergen| [ "#{allergen.recordable.name}#{' (archived)' if allergen.discarded?}", allergen.id ] }, { prompt: "Choose an allergen" }, required: true %></div>
+    <div class="catalogue__actions"><%= form.button "Assign to all", name: :operation, value: "assign", class: "btn btn--secondary" %><%= form.button "Remove from all", name: :operation, value: "remove", class: "btn btn--secondary" %></div>
+  <% end %>
+</section>

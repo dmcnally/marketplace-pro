@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_000400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -63,7 +63,60 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "currency", default: "GBP", null: false
     t.index ["name"], name: "index_buckets_on_name", unique: true
+  end
+
+  create_table "catalogue_allergens", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+  end
+
+  create_table "catalogue_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+  end
+
+  create_table "catalogue_releases", force: :cascade do |t|
+    t.bigint "bucket_id", null: false
+    t.bigint "recording_id", null: false
+    t.bigint "snapshot_id", null: false
+    t.string "kind", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bucket_id"], name: "index_catalogue_releases_on_bucket_id"
+    t.index ["bucket_id"], name: "one_active_menu_per_bucket", unique: true, where: "(((kind)::text = 'Menu'::text) AND active)"
+    t.index ["recording_id"], name: "index_catalogue_releases_on_recording_id", unique: true
+    t.index ["snapshot_id"], name: "index_catalogue_releases_on_snapshot_id"
+  end
+
+  create_table "catalogue_snapshots", force: :cascade do |t|
+    t.bigint "recording_id", null: false
+    t.jsonb "content", null: false
+    t.datetime "created_at", null: false
+    t.index ["recording_id"], name: "index_catalogue_snapshots_on_recording_id"
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.bigint "site_id", null: false
+    t.bigint "recording_id", null: false
+    t.string "slug", limit: 200, null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recording_id"], name: "index_categories_on_recording_id", unique: true
+    t.index ["site_id", "slug"], name: "index_categories_on_site_id_and_slug", unique: true
+    t.index ["site_id"], name: "index_categories_on_site_id"
+    t.check_constraint "slug::text ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text", name: "categories_canonical_slug"
+  end
+
+  create_table "category_contents", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+    t.text "description"
+    t.bigint "parent_category_id"
+    t.index ["parent_category_id"], name: "index_category_contents_on_parent_category_id"
+    t.check_constraint "length(TRIM(BOTH FROM name)) > 0", name: "category_contents_name_present"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -168,6 +221,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
     t.index ["person_id"], name: "index_memberships_on_person_id"
   end
 
+  create_table "menu_sections", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.bigint "product_ids", default: [], null: false, array: true
+  end
+
+  create_table "menus", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.bigint "section_order", default: [], null: false, array: true
+  end
+
   create_table "people", force: :cascade do |t|
     t.bigint "recording_id", null: false
     t.datetime "created_at", null: false
@@ -178,6 +243,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
   create_table "person_cards", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.bigint "category_ids", default: [], null: false, array: true
+    t.bigint "variant_order", default: [], null: false, array: true
   end
 
   create_table "publications", force: :cascade do |t|
@@ -221,6 +293,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "sites", force: :cascade do |t|
+    t.bigint "bucket_id", null: false
+    t.string "name", limit: 200, null: false
+    t.string "time_zone", default: "Europe/London", null: false
+    t.string "currency_code", default: "GBP", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bucket_id"], name: "index_sites_on_bucket_id"
+    t.check_constraint "currency_code::text = 'GBP'::text", name: "sites_supported_currency"
+    t.check_constraint "length(TRIM(BOTH FROM name)) > 0", name: "sites_name_present"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -231,9 +315,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
     t.index ["person_id"], name: "index_users_on_person_id"
   end
 
+  create_table "variant_availabilities", force: :cascade do |t|
+    t.bigint "recording_id", null: false
+    t.boolean "available", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recording_id"], name: "index_variant_availabilities_on_recording_id", unique: true
+  end
+
+  create_table "variants", force: :cascade do |t|
+    t.string "name", null: false
+    t.decimal "price", precision: 12, scale: 2, null: false
+    t.bigint "allergen_ids", default: [], null: false, array: true
+    t.check_constraint "price >= 0::numeric", name: "variants_nonnegative_price"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "people"
+  add_foreign_key "catalogue_releases", "buckets"
+  add_foreign_key "catalogue_releases", "catalogue_snapshots", column: "snapshot_id"
+  add_foreign_key "catalogue_releases", "recordings"
+  add_foreign_key "catalogue_snapshots", "recordings"
+  add_foreign_key "categories", "recordings"
+  add_foreign_key "categories", "sites"
+  add_foreign_key "category_contents", "categories", column: "parent_category_id"
   add_foreign_key "csv_import_rows", "csv_imports"
   add_foreign_key "csv_import_rows", "recordings", column: "imported_recording_id"
   add_foreign_key "csv_imports", "buckets"
@@ -251,5 +357,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
   add_foreign_key "recordings", "recordings", column: "parent_id"
   add_foreign_key "search_indices", "recordings"
   add_foreign_key "sessions", "users"
+  add_foreign_key "sites", "buckets"
   add_foreign_key "users", "people"
+  add_foreign_key "variant_availabilities", "recordings"
 end

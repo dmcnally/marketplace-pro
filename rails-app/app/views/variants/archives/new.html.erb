@@ -1,0 +1,7 @@
+<h1>Archive variant</h1>
+<section class="catalogue__panel">
+  <h2>Archive <%= @product.recordable.name %> · <%= @variant.recordable.name %> only?</h2>
+  <p class="catalogue__muted">Only this variant becomes unavailable and disappears immediately. Other active variants remain visible. This withdrawal is tracked in product history.</p>
+  <div class="catalogue__notice"><strong>Published history is preserved</strong><p>If no visible variants remain, the product and any empty sections hide automatically. Restoration does not resume sales.</p></div>
+  <div class="catalogue__actions"><%= product_actions.archive_variant_button_for(@product, @variant) %><%= link_to "Cancel", edit_admin_product_path(@product), class: "btn btn--secondary" %></div>
+</section>

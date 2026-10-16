@@ -1,0 +1,17 @@
+<h1>Publish <%= @recording.recordable.name %>?</h1>
+<p class="catalogue__muted">Review menu presentation and structure before confirming</p>
+<section class="catalogue__panel">
+  <h2><%= @publication.impact_heading %></h2>
+  <% if @publication.replacement_name %>
+    <div class="catalogue__notice"><strong><%= @recording.recordable.name %> will become the only live menu</strong><p><%= @publication.replacement_name %> will be unpublished in the same operation. The reviewed menu presentation, sections and product placements will become live.</p></div>
+  <% else %>
+    <p class="catalogue__muted">Publishes the reviewed menu name, description, cover, sections, section images and product placements.</p>
+  <% end %>
+  <% @publication.blockers.each do |message| %><p class="catalogue__notice" role="alert"><%= message %></p><% end %>
+  <% @publication.blocking_products.each do |product| %><div class="catalogue__actions"><%= product_actions.edit_link_for(product) %><strong><%= product.recordable.name %></strong></div><% end %>
+  <div class="catalogue__row"><div class="catalogue__record"><strong>Included products</strong><p class="catalogue__muted"><%= @publication.included_product_names.join(", ").presence || "No products selected" %></p><p class="catalogue__muted">Use their own published versions. Product draft changes are not published by this action.</p></div></div>
+  <div class="catalogue__row"><div class="catalogue__record"><strong>Empty sections</strong><p class="catalogue__muted">Omitted from this publication, retained in the draft.</p><p class="catalogue__muted"><%= @publication.empty_sections.map { |section| section.recordable.name }.join(", ").presence || "No empty sections" %></p></div></div>
+  <div class="catalogue__row"><div class="catalogue__record"><strong>Availability</strong><p class="catalogue__muted">Stays live and unchanged.</p></div></div>
+  <div class="catalogue__actions"><%= menu_actions.publish_button_for(@publication) %><%= menu_actions.preview_link_for(@recording) %><%= link_to "Cancel", edit_admin_menu_path(@recording), class: "btn btn--secondary" %></div>
+</section>
+<p class="catalogue__muted">If the draft or live menu changes after review, review the current version before confirming again.</p>

@@ -1,0 +1,33 @@
+<h1>Draft menu preview</h1>
+<p class="catalogue__muted">Editor preview · Does not publish or change the live menu</p>
+<%= menu_actions.edit_link_for(@preview.recording) %>
+<section class="catalogue__panel">
+  <h2><%= @preview.recording.recordable.name %></h2>
+  <% if @preview.recording.recordable.image.attached? %><%= image_tag @preview.recording.recordable.image, class: "catalogue__preview-image", alt: @preview.recording.recordable.name %><% end %>
+  <p class="catalogue__muted"><%= @preview.recording.recordable.description %></p>
+</section>
+<% @preview.sections.each do |section| %>
+  <section class="catalogue__panel">
+    <h2><%= section[:recording].recordable.name %></h2>
+    <% if section[:recording].recordable.image.attached? %><%= image_tag section[:recording].recordable.image, class: "catalogue__preview-image", alt: section[:recording].recordable.name %><% end %>
+    <p class="catalogue__muted"><%= section[:recording].recordable.description %></p>
+    <% section[:products].each do |product| %>
+      <div class="catalogue__row"><div class="catalogue__record">
+        <strong><%= product.name %></strong>
+        <% if product.published? %>
+          <% if product.image %><%= image_tag product.image, class: "catalogue__preview-image", alt: product.name %><% end %>
+          <p class="catalogue__muted"><%= product.description %></p>
+          <% product.variants.each do |variant| %>
+            <p><%= variant.fetch("name") %> · <%= number_with_precision variant.fetch("price"), precision: 2 %> <%= Current.bucket.currency %> · <%= product.availability_for(variant) %></p>
+            <p class="catalogue__muted">Allergens: <%= variant.fetch("allergens").map { |allergen| [allergen.fetch("name"), allergen["description"].presence].compact.join(": ") }.join("; ").presence || "None assigned" %></p>
+          <% end %>
+        <% else %>
+          <p class="catalogue__notice" role="alert">Publication blocked: <%= product.name %> has no published version. Publish this product or remove it from the draft menu.</p>
+          <%= product_actions.edit_link_for(product.recording) %>
+        <% end %>
+      </div></div>
+    <% end %>
+  </section>
+<% end %>
+<% if @preview.sections.empty? %><p class="catalogue__notice">No visible products. Add a section and products before publishing.</p><% end %>
+<section class="catalogue__panel"><h2>Preview rules</h2><p class="catalogue__muted">Draft menu presentation and structure combine with published product versions. Product draft changes are not shown. Empty sections and archived content are omitted without rewriting history.</p></section>

@@ -1,0 +1,11 @@
+<div class="catalogue__field"><%= form.label :name, "Name *" %><%= form.text_field :name, value: draft.name, required: true %></div>
+<div class="catalogue__field"><%= form.label :description, "Description · optional" %><%= form.text_area :description, value: draft.description, rows: 3 %></div>
+<div class="catalogue__field">
+  <%= form.label :image, "Image · optional" %>
+  <% if draft.recording&.recordable&.image&.attached? %>
+    <%= image_tag draft.recording.recordable.image, class: "catalogue__image", alt: draft.name %>
+    <label class="catalogue__choice"><%= form.check_box :remove_image, checked: draft.remove_image == "1" %>Remove image from draft</label>
+  <% end %>
+  <%= form.file_field :image, accept: "image/png,image/jpeg,image/gif,image/webp" %>
+  <p class="catalogue__muted">PNG, JPEG, GIF or WebP, up to 10 MB.</p>
+</div>

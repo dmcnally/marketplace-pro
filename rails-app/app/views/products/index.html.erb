@@ -1,0 +1,26 @@
+<h1>Products</h1>
+<%= product_actions.allergen_warning %>
+<p class="catalogue__muted">Food and drink · <%= Current.bucket.name %> · Prices in <%= Current.bucket.currency %></p>
+<div class="catalogue__actions"><%= product_actions.new_link %><%= product_actions.archives_link %></div>
+<section class="catalogue__panel">
+  <h2>Catalogue</h2>
+  <%= form_with url: admin_products_path, method: :get, class: "catalogue__filters" do |form| %>
+    <div class="catalogue__field"><%= form.label :q, "Search products" %><%= form.search_field :q, value: @catalogue.query, placeholder: "Search by name" %></div>
+    <fieldset class="catalogue__field"><legend>Filter</legend>
+      <div class="catalogue__columns">
+        <div><%= form.label :category_id, "Category" %><%= form.select :category_id, @catalogue.categories.map { |category| [ "#{category.recordable.name}#{' (archived)' if category.discarded?}", category.id ] }, { include_blank: "All categories", selected: @catalogue.category_id } %></div>
+        <div><%= form.label :publication_state, "Publication state" %><%= form.select :publication_state, Product::Catalogue::STATES, selected: @catalogue.publication_state %></div>
+      </div>
+    </fieldset>
+    <div class="catalogue__actions"><%= form.submit "Search", class: "btn btn--secondary" %><%= link_to "Clear filters", admin_products_path, class: "btn btn--secondary" %></div>
+  <% end %>
+  <% if @catalogue.invalid_filter? %><p class="catalogue__notice" role="alert">A selected filter is unavailable. Clear the filters and try again.</p><% end %>
+  <% if @catalogue.rows.empty? %><p>No products found. Add a product or try another search.</p><% end %>
+  <% @catalogue.rows.each do |row| %>
+    <div class="catalogue__row">
+      <div class="catalogue__record"><strong><%= row[:recording].recordable.name %></strong><p class="catalogue__muted"><%= pluralize row[:variant_count], "variant" %> · <%= catalogue_price(row) %> · <%= row[:status] %></p></div>
+      <%= product_actions.edit_link_for(row[:recording]) %>
+    </div>
+  <% end %>
+</section>
+<section class="catalogue__panel"><h2>Availability is managed in Overview</h2><p class="catalogue__muted">Only products and variants included in the currently published menu have availability controls.</p></section>

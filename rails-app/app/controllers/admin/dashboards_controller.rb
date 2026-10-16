@@ -1,5 +1,5 @@
 class Admin::DashboardsController < ApplicationController
-  layout "admin_workspace"
+  layout "management"
 
   before_action :require_bucket_admin
 

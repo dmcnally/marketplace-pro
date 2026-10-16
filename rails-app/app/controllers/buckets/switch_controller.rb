@@ -6,7 +6,7 @@ class Buckets::SwitchController < ApplicationController
     return head :forbidden unless Current.person.switchable_content_bucket?(@bucket)
 
     session[:bucket_id] = @bucket.id
-    redirect_to root_path, notice: "Switched to #{@bucket.name}."
+    redirect_to overview_path, notice: "Switched to #{@bucket.name}."
   end
 
   def destroy

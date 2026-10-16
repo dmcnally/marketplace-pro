@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Overview · Marketplace" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="catalogue">
+    <aside class="catalogue__sidebar" data-controller="catalogue-navigation">
+      <strong class="catalogue__brand">marketplace</strong>
+      <p><%= Current.bucket.name %></p>
+      <details class="catalogue__navigation-disclosure" data-catalogue-navigation-target="disclosure" open>
+        <summary>Main navigation · Menu</summary>
+        <div class="catalogue__navigation-panel">
+          <nav aria-label="Main" class="catalogue__navigation"><%= catalogue_navigation_actions.links %></nav>
+          <p><%= Current.person.person_card.name %></p>
+        </div>
+      </details>
+    </aside>
+    <main class="catalogue__main" id="main-content">
+      <% flash.each do |type, message| %><div class="catalogue__notice" role="status"><%= message %></div><% end %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

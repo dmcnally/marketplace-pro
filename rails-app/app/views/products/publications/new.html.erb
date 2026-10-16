@@ -1,0 +1,33 @@
+<h1>Publish <%= @recording.recordable.name %>?</h1>
+<p class="catalogue__muted">Review product and all variants together</p>
+<section class="catalogue__panel">
+  <h2><%= @publication.live_menu ? "Changes will appear on #{@publication.live_menu.snapshot.content.fetch('name')}" : "This product is not on the live menu" %></h2>
+  <% @publication.blockers.each do |message| %><p role="alert"><%= message %></p><% end %>
+  <div class="catalogue__notice">
+    <strong>Review prices and allergens</strong>
+    <p>Review ingredient information before confirming. Allergen wording and assignments publish with this product.</p>
+    <% @publication.variant_changes.each do |change| %>
+      <div class="catalogue__row">
+        <div class="catalogue__record">
+          <strong><%= change[:name] %></strong>
+          <p>Price: <%= change[:before_price] ? number_with_precision(change[:before_price], precision: 2) : "Not published" %> → <%= change[:after_price] ? number_with_precision(change[:after_price], precision: 2) : "Removed" %> <%= Current.bucket.currency %></p>
+          <p>Allergens before: <%= change[:before_allergens].presence || "None" %></p>
+          <p>Allergens after: <%= change[:after_allergens].presence || "None" %></p>
+        </div>
+      </div>
+    <% end %>
+    <% if @publication.variant_changes.empty? %><p>No price or allergen changes.</p><% end %>
+  </div>
+  <div class="catalogue__row"><div class="catalogue__record"><strong>Product content</strong><p class="catalogue__muted">Name, description, image, variant ordering and allergens publish as one consistent version.</p></div></div>
+  <div class="catalogue__row"><div class="catalogue__record"><strong>Menu structure</strong><p class="catalogue__muted">Unchanged. Product updates appear on the live menu without menu republication.</p></div></div>
+  <div class="catalogue__row"><div class="catalogue__record"><strong>Availability</strong><p class="catalogue__muted">Unchanged. Sold-out variants can still be published; new variants stay unavailable.</p></div></div>
+  <div class="catalogue__actions">
+    <%= product_actions.publish_button_for(@publication) %>
+    <%= link_to "Cancel", edit_admin_product_path(@recording), class: "btn btn--secondary" %>
+  </div>
+</section>
+<section class="catalogue__panel">
+  <h2>Unpublish product</h2>
+  <p>Unpublishing preserves the last published version and history. Products referenced by the live menu cannot be unpublished. Remove every placement and republish the menu, or unpublish the menu first.</p>
+  <%= product_actions.unpublish_button_for(@publication) %>
+</section>

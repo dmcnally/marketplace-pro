@@ -1,0 +1,24 @@
+<div id="live-overview" class="catalogue__overview">
+  <h1>Overview</h1>
+  <% if message %><div class="catalogue__notice" role="<%= error ? 'alert' : 'status' %>"><%= message %></div><% end %>
+  <% if overview.published? %>
+    <p class="catalogue__muted"><%= Current.bucket.name %> · <%= overview.menu_name %> is live · Availability changes take effect immediately.</p>
+    <% overview.products.each do |product| %>
+      <section class="catalogue__panel" id="availability-product-<%= product[:recording].id %>">
+        <h2><%= product[:name] %></h2>
+        <p class="catalogue__muted">Published variants · <%= product[:available_count] %> of <%= product[:variants].size %> available</p>
+        <% product[:variants].each do |variant| %>
+          <div class="catalogue__row" id="availability-variant-<%= variant[:recording].id %>">
+            <div class="catalogue__record"><strong><%= variant[:name] %> · <%= number_with_precision variant[:price], precision: 2 %> <%= Current.bucket.currency %></strong><p class="catalogue__muted"><%= variant[:allergens] %> · <%= variant[:available] ? "Available" : "Sold out" %></p></div>
+            <%= availability_actions.variant_button_for(variant) %>
+          </div>
+        <% end %>
+        <div class="catalogue__actions"><%= availability_actions.product_buttons_for(product) %></div>
+      </section>
+    <% end %>
+    <% if overview.products.empty? %><section class="catalogue__panel"><h2>No visible products</h2><p class="catalogue__muted">The live menu currently has no visible products or variants. An editor or admin can review archived items and published versions.</p></section><% end %>
+    <p class="catalogue__muted">Products appear once here, even when placed in several menu sections. Only live-menu variants are included.</p>
+  <% else %>
+    <section class="catalogue__panel"><h2>No live menu</h2><p class="catalogue__muted">An editor or admin needs to publish a menu before availability can be managed here.</p></section>
+  <% end %>
+</div>

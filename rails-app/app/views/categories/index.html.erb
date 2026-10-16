@@ -1,0 +1,24 @@
+<% content_for :title, "Categories · Marketplace" %>
+<h1>Categories</h1>
+<p class="catalogue__muted">Classify products independently of menu sections.</p>
+<div class="catalogue__actions">
+  <%= category_actions.new_link %>
+  <%= link_to(@page[:archived] ? "Active categories" : "Archived categories", admin_categories_path(archived: @page[:archived] ? nil : "1"), class: "btn btn--secondary") %>
+</div>
+<section class="catalogue__panel">
+  <h2><%= @page[:archived] ? "Archived categories" : "Active categories" %></h2>
+  <% if @page[:recordings].empty? %>
+    <p class="catalogue__muted">No <%= "archived " if @page[:archived] %>categories yet.</p>
+  <% end %>
+  <% @page[:recordings].each do |recording| %>
+    <div class="catalogue__row">
+      <div class="catalogue__record">
+        <strong><%= recording.recordable.name %></strong>
+        <p class="catalogue__muted"><%= recording.recordable.description.presence || "No description" %></p>
+      </div>
+      <%= category_actions.edit_link_for(recording) %>
+      <%= category_actions.restore_button_for(recording) %>
+      <%= category_actions.history_link_for(recording) if @page[:archived] %>
+    </div>
+  <% end %>
+</section>

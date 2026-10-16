@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   resource :session
+  resource :overview, only: :show, controller: "catalogue/overviews"
+  resources :orders, only: :index
+  resource :availability, only: %i[create destroy], controller: "catalogue/availabilities"
   resource :registration, only: [ :new, :create ]
   resources :passwords, param: :token
   resources :invitations, only: [ :show ], param: :token
@@ -37,6 +40,39 @@ Rails.application.routes.draw do
     end
     resource :dashboard, only: [ :show ]
     root "dashboards#show"
+  end
+
+  # Keep existing helper names while catalogue pages live in the main workspace.
+  scope as: "admin" do
+    resources :archived_products, only: :index, controller: "products/archives"
+    resources :archived_menus, only: :index, controller: "menus/archives"
+    resources :menus, except: :destroy do
+      resource :archive, only: %i[new create destroy], controller: "menus/archives"
+      resources :sections, controller: "menu_sections", except: %i[index show] do
+        resource :product_order, only: :create, controller: "menu_sections/product_orders"
+      end
+      resource :section_order, only: :create, controller: "menus/section_orders"
+      resource :preview, only: :show, controller: "menus/previews"
+      resource :publication, only: %i[new create destroy], controller: "menus/publications"
+      resource :reversion, only: %i[new create], controller: "menus/reversions"
+    end
+    resources :products, except: :destroy do
+      resource :copy, only: %i[new create], controller: "products/copies"
+      resource :archive, only: %i[new create destroy], controller: "products/archives"
+      resources :variants, only: %i[new create edit update] do
+        resource :archive, only: %i[new create destroy], controller: "variants/archives"
+      end
+      resource :variant_order, only: :create, controller: "products/variant_orders"
+      resource :allergen_assignment, only: :create, controller: "products/allergen_assignments"
+      resource :publication, only: %i[new create destroy], controller: "products/publications"
+      resource :reversion, only: %i[new create], controller: "products/reversions"
+    end
+    resources :allergens, except: :destroy do
+      resource :archive, only: %i[create destroy], controller: "allergens/archives"
+    end
+    resources :categories, except: :destroy do
+      resource :archive, only: %i[create destroy], controller: "categories/archives"
+    end
   end
 
   namespace :admin do

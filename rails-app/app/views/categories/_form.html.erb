@@ -1,0 +1,23 @@
+<%= form_with model: recording.recordable, url: recording.persisted? ? admin_category_path(recording) : admin_categories_path, method: recording.persisted? ? :patch : :post, class: "catalogue__panel" do |form| %>
+  <h2>Category details</h2>
+  <p class="catalogue__muted">A product can belong to several categories. Categories do not determine menu sections; no category image is used.</p>
+  <% if recording.recordable.errors.any? %>
+    <div class="catalogue__notice" role="alert">
+      <strong>Check the category details</strong>
+      <ul><% recording.recordable.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+  <%= hidden_field_tag :revision, recording.draft_revision if recording.persisted? %>
+  <div class="catalogue__field">
+    <%= form.label :name, "Name *" %>
+    <%= form.text_field :name, required: true, aria: { invalid: recording.recordable.errors[:name].any? } %>
+  </div>
+  <div class="catalogue__field">
+    <%= form.label :description, "Description · optional" %>
+    <%= form.text_area :description, rows: 2 %>
+  </div>
+  <div class="catalogue__actions">
+    <%= form.submit "Save category", class: "btn btn--primary" %>
+    <%= link_to "Cancel", admin_categories_path, class: "btn btn--secondary" %>
+  </div>
+<% end %>

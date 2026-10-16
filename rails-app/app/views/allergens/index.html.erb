@@ -1,0 +1,25 @@
+<% content_for :title, "Allergens · Marketplace" %>
+<h1>Allergens</h1>
+<%= product_actions.allergen_warning %>
+<p class="catalogue__muted"><%= Current.bucket.name %>’s allergen list · Managed by editors and admins</p>
+<div class="catalogue__actions">
+  <%= allergen_actions.new_link %>
+  <%= link_to(@page[:archived] ? "Active allergens" : "Archived allergens", admin_allergens_path(archived: @page[:archived] ? nil : "1"), class: "btn btn--secondary") %>
+</div>
+<section class="catalogue__panel">
+  <h2><%= @page[:archived] ? "Archived allergens" : "Active allergens" %></h2>
+  <% if @page[:recordings].empty? %>
+    <p class="catalogue__muted">No <%= "archived " if @page[:archived] %>allergens yet.</p>
+  <% end %>
+  <% @page[:recordings].each do |recording| %>
+    <div class="catalogue__row">
+      <div class="catalogue__record">
+        <strong><%= recording.recordable.name %></strong>
+        <p class="catalogue__muted"><%= recording.recordable.description.presence || "No description" %></p>
+      </div>
+      <%= allergen_actions.edit_link_for(recording) %>
+      <%= allergen_actions.restore_button_for(recording) %>
+      <%= allergen_actions.history_link_for(recording) if @page[:archived] %>
+    </div>
+  <% end %>
+</section>

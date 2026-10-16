@@ -1,6 +1,14 @@
 require "test_helper"
 
 class BucketTest < ActiveSupport::TestCase
+  test "currency defaults to GBP and requires an uppercase three-letter code" do
+    assert_equal "GBP", Bucket.new.currency
+    assert Bucket.new(name: "Euro shop", currency: "EUR").valid?
+    [ nil, "", "gbp", "POUNDS" ].each do |currency|
+      refute Bucket.new(name: "Invalid currency", currency: currency).valid?
+    end
+  end
+
   test "name is required" do
     bucket = Bucket.new
 

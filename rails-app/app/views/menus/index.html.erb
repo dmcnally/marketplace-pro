@@ -1,0 +1,13 @@
+<h1>Menus</h1>
+<p class="catalogue__muted"><%= Current.bucket.name %> · One live menu at a time</p>
+<div class="catalogue__actions"><%= menu_actions.new_link %><%= menu_actions.archives_link %></div>
+<section class="catalogue__panel">
+  <h2>Your menus</h2>
+  <% @menus.each do |draft| %>
+    <div class="catalogue__row">
+      <div class="catalogue__record"><strong><%= draft.name %></strong><p class="catalogue__muted"><%= draft.publication_status %> · <%= pluralize draft.recording.recordable.section_order.size, "section" %></p></div>
+      <%= menu_actions.edit_link_for(draft.recording) %>
+    </div>
+  <% end %>
+  <% if @menus.empty? %><p class="catalogue__muted">No menus yet. Create a menu, then add sections and products.</p><% end %>
+</section>

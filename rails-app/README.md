@@ -17,12 +17,13 @@ If you're not running Docker then you'll have to figure things out for yourself.
 ## Architecture Overview
 
 A bucket is the owner boundary for its content and access through memberships.
-Each bucket may have at most one published menu at a time. Menu publication is a
-domain requirement; menu functionality is not yet implemented in this application.
-The admin sidebar must contain Products, Categories, Allergens, and Menus, in
-that order. The main sidebar contains Overview and Orders, with an additional
-Admin link for editors and admins. Admin includes a Back to Overview link.
-Editors and admins can manage all four sections and publish menus.
+Each bucket may have at most one published menu at a time. Menu editing, preview,
+publication, replacement, archives and history are implemented.
+The main sidebar contains Overview and Orders for all workspace members, followed
+by Products, Categories, Allergens, and Menus for editors and admins. Only admins
+see the Admin link. The admin dashboard is for managing users: Members, roles,
+and Invitations. Catalogue management is part of the main workspace, not Admin.
+Editors and admins can manage the catalogue and publish menus.
 Products, variants, categories, allergens, and menus are archived, never deleted. All domain changes
 must be tracked through events, including every product, variant, and allergen
 change. Product, variant, and menu content uses immutable recordables. Products
@@ -32,7 +33,9 @@ each product's published version. Availability remains live.
 Each bucket uses one currency.
 The confirmed domain rules and remaining decisions are captured in
 [Marketplace admin requirements](docs/context/marketplace-admin-requirements.md).
-These requirements remain to be fully reflected in Figma and implemented in Rails.
+See [workspace navigation](docs/context/workspace-navigation.md) for the current
+role-based menu configuration and [verification](docs/context/admin-verification.md)
+for implementation evidence and remaining differences.
 
 This application uses a **delegated type pattern** where `Recording` serves as a polymorphic wrapper around immutable content types called **Recordables**. This design provides uniform behavior across all content types while maintaining clean separation of concerns.
 

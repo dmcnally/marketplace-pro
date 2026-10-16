@@ -10,7 +10,7 @@ class Invitations::AcceptancesController < ApplicationController
     if result.success?
       session.delete(:return_to_after_authenticating)
       session[:bucket_id] = result.membership.bucket_id
-      redirect_to root_path, notice: result.message
+      redirect_to overview_path, notice: result.message
     else
       redirect_to invitation_path(params[:token]), alert: result.message
     end

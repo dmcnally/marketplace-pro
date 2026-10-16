@@ -1,0 +1,4 @@
+<h1>Edit variant</h1>
+<p class="catalogue__muted"><%= @draft.product.recordable.name %> · Description and image come from the product.</p>
+<%= product_actions.variant_form_for(@draft) %>
+<section class="catalogue__panel"><h2>Archive variant</h2><p class="catalogue__muted">Withdraw only this variant. Other active variants remain visible.</p><%= product_actions.archive_variant_link_for(@draft.product, @draft.recording) %></section>

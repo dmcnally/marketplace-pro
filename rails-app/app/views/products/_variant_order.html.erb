@@ -1,0 +1,10 @@
+<details>
+  <summary>Reorder variants</summary>
+  <%= form_with url: admin_product_variant_order_path(draft.recording), class: "catalogue__panel" do |form| %>
+    <%= hidden_field_tag :revision, draft.revision %>
+    <% draft.variants.each_with_index do |variant, index| %>
+      <div class="catalogue__field"><%= label_tag "position_#{variant.id}", variant.recordable.name %><%= number_field_tag "positions[#{variant.id}]", index + 1, id: "position_#{variant.id}", min: 1, required: true %></div>
+    <% end %>
+    <%= form.submit "Save order", class: "btn btn--secondary" %>
+  <% end %>
+</details>

@@ -1,0 +1,7 @@
+<%= form_with scope: :menu, url: draft.recording ? admin_menu_path(draft.recording) : admin_menus_path, method: draft.recording ? :patch : :post, class: "catalogue__panel" do |form| %>
+  <h2>Menu presentation</h2>
+  <%= render "catalogue/errors", object: draft %>
+  <%= hidden_field_tag :revision, draft.revision if draft.recording %>
+  <%= render "catalogue/presentation_fields", form: form, draft: draft %>
+  <div class="catalogue__actions"><%= form.submit "Save draft", class: "btn btn--primary" %><%= link_to "Cancel", admin_menus_path, class: "btn btn--secondary" %></div>
+<% end %>

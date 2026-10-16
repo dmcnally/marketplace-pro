@@ -1,0 +1,16 @@
+<%= form_with scope: :menu_section, url: draft.recording ? admin_menu_section_path(draft.menu, draft.recording) : admin_menu_sections_path(draft.menu), method: draft.recording ? :patch : :post, class: "catalogue__panel" do |form| %>
+  <h2>Section presentation</h2>
+  <p class="catalogue__muted">Save presentation and placements to the draft, then republish the menu.</p>
+  <%= render "catalogue/errors", object: draft %>
+  <%= hidden_field_tag :revision, draft.revision %>
+  <%= render "catalogue/presentation_fields", form: form, draft: draft %>
+  <fieldset class="catalogue__field">
+    <legend>Products · select to add, uncheck to remove</legend>
+    <%= hidden_field_tag "menu_section[product_ids][]", "" %>
+    <% draft.products.each do |product| %>
+      <label class="catalogue__choice"><%= check_box_tag "menu_section[product_ids][]", product.id, draft.normalized_product_ids.include?(product.id), id: "section_product_#{product.id}" %><%= product.recordable.name %><%= " (archived)" if product.discarded? %></label>
+    <% end %>
+    <p class="catalogue__muted">Includes all published variants. Products without a published version can be placed now and must be published before the menu.</p>
+  </fieldset>
+  <div class="catalogue__actions"><%= form.submit "Save section", class: "btn btn--primary" %><%= link_to "Cancel", edit_admin_menu_path(draft.menu), class: "btn btn--secondary" %></div>
+<% end %>

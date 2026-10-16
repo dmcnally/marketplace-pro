@@ -1,0 +1,5 @@
+<% if section.recordable.product_ids.any? %>
+  <details><summary>Reorder products</summary>
+    <%= render "catalogue/order", url: admin_menu_section_product_order_path(menu, section), revision: menu.draft_revision, items: section.recordable.product_ids.map { |id| products.fetch(id) }, submit_label: "Save product order" %>
+  </details>
+<% end %>

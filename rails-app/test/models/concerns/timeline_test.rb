@@ -102,6 +102,21 @@ class TimelineTest < ActiveSupport::TestCase
 
   # ancestor_at
 
+  test "subject_at resolves equal timestamps without reading later versions" do
+    freeze_time do
+      first = Current.bucket.recordings.create!(recordable: Category.new(name: "Original"))
+      reference = Current.bucket.recordings.create!(recordable: Product.new(name: "Wings", category_ids: [ first.id ]))
+      assignment_event = reference.events.sole
+      first.update!(recordable: Category.new(name: "Renamed"))
+      rename_event = first.events.order(:id).last
+
+      assert_equal assignment_event.created_at, rename_event.created_at
+      assert_equal "Original", first.subject_at(assignment_event).name
+      assert_equal "Renamed", first.subject_at(rename_event).name
+      assert_nil reference.subject_at(first.events.order(:id).first)
+    end
+  end
+
   test "ancestor_at combines ancestor lookup with subject_at" do
     comment = Comment.new(body: "Test comment")
     child_recording = @root_recording.children.create!(recordable: comment)

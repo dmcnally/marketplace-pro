@@ -39,6 +39,14 @@ class RecordableDiff
     current.class.recordable_fields & previous.class.attribute_names
   end
 
+  def image_change
+    return unless previous && current.respond_to?(:image) && previous.respond_to?(:image)
+
+    before = previous.image.blob
+    after = current.image.blob
+    [ before, after ] unless before == after
+  end
+
   private
 
   def assert_comparable_recordables!

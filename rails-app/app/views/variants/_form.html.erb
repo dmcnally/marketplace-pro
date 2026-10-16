@@ -1,0 +1,17 @@
+<%= form_with scope: :variant, url: draft.recording ? admin_product_variant_path(draft.product, draft.recording) : admin_product_variants_path(draft.product), method: draft.recording ? :patch : :post, class: "catalogue__panel" do |form| %>
+  <%= render "catalogue/errors", object: draft %>
+  <%= hidden_field_tag :revision, draft.revision %>
+  <div class="catalogue__field"><%= form.label :name, "Name *" %><%= form.text_field :name, value: draft.name, required: true %></div>
+  <div class="catalogue__field"><%= form.label :price, "Price (#{draft.product.bucket.currency}) *" %><%= form.number_field :price, value: draft.price, required: true, min: 0, step: "0.01" %></div>
+  <% if draft.recording %>
+    <fieldset class="catalogue__field">
+      <legend>Allergens</legend><%= hidden_field_tag "variant[allergen_ids][]", "" %>
+      <% draft.allergens.each do |allergen| %>
+        <label class="catalogue__choice"><%= check_box_tag "variant[allergen_ids][]", allergen.id, Array(draft.allergen_ids).map(&:to_i).include?(allergen.id), id: "variant_allergen_#{allergen.id}" %><%= allergen.recordable.name %><%= " (archived)" if allergen.discarded? %></label>
+      <% end %>
+    </fieldset>
+  <% else %>
+    <div class="catalogue__field"><%= form.label :source_id, "Copy allergens from" %><%= form.select :source_id, draft.sources.map { |variant| [ variant.recordable.name, variant.id ] }, selected: draft.source_id %></div>
+  <% end %>
+  <div class="catalogue__actions"><%= form.submit "Save variant", class: "btn btn--primary" %><%= link_to "Cancel", edit_admin_product_path(draft.product), class: "btn btn--secondary" %></div>
+<% end %>

@@ -1,0 +1,14 @@
+<%= form_with url: url, class: "catalogue__panel", data: { controller: "catalogue-order" } do |form| %>
+  <%= hidden_field_tag :revision, revision %>
+  <% items.each_with_index do |item, index| %>
+    <div class="catalogue__row" data-catalogue-order-target="item">
+      <div class="catalogue__record"><strong><span tabindex="-1" data-order-number><%= index + 1 %></span> · <%= item.recordable.name %></strong></div>
+      <%= hidden_field_tag "positions[#{item.id}]", index + 1, data: { order_input: true } %>
+      <div class="catalogue__actions">
+        <button type="button" class="btn btn--secondary" data-action="catalogue-order#up" data-order-up aria-label="Move <%= item.recordable.name %> up">Move up</button>
+        <button type="button" class="btn btn--secondary" data-action="catalogue-order#down" data-order-down aria-label="Move <%= item.recordable.name %> down">Move down</button>
+      </div>
+    </div>
+  <% end %>
+  <%= form.submit submit_label, class: "btn btn--secondary" %>
+<% end %>
