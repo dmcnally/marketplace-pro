@@ -199,6 +199,26 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     refute state.reload.available?
   end
 
+  test "history shows newest events first and relationship names as recorded" do
+    travel_to 1.second.from_now do
+      product = create_product
+      patch admin_product_path(product), params: { revision: product.reload.draft_revision, product: { name: "Wings", category_ids: [ @category.id ] } }
+      assert_response :see_other
+      @category.update!(recordable: Category.new(name: "Later name"))
+      variant = product.children.variants.sole
+      variant.update!(recordable: Variant.new(name: "Large", price: "8.50"))
+
+      get admin_product_path(product)
+      assert_response :success
+      expected_ids = product.timeline_events.reorder(created_at: :desc, id: :desc).map { |event| "history_event_#{event.id}" }
+      assert_select "article[id^=history_event_]" do |rows|
+        assert_equal expected_ids, rows.map { |row| row["id"] }
+      end
+      assert_select "ins", text: "Starters"
+      assert_select "ins", text: "Later name", count: 0
+    end
+  end
+
   private
 
   def create_product(**attributes)

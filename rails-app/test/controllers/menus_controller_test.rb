@@ -51,6 +51,20 @@ class MenusControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ second.id ], menu.reload.recordable.section_order
   end
 
+  test "menu history puts newest section changes first even at the same timestamp" do
+    freeze_time do
+      menu = create_catalogue_menu
+      section = add_menu_section(menu)
+      section.update!(recordable: MenuSection.new(name: "Latest section"))
+      get admin_menu_path(menu)
+      assert_response :success
+      assert_select "article[id^=history_event_]" do |rows|
+        assert_equal "history_event_#{section.events.order(:id).last.id}", rows.first["id"]
+        assert_equal "history_event_#{menu.events.order(:id).first.id}", rows.last["id"]
+      end
+    end
+  end
+
   test "validation preserves submitted values and stale requests cannot change newer content" do
     post admin_menus_path, params: { menu: { name: "", description: "Keep this" } }
     assert_response :unprocessable_entity

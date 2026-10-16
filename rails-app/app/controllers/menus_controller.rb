@@ -10,7 +10,7 @@ class MenusController < ApplicationController
 
   def show
     menu = recordings.menus.find(params[:id])
-    @page = { recording: menu, events: menu.timeline_events.includes(:person, :subject, :subject_previous) }
+    @page = { recording: menu, events: menu.timeline_events.reorder(created_at: :desc, id: :desc).includes(:person, :subject, :subject_previous) }
   end
 
   def new

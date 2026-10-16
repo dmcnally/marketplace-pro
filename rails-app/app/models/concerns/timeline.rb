@@ -12,8 +12,8 @@ module Timeline
   end
 
   def subject_at(event)
-    events.where("created_at <= ?", event.created_at)
-          .order(created_at: :desc)
+    events.where("created_at < :time OR (created_at = :time AND id <= :id)", time: event.created_at, id: event.id)
+          .order(created_at: :desc, id: :desc)
           .first&.subject
   end
 

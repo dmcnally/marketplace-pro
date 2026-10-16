@@ -40,6 +40,9 @@
 .catalogue__filters select:hover { border-color: var(--color-muted); }
 .catalogue__filters select:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
 .catalogue__comparison dd { margin: 8px 0 16px; }
+.catalogue__history-comparison { margin-top: 16px; }
+.catalogue__history-comparison summary { width: fit-content; cursor: pointer; }
+.catalogue__history-comparison summary:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
 .catalogue__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .catalogue__columns .catalogue__row { flex-wrap: wrap; }
 .catalogue__image { width: 100%; max-height: 240px; object-fit: contain; }

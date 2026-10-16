@@ -25,6 +25,20 @@ before starting another. The user explicitly requested shorter gaps between comm
 
 ## Evidence and remaining work
 
+History ordering/comparison checkpoint: product and menu history now order newest
+first, including deterministic ordering for events with identical timestamps.
+Relationship names resolve using the event timestamp and ID, preventing a later
+same-timestamp rename from leaking into an earlier comparison. Direct Timeline
+model tests and product/menu request tests cover these cases. Shared history now
+uses the Figma inset rows and a focusable comparison disclosure styled as a
+secondary control. Full suite: 750 tests / 3,790 assertions; RuboCop clean (396
+files); Archspec passed (203 files, analysis gaps remain). No migration needed.
+The temporary history browser check passed 12 assertions, including opening
+comparisons at desktop/mobile sizes without overflow. Renders were inspected
+against `14:839`; comparisons remain inline rather than on a separate screen,
+and metadata occupies an extra line. Publication comparison completeness and the
+remaining relationship-history cases still need review before marking History done.
+
 Availability history checkpoint: product history now renders each variant's
 recorded before/after availability and reason, with existing actor and timestamp.
 It uses immutable event details rather than current availability or variant names;

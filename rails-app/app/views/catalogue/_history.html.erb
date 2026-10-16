@@ -1,15 +1,17 @@
 <section class="catalogue__panel">
-  <h2>Changes</h2>
+  <h2>Who changed what</h2>
+  <p class="catalogue__muted">Newest changes first · Read-only history</p>
   <% events.each do |event| %>
-    <article class="catalogue__record">
+    <div class="catalogue__row">
+    <article class="catalogue__record" id="<%= dom_id(event, :history) %>">
       <strong><%= event.action.humanize %> · <%= event.subject.timeline_description(event) %></strong>
       <p class="catalogue__muted"><%= event.person&.person_card&.name.presence || "System" %> · <%= time_tag event.created_at, event.created_at.strftime("%d %b %Y, %H:%M %Z") %></p>
       <% if (availability_change = catalogue_availability_change(event)) %>
         <p><%= availability_change %></p>
       <% end %>
       <% if event.subject_previous %>
-        <details>
-          <summary>Compare changes</summary>
+        <details class="catalogue__history-comparison">
+          <summary class="btn btn--secondary">Compare changes</summary>
           <dl class="catalogue__comparison">
             <% RecordableDiff.new(current: event.subject, previous: event.subject_previous, event: event).changes.each do |field, values| %>
               <dt><%= field.humanize %></dt>
@@ -19,5 +21,6 @@
         </details>
       <% end %>
     </article>
+    </div>
   <% end %>
 </section>
