@@ -25,6 +25,23 @@ before starting another. The user explicitly requested shorter gaps between comm
 
 ## Evidence and remaining work
 
+Availability backend checkpoint (Overview UI remains pending): explicit bucket/
+person context, member permissions, live-menu eligibility rechecked under the
+bucket lock, single-variant and atomic product bulk updates. Only visible variants
+in the published product version qualify; draft placements, draft-only variants,
+archived items and foreign records are rejected. Repeated requests are idempotent.
+Each changed variant gets an attributed before/after availability event. Bulk
+failures roll back earlier changes/events; snapshots and content remain unchanged.
+`AvailabilityPolicy` receives the explicit availability context and delegates to
+its permission helpers; the model repeats those checks inside the transaction.
+This keeps models independent of policy constants and satisfies Archspec without
+weakening rules. Archive withdrawal reuses the same event-producing state change.
+
+Verification: 739 tests / 3,618 assertions passed; full RuboCop clean (389 files),
+Archspec passed (199 files; analysis gaps remain). No migration needed. This is a
+small backend commit in response to the requested shorter commit cadence; the
+Overview routes, presentation, Turbo controls and browser verification follow.
+
 Live allergen warnings: admin product/allergen lists and product editors identify
 affected products on the visible published menu, with published/draft wording and
 review links. Allergen editing identifies affected products before saving. The

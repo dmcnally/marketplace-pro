@@ -20,4 +20,8 @@ class Catalogue::LiveMenu
       section.merge("products" => visible) if visible.any?
     end
   end
+
+  def products
+    sections.flat_map { |section| section.fetch("products") }.uniq { |product| product.recording.id }
+  end
 end
