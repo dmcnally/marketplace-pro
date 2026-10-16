@@ -1,6 +1,6 @@
 <h1>Edit <%= @draft.name %></h1>
-<p class="catalogue__muted">Draft · Presentation and structure are published separately from products.</p>
-<div class="catalogue__actions"><%= menu_actions.preview_link_for(@draft.recording) %><%= menu_actions.history_link_for(@draft.recording) %></div>
+<p class="catalogue__muted"><%= @draft.publication_status %> · Presentation and structure are published separately from products.</p>
+<div class="catalogue__actions"><%= menu_actions.publication_link_for(@draft.recording) %><%= menu_actions.preview_link_for(@draft.recording) %><%= menu_actions.history_link_for(@draft.recording) %><%= menu_actions.revert_link_for(@draft.recording) %><%= menu_actions.unpublish_link_for(@draft.recording) %></div>
 <div class="catalogue__columns">
   <%= menu_actions.form_for(@draft) %>
   <section class="catalogue__panel">

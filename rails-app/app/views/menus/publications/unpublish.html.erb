@@ -1,0 +1,6 @@
+<h1>Unpublish <%= @recording.recordable.name %>?</h1>
+<section class="catalogue__panel">
+  <h2>There will be no live menu</h2>
+  <p class="catalogue__muted">This unpublishes the menu without a replacement. Staff Overview will have no availability controls. Product publication versions and event history are preserved.</p>
+  <div class="catalogue__actions"><%= menu_actions.unpublish_button_for(@publication) %><%= link_to "Cancel", edit_admin_menu_path(@recording), class: "btn btn--secondary" %></div>
+</section>

@@ -3,10 +3,10 @@
 <%= menu_actions.new_link %>
 <section class="catalogue__panel">
   <h2>Your menus</h2>
-  <% @menus.each do |menu| %>
+  <% @menus.each do |draft| %>
     <div class="catalogue__row">
-      <div class="catalogue__record"><strong><%= menu.recordable.name %></strong><p class="catalogue__muted">Draft · <%= pluralize menu.recordable.section_order.size, "section" %></p></div>
-      <%= menu_actions.edit_link_for(menu) %>
+      <div class="catalogue__record"><strong><%= draft.name %></strong><p class="catalogue__muted"><%= draft.publication_status %> · <%= pluralize draft.recording.recordable.section_order.size, "section" %></p></div>
+      <%= menu_actions.edit_link_for(draft.recording) %>
     </div>
   <% end %>
   <% if @menus.empty? %><p class="catalogue__muted">No menus yet. Create a menu, then add sections and products.</p><% end %>

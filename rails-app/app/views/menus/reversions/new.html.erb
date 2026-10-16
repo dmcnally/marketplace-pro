@@ -1,0 +1,12 @@
+<h1>Revert all menu changes?</h1>
+<section class="catalogue__panel">
+  <h2>Replace <%= @recording.recordable.name %>’s current draft</h2>
+  <p class="catalogue__muted">Restore the last published name, description, image, sections, section images, order and placements. Current draft work is replaced. Product content and variants are not reverted.</p>
+  <div class="catalogue__notice"><strong>Publication status and availability stay unchanged</strong><p>History is preserved and the revert is recorded. You can revert when currently unpublished, provided this menu was published before.</p></div>
+  <div class="catalogue__actions"><%= menu_actions.revert_button_for(@publication) %><%= link_to "Keep editing", edit_admin_menu_path(@recording), class: "btn btn--secondary" %></div>
+</section>
+<section class="catalogue__panel">
+  <h2>Archived references retained</h2>
+  <p class="catalogue__muted">Referenced archived products remain archived and hidden. Restore separately if needed; reverting never resumes sales.</p>
+  <p class="catalogue__muted"><%= @publication.archived_references.join(", ").presence || "No archived product references" %></p>
+</section>

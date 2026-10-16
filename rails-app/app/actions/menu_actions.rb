@@ -1,4 +1,34 @@
 class MenuActions < ActionsBase
+  def publication_link_for(menu)
+    view.link_to "Review & publish", view.new_admin_menu_publication_path(menu), class: "btn btn--primary" if policy.can_publish?(menu)
+  end
+
+  def unpublish_link_for(menu)
+    view.link_to "Unpublish menu", view.new_admin_menu_publication_path(menu, intent: "unpublish"), class: "btn btn--secondary" if policy.can_unpublish?(menu)
+  end
+
+  def revert_link_for(menu)
+    view.link_to "Revert all", view.new_admin_menu_reversion_path(menu), class: "btn btn--secondary" if policy.can_revert?(menu)
+  end
+
+  def publish_button_for(publication)
+    return unless policy.can_publish?(publication.recording) && publication.blockers.empty?
+
+    view.button_to "Publish menu", view.admin_menu_publication_path(publication.recording), params: { review_token: publication.review_token }, class: "btn btn--primary"
+  end
+
+  def unpublish_button_for(publication)
+    return unless policy.can_unpublish?(publication.recording)
+
+    view.button_to "Unpublish menu", view.admin_menu_publication_path(publication.recording), method: :delete, params: { review_token: publication.review_token }, class: "btn btn--primary"
+  end
+
+  def revert_button_for(publication)
+    return unless policy.can_revert?(publication.recording)
+
+    view.button_to "Revert all", view.admin_menu_reversion_path(publication.recording), params: { review_token: publication.review_token }, class: "btn btn--primary"
+  end
+
   def new_link
     view.link_to "Add menu", view.new_admin_menu_path, class: "btn btn--primary" if policy.can_create?
   end

@@ -15,6 +15,9 @@ class MenuPolicyTest < ActiveSupport::TestCase
       assert policy.can_create?
       assert policy.can_view?(menu)
       assert policy.can_edit?(menu)
+      assert policy.can_publish?(menu)
+      refute policy.can_unpublish?(menu)
+      refute policy.can_revert?(menu)
     end
     other = create_catalogue_menu(bucket: Bucket.create!(name: "Other"))
     refute policy.can_view?(other)
@@ -27,5 +30,22 @@ class MenuPolicyTest < ActiveSupport::TestCase
     menu.reload.archive_content!(revision: menu.draft_revision)
     refute policy.can_edit?(menu)
     refute section.reload.editable_by?(Current.person)
+  end
+
+  test "unpublish and revert permissions reflect the independent publication lifecycle" do
+    Membership.create!(person: Current.person, bucket: Current.bucket, role: :editor)
+    menu = create_catalogue_menu
+    product = create_catalogue_product
+    publication = Product::Publication.new(product)
+    publication.publish!(token: publication.review_token)
+    add_menu_section(menu, product_ids: [ product.id ])
+    publication = Menu::Publication.new(menu.reload)
+    publication.publish!(token: publication.review_token)
+    policy = MenuPolicy.new(person: Current.person, bucket: Current.bucket)
+    assert policy.can_unpublish?(menu)
+    assert policy.can_revert?(menu)
+    publication.unpublish!(token: publication.review_token)
+    refute policy.can_unpublish?(menu)
+    assert policy.can_revert?(menu)
   end
 end

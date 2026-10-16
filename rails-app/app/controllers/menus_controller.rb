@@ -5,7 +5,7 @@ class MenusController < ApplicationController
   rescue_from Recording::CatalogueEditing::StaleDraft, with: :stale_draft
 
   def index
-    @menus = recordings.menus.kept.includes(:recordable)
+    @menus = recordings.menus.kept.includes(:recordable).map { |menu| Menu::Draft.for(menu) }
   end
 
   def show

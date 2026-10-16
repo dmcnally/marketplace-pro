@@ -41,6 +41,10 @@ class Menu::Draft
     Menu::Structure.new(recording)
   end
 
+  def publication_status
+    Menu::Publication.new(recording).status
+  end
+
   private
 
   def consistent_recording

@@ -5,6 +5,10 @@ class MenuActionsTest < ActiveSupport::TestCase
   include CatalogueTestHelper
 
   class View
+    def new_admin_menu_publication_path(menu, **options) = "/admin/menus/#{menu.id}/publication/new"
+    def admin_menu_publication_path(menu) = "/admin/menus/#{menu.id}/publication"
+    def new_admin_menu_reversion_path(menu) = "/admin/menus/#{menu.id}/reversion/new"
+    def admin_menu_reversion_path(menu) = "/admin/menus/#{menu.id}/reversion"
     def new_admin_menu_path = "/admin/menus/new"
     def edit_admin_menu_path(menu) = "/admin/menus/#{menu.id}/edit"
     def admin_menu_preview_path(menu) = "/admin/menus/#{menu.id}/preview"
@@ -13,6 +17,29 @@ class MenuActionsTest < ActiveSupport::TestCase
     def link_to(label, path, **options) = { label: label, path: path, options: options }
     def button_to(label, path, **options) = { label: label, path: path, options: options }
     def render(partial, **locals) = { partial: partial, locals: locals }
+  end
+
+  test "publication controls reflect permission blockers and prior publication" do
+    menu = create_catalogue_menu
+    publication = Menu::Publication.new(menu)
+    actions = MenuActions.new(view: View.new, person: Current.person, bucket: Current.bucket)
+    assert_nil actions.publication_link_for(menu)
+    assert_nil actions.publish_button_for(publication)
+    assert_nil actions.unpublish_link_for(menu)
+    assert_nil actions.revert_link_for(menu)
+    Membership.create!(person: Current.person, bucket: Current.bucket, role: :editor)
+    assert_equal "Review & publish", actions.publication_link_for(menu)[:label]
+    assert_nil actions.publish_button_for(publication)
+    assert_nil actions.revert_button_for(publication)
+    product = create_catalogue_product
+    product_publication = Product::Publication.new(product)
+    product_publication.publish!(token: product_publication.review_token)
+    add_menu_section(menu, product_ids: [ product.id ])
+    menu.reload
+    assert_equal publication.review_token, actions.publish_button_for(publication)[:options][:params][:review_token]
+    publication.publish!(token: publication.review_token)
+    assert_equal :delete, actions.unpublish_button_for(publication)[:options][:method]
+    assert_equal "Revert all", actions.revert_button_for(publication)[:label]
   end
 
   test "management controls are hidden from viewers and visible to editors without mutation" do

@@ -46,6 +46,8 @@ Rails.application.routes.draw do
       end
       resource :section_order, only: :create, controller: "menus/section_orders"
       resource :preview, only: :show, controller: "menus/previews"
+      resource :publication, only: %i[new create destroy], controller: "menus/publications"
+      resource :reversion, only: %i[new create], controller: "menus/reversions"
     end
     resources :products, except: :destroy do
       resources :variants, only: %i[new create edit update]

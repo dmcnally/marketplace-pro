@@ -12,7 +12,7 @@ implementation and focused verification. Design coverage alone is not completion
 - [ ] Product copying and catalogue filters: unpublished copies, category/publication filters, archive listing.
 - [x] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
 - [x] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
-- [ ] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
+- [x] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
 - [ ] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
 - [ ] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
 - [ ] Live allergen warnings: affected products, assignment/content changes, correct resolution.
@@ -21,6 +21,30 @@ implementation and focused verification. Design coverage alone is not completion
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Menu publication: immutable presentation/structure snapshots, named unpublished
+product blockers, atomic replacement of the live menu, impact confirmation,
+unpublish, and revert to the last publication. Product publications and live
+availability remain independent. Empty sections are omitted from live sections;
+the snapshot separately retains their draft structure for comparison and revert.
+Stale confirmations cover draft changes, product dependencies and live-menu
+replacement. Direct model tests cover rollback, archived references and two
+simultaneous confirmations on separate database connections: one succeeds and
+the other is rejected as stale. Controller, policy and action tests cover access
+and confirmation flows. Product unpublication is blocked by every live placement.
+
+Verification: full suite 695 tests / 3,008 assertions, full RuboCop clean (370
+files), Archspec passed (189 files; analysis gaps remain). All checkout migrations
+are applied through `20261016000400`; this feature needs no new migration.
+Temporary Chrome test `tmp/menu_publication_visual_test.rb` passed 38 assertions
+for replacement, revert, unpublish, named blockers and overflow at 1440px/390px.
+Eight `tmp/catalogue-menu-{publish,revert,unpublish,blocked}-*.png` renders were
+inspected against Figma publication `50:1381`, replacement `12:224`, revert
+`14:714` and unpublish `11:189`. Native headless pointer input remains intermittent;
+confirmation tests dispatched DOM clicks through real forms. Mobile uses the
+existing wrapping navigation until the navigation feature. The unpublish design's
+archive alternative awaits the archive lifecycle feature; typography still uses
+the system fallback. Dynamic blocker/empty-section content changes page height.
 
 Menu editing: immutable Menu/MenuSection recordables, bucket-owned draft forms,
 optional images, ordered sections and per-section product placements, removal
