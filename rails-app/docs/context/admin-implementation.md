@@ -25,6 +25,21 @@ before starting another. The user explicitly requested shorter gaps between comm
 
 ## Evidence and remaining work
 
+Availability history checkpoint: product history now renders each variant's
+recorded before/after availability and reason, with existing actor and timestamp.
+It uses immutable event details rather than current availability or variant names;
+product history preloads those details. Regression coverage verifies both directions
+and preservation after a later variant rename. Full suite: 747 tests / 3,770
+assertions; RuboCop clean (396 files); Archspec passed (203 files, analysis gaps
+remain). No migration needed. Temporary browser check
+`tmp/history_visual_test.rb` passed 10 assertions at 1440px/390px, with no overflow.
+Both screenshots were inspected against Figma history `14:839`. The broader
+history feature remains open: newest-first ordering, row/comparison presentation,
+publication comparison completeness and relationship-history audit still need
+attention. Current rows use the existing plain layout and disclosure comparisons;
+Figma uses inset rows and separate comparison controls. Mobile navigation and
+font differences remain tracked separately.
+
 Staff Overview: `/overview` shows each visible live-menu product once, using
 published names/prices/allergens and current availability. Individual and bulk
 controls POST/DELETE explicit states to `/availability`, with controller policy

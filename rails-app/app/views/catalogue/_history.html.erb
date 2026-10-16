@@ -4,6 +4,9 @@
     <article class="catalogue__record">
       <strong><%= event.action.humanize %> · <%= event.subject.timeline_description(event) %></strong>
       <p class="catalogue__muted"><%= event.person&.person_card&.name.presence || "System" %> · <%= time_tag event.created_at, event.created_at.strftime("%d %b %Y, %H:%M %Z") %></p>
+      <% if (availability_change = catalogue_availability_change(event)) %>
+        <p><%= availability_change %></p>
+      <% end %>
       <% if event.subject_previous %>
         <details>
           <summary>Compare changes</summary>

@@ -176,6 +176,29 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "history retains each variant availability transition actor and timestamp after later edits" do
+    product = create_product
+    variant = product.children.variants.sole
+    state = VariantAvailability.find_by!(recording: variant)
+    actor = users(:two).person
+    state.change!(available: true, person: actor, reason: "Staff availability change")
+    state.change!(available: false, person: actor, reason: "Product archived")
+    variant.revise_content!({ name: "Renamed variant", price: "5.95" }, revision: variant.reload.draft_revision)
+
+    get admin_product_path(product)
+    assert_response :success
+    assert_select ".catalogue__record", text: /Availability changed/, count: 2 do |rows|
+      rows.each do |row|
+        assert_match "Default", row.text
+        assert_match actor.person_card.name, row.text
+        assert_select row, "time[datetime]", count: 1
+      end
+    end
+    assert_select "p", text: "Sold out → Available · Staff availability change"
+    assert_select "p", text: "Available → Sold out · Product archived"
+    refute state.reload.available?
+  end
+
   private
 
   def create_product(**attributes)

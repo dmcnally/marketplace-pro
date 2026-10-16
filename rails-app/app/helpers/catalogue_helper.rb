@@ -17,6 +17,17 @@ module CatalogueHelper
     value.map { |id| records[id]&.subject_at(event)&.name || "Record #{id}" }.join(", ")
   end
 
+  def catalogue_availability_change(event)
+    return unless event.action == "availability_changed"
+
+    details = event.details.index_by(&:key)
+    from = details["from"]&.value
+    to = details["to"]&.value
+    labels = { "available" => "Available", "unavailable" => "Sold out" }
+    transition = "#{labels.fetch(from, "Unknown")} → #{labels.fetch(to, "Unknown")}"
+    [ transition, details["reason"]&.value.presence ].compact.join(" · ")
+  end
+
   def product_actions
     @product_actions ||= ProductActions.new(view: self, person: Current.person, bucket: Current.bucket)
   end

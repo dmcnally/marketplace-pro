@@ -10,7 +10,7 @@ class ProductsController < ApplicationController
 
   def show
     recording = product_recordings.find(params[:id])
-    @page = { recording: recording, events: recording.timeline_events.includes(:person, :subject, :subject_previous) }
+    @page = { recording: recording, events: recording.timeline_events.includes(:person, :subject, :subject_previous, :details) }
   end
 
   def new
