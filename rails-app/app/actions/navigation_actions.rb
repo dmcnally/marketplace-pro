@@ -1,14 +1,12 @@
 class NavigationActions < ActionsBase
   def workspace_links
     links = []
-    if bucket && person.admin_of?(bucket)
-      links << link("Overview", view.admin_root_path, "admin/dashboards")
+    if bucket && person.viewer_of?(bucket)
+      links << link("Overview", view.overview_path, "catalogue/overviews")
+      links << link("Orders", view.orders_path, "orders")
     end
-    links << link("Articles", view.articles_path, "articles")
     if bucket && CategoryPolicy.new(person: person, bucket: bucket).can_create?
-      links << link("Products", view.admin_products_path, "products")
-      links << link("Categories", view.admin_categories_path, "categories")
-      links << link("Allergens", view.admin_allergens_path, "allergens")
+      links << link("Admin", view.admin_products_path, "products")
     end
     if bucket && person.admin_of?(bucket)
       links << link("Members", view.admin_members_path, "admin/members")

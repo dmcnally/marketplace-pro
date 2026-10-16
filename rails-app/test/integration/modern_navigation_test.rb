@@ -7,7 +7,7 @@ class ModernNavigationTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".management-sidebar__brand", "Marketplace"
     assert_select "nav[aria-label=Workspace]" do
-      assert_select "a[href=?]", articles_path, text: "Articles"
+      assert_select "a[href=?]", articles_path, count: 0
       assert_select "a[href=?]", admin_members_path, count: 0
       assert_select "a[href=?]", sys_admin_root_path, count: 0
     end
@@ -21,7 +21,10 @@ class ModernNavigationTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "nav[aria-label=Workspace]" do
-      assert_select "a[aria-current=page]", "Articles"
+      assert_select "a", text: "Articles", count: 0
+      assert_select "a[href=?]", overview_path, text: "Overview"
+      assert_select "a[href=?]", orders_path, text: "Orders"
+      assert_select "a[href=?]", admin_products_path, text: "Admin"
       assert_select "a[href=?]", admin_members_path, text: "Members"
       assert_select "a[href=?]", admin_csv_imports_path, text: "Imports"
       assert_select "a[href=?]", sys_admin_root_path, count: 0
