@@ -25,6 +25,24 @@ before starting another. The user explicitly requested shorter gaps between comm
 
 ## Evidence and remaining work
 
+Publication history checkpoint: published product/menu events now offer a
+read-only comparison with that record's immediately preceding published snapshot.
+First publication shows the initial values; unchanged republication says so.
+Comparisons include presentation, images, category assignments, variant names,
+prices/allergen wording, section presentation/placements, ordering and removals.
+Empty draft-only sections are excluded. Comparisons use snapshot content, while
+relationship labels resolve at each publication event. Renames do not masquerade
+as ordering changes. Snapshot lookup is scoped to the event's recording.
+Four direct model tests cover preserved values after later edits, menu contents,
+foreign/missing snapshots and same-timestamp republication/order/removal; a request
+test covers rendered comparisons. Full suite: 755 tests / 3,833 assertions, then
+product request tests passed after currency formatting. RuboCop clean (398 files),
+Archspec passed (204 files, analysis gaps remain). No migration needed. Temporary
+history browser check: 12 assertions, publication comparison opens at 1440px and
+390px without overflow. Renders inspected; inline disclosure and metadata/layout
+differences from Figma remain as documented. History still requires the final
+cross-resource audit, especially content-image changes and menu replacement details.
+
 History ordering/comparison checkpoint: product and menu history now order newest
 first, including deterministic ordering for events with identical timestamps.
 Relationship names resolve using the event timestamp and ID, preventing a later

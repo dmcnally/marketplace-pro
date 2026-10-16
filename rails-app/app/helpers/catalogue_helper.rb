@@ -28,6 +28,15 @@ module CatalogueHelper
     [ transition, details["reason"]&.value.presence ].compact.join(" · ")
   end
 
+  def catalogue_publication_value(field, value)
+    return "Empty" if value.blank?
+    return "#{number_with_precision(value, precision: 2)} #{Current.bucket.currency}" if field.end_with?(" · Price")
+    return value unless field == "Image" || field.end_with?(" · Image")
+
+    blob = ActiveStorage::Blob.find_by(id: value)
+    blob ? link_to(blob.filename.to_s, rails_blob_path(blob)) : "Image no longer available"
+  end
+
   def product_actions
     @product_actions ||= ProductActions.new(view: self, person: Current.person, bucket: Current.bucket)
   end

@@ -219,6 +219,27 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "publication history shows recorded versions instead of current draft" do
+    product = create_product
+    publication = Product::Publication.new(product)
+    publication.publish!(token: publication.review_token)
+    variant = product.children.variants.sole
+    variant.update!(recordable: Variant.new(name: "Large", price: "8.50"))
+    product.reload
+    publication.publish!(token: publication.review_token)
+    variant.update!(recordable: Variant.new(name: "Draft only", price: "99"))
+
+    get admin_product_path(product)
+    assert_response :success
+    assert_select "summary", text: "Compare published versions", count: 2
+    assert_select "details", text: /Changes since the previous publication/ do
+      assert_select "dt", text: "Variant: Large · Price"
+      assert_select "del", text: "5.95 GBP"
+      assert_select "ins", text: "8.50 GBP"
+      assert_select "ins", text: "99.00 GBP", count: 0
+    end
+  end
+
   private
 
   def create_product(**attributes)

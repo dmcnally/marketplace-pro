@@ -9,6 +9,23 @@
       <% if (availability_change = catalogue_availability_change(event)) %>
         <p><%= availability_change %></p>
       <% end %>
+      <% publication = Catalogue::PublicationDiff.new(event) %>
+      <% if publication.available? %>
+        <details class="catalogue__history-comparison">
+          <summary class="btn btn--secondary">Compare published versions</summary>
+          <p class="catalogue__muted"><%= publication.first_publication? ? "First publication" : "Changes since the previous publication" %></p>
+          <% if publication.changes.empty? %>
+            <p>No content changes since the previous publication.</p>
+          <% else %>
+            <dl class="catalogue__comparison">
+              <% publication.changes.each do |change| %>
+                <dt><%= change[:field] %></dt>
+                <dd><del><%= catalogue_publication_value(change[:field], change[:before]) %></del> → <ins><%= catalogue_publication_value(change[:field], change[:after]) %></ins></dd>
+              <% end %>
+            </dl>
+          <% end %>
+        </details>
+      <% end %>
       <% if event.subject_previous %>
         <details class="catalogue__history-comparison">
           <summary class="btn btn--secondary">Compare changes</summary>
