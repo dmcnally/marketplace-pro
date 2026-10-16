@@ -1,0 +1,4 @@
+<h1><%= @page[:recording].recordable.name %> · History</h1>
+<p class="catalogue__muted">Read-only history. Content changes preserve previous versions.</p>
+<%= link_to "Back to categories", admin_categories_path, class: "btn btn--secondary" %>
+<%= render "catalogue/history", events: @page[:events] %>

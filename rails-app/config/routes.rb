@@ -39,6 +39,12 @@ Rails.application.routes.draw do
     root "dashboards#show"
   end
 
+  scope path: "admin", as: "admin" do
+    resources :categories, except: :destroy do
+      resource :archive, only: %i[create destroy], controller: "categories/archives"
+    end
+  end
+
   namespace :admin do
     resources :csv_imports, only: [ :index, :show, :new, :create, :destroy ]
 
