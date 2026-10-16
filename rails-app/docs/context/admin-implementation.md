@@ -6,6 +6,12 @@ implementation and focused verification. Design coverage alone is not completion
 Keep commits to small, complete workflows; finish and commit the current workflow
 before starting another. The user explicitly requested shorter gaps between commits.
 
+Completed and verified on 16 October 2026. See the
+[final verification report](admin-verification.md) for current requirement coverage,
+test results, environment details and remaining visual differences. Checkpoints
+below are retained as implementation history; their older pending-work notes are
+superseded by the completed feature list and final report.
+
 ## Features
 
 - [x] Categories: create/edit, validation, archive/restore, history, stale saves, permissions.
@@ -21,9 +27,17 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Live allergen warnings: affected products, assignment/content changes, correct resolution.
 - [x] History: actor/time and before/after comparisons including relationships and variant events.
 - [x] Navigation and Orders: main/admin split, mobile navigation, user-confirmed deferred Orders destination and default member landing at Overview.
-- [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
+- [x] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Final audit: 762 tests / 3,932 assertions passed; full RuboCop clean (403 files),
+Archspec passed (206 files; analysis gaps documented). The combined desktop/mobile
+browser sweep passed 12 tests / 291 assertions. All application migrations are up
+through `20261016000400`. Final audit removed legacy Articles sidebar entries and
+linked the workspace to Overview, Orders and Admin (`f547006`). Remaining visual
+differences and the isolated Docker environment are documented in the final report.
+No remaining implementation blocker was found within the agreed scope.
 
 Landing flow complete: sign-in defaults to Overview, as do successful invitation
 acceptance and bucket switching. Explicit authentication return destinations still

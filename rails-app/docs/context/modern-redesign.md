@@ -1,5 +1,10 @@
 # Modern redesign: scope and handoff
 
+For the completed Marketplace catalogue/admin implementation and latest runtime
+evidence, see [Final admin verification](admin-verification.md). Historical
+editorial redesign notes below are retained for continuity; the confirmed
+Marketplace requirements and that verification report describe the current scope.
+
 ## Current document invariants
 
 The confirmed domain and navigation requirements are maintained in

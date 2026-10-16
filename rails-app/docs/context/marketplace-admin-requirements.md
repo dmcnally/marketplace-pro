@@ -352,4 +352,7 @@ The Marketplace Figma design now includes the main/admin navigation split and
 the corresponding screens, workflow states, and desktop/mobile examples. See
 [Figma requirements coverage](marketplace-figma-coverage.md) for the design links
 and requirement-by-requirement evidence. This is design coverage, not runtime
-verification. Rails still needs the domain features and navigation implemented.
+verification. The Rails implementation and runtime verification are now recorded
+in [Admin implementation](admin-implementation.md) and
+[Final verification](admin-verification.md), including remaining visual differences
+and the confirmed deferred Orders scope.
