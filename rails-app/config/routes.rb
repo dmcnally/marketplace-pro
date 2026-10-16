@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       resource :reversion, only: %i[new create], controller: "menus/reversions"
     end
     resources :products, except: :destroy do
+      resource :copy, only: %i[new create], controller: "products/copies"
       resource :archive, only: %i[new create destroy], controller: "products/archives"
       resources :variants, only: %i[new create edit update] do
         resource :archive, only: %i[new create destroy], controller: "variants/archives"

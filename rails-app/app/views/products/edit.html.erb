@@ -18,4 +18,5 @@
   </section>
 </div>
 <%= product_actions.allergen_form_for(@draft.recording) %>
+<section class="catalogue__panel"><h2>Copy product</h2><div class="catalogue__row"><div class="catalogue__record"><strong>Create a separate draft</strong><p class="catalogue__muted">Creates an unpublished copy; all copied variants start unavailable.</p></div><%= product_actions.copy_link_for(@draft.recording) %></div></section>
 <section class="catalogue__panel"><h2>Archive product</h2><p class="catalogue__muted">Withdraw this product and its variants immediately while preserving published history.</p><div class="catalogue__actions"><%= product_actions.archive_link_for(@draft.recording) %><%= product_actions.archives_link %></div></section>

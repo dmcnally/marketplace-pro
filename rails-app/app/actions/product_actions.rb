@@ -1,4 +1,12 @@
 class ProductActions < ActionsBase
+  def copy_link_for(recording)
+    view.link_to "Copy product", view.new_admin_product_copy_path(recording), class: "btn btn--secondary" if policy.can_copy?(recording)
+  end
+
+  def copy_form_for(copy)
+    view.render "products/copies/form", copy: copy if policy.can_copy?(copy.source)
+  end
+
   def archives_link
     view.link_to "Archived products & variants", view.admin_archived_products_path, class: "btn btn--secondary" if policy.can_create?
   end

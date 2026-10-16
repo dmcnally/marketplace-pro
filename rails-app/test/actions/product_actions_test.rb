@@ -5,6 +5,8 @@ class ProductActionsTest < ActiveSupport::TestCase
   include CatalogueTestHelper
 
   class View
+    def new_admin_product_copy_path(recording) = "/admin/products/#{recording.id}/copy/new"
+    def render(partial, **locals) = { partial: partial, locals: locals }
     def new_admin_product_archive_path(recording) = "/admin/products/#{recording.id}/archive/new"
     def admin_product_archive_path(recording) = "/admin/products/#{recording.id}/archive"
     def admin_product_variant_archive_path(product, variant) = "/admin/products/#{product.id}/variants/#{variant.id}/archive"
@@ -14,6 +16,22 @@ class ProductActionsTest < ActiveSupport::TestCase
     def admin_product_reversion_path(recording) = "/admin/products/#{recording.id}/reversion"
     def link_to(label, path, **options) = { label: label, path: path, options: options }
     def button_to(label, path, **options) = { label: label, path: path, options: options }
+  end
+
+  test "copy controls require an editable product and never perform the copy" do
+    product = create_catalogue_product
+    copy = Product::Copy.new(source: product)
+    actions = ProductActions.new(view: View.new, person: Current.person, bucket: Current.bucket)
+    assert_nil actions.copy_link_for(product)
+    assert_nil actions.copy_form_for(copy)
+    Membership.create!(person: Current.person, bucket: Current.bucket, role: :editor)
+    assert_no_difference "Recording.count" do
+      assert_equal "Copy product", actions.copy_link_for(product)[:label]
+      assert_equal "products/copies/form", actions.copy_form_for(copy)[:partial]
+    end
+    product.archive_content!(revision: product.draft_revision)
+    assert_nil actions.copy_link_for(product)
+    assert_nil actions.copy_form_for(copy)
   end
 
   test "archive controls hide forbidden operations and carry revision without mutation" do

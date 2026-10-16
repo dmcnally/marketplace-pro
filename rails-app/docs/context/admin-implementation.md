@@ -11,7 +11,7 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Categories: create/edit, validation, archive/restore, history, stale saves, permissions.
 - [x] Allergens: bucket-owned management, archive/restore, history and permissions.
 - [x] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
-- [ ] Product copying: independent unpublished copies with unavailable variants.
+- [x] Product copying: independent unpublished copies with unavailable variants.
 - [ ] Catalogue filters: category and publication filters (archive listing is implemented).
 - [x] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
 - [x] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
@@ -24,6 +24,26 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Product copying: a named copy form creates independent immutable product and
+active variant content in draft order, including image, categories, prices and
+allergens. Copies have no publication or menu placements; availability starts
+false. Archived/out-of-order variants are excluded. Archived classifier
+assignments block copying with guidance to restore or remove them, rather than
+silently dropping allergen information or making forbidden new assignments.
+Source revisions are checked under the bucket lock. Copied product/variant
+events identify their source, and failures roll back all partial content/events.
+Policies restrict copying to editors/admins and active products in their bucket.
+
+Verification: 721 tests / 3,349 assertions passed; full RuboCop clean (380 files),
+Archspec passed (195 files; reported analysis gaps remain). No migration needed.
+Figma product editor `4:175` and copy form `45:601` inspected. Temporary Chrome
+test `tmp/copy_visual_test.rb` passed 14 assertions, including actual copy
+submission, unavailable/unpublished state and no overflow at 1440px/390px.
+Both `tmp/catalogue-copy-*.png` renders were visually inspected against the copy
+design. The editor's copy control currently occupies its own lifecycle panel;
+the final editor layout pass will group lifecycle controls as shown in Figma.
+Existing font/navigation differences and native headless input limitations remain.
 
 Archive lifecycle: product/variant/menu archive confirmations, archive lists and
 restoration are policy-backed and stale-protected. Product archiving withdraws all
