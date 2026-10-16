@@ -7,6 +7,7 @@ class NavigationActions < ActionsBase
     links << link("Articles", view.articles_path, "articles")
     if bucket && CategoryPolicy.new(person: person, bucket: bucket).can_create?
       links << link("Categories", view.admin_categories_path, "categories")
+      links << link("Allergens", view.admin_allergens_path, "allergens")
     end
     if bucket && person.admin_of?(bucket)
       links << link("Members", view.admin_members_path, "admin/members")

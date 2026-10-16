@@ -40,6 +40,9 @@ Rails.application.routes.draw do
   end
 
   scope path: "admin", as: "admin" do
+    resources :allergens, except: :destroy do
+      resource :archive, only: %i[create destroy], controller: "allergens/archives"
+    end
     resources :categories, except: :destroy do
       resource :archive, only: %i[create destroy], controller: "categories/archives"
     end

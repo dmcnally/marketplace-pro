@@ -7,7 +7,7 @@ implementation and focused verification. Design coverage alone is not completion
 ## Features
 
 - [x] Categories: create/edit, validation, archive/restore, history, stale saves, permissions.
-- [ ] Allergens: bucket-owned management, archive/restore, history and permissions.
+- [x] Allergens: bucket-owned management, archive/restore, history and permissions.
 - [ ] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
 - [ ] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
 - [ ] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
@@ -54,3 +54,19 @@ separate pending feature. Product counts await product assignments.
 
 Orders processing and arbitrary historical restore remain deferred by the
 confirmed requirements; existing functionality remains available.
+
+### Allergens
+
+Implemented bucket-owned immutable allergen content, create/edit validation,
+archive/restore, stale-save rejection, policy-backed controls, read-only history
+and before/after comparison. Migration `20261016000100` applied successfully.
+Category/allergen controls share the shell and editing lifecycle; each resource
+has explicit policies and controller scopes. Access-denied pages now explain the
+required role. Focused tests: 17 tests, 175 assertions passed; RuboCop clean,
+Archspec passed. Category presenter/navigation checks also passed: 29 tests,
+181 assertions.
+
+Figma allergen list `7:85` and edit `7:144` inspected via design context and
+screenshots. Affected-product warnings depend on product publication and remain
+in the separate pending feature above; no sample affected products are displayed.
+The rendered visual verification blocker remains unchanged.

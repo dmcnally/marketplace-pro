@@ -13,8 +13,7 @@
       <strong class="catalogue__brand">marketplace</strong>
       <p><%= Current.bucket.name %></p>
       <nav aria-label="Admin" class="catalogue__navigation">
-        <%= link_to "Categories", admin_categories_path, class: "catalogue__nav-link catalogue__nav-link--active", aria: { current: "page" } %>
-        <%= link_to "Back to workspace", root_path, class: "catalogue__nav-link" %>
+        <%= catalogue_navigation_actions.links %>
       </nav>
       <p><%= Current.person.person_card.name %></p>
     </aside>

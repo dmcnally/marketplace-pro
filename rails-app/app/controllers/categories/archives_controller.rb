@@ -1,4 +1,5 @@
 class Categories::ArchivesController < ApplicationController
+  include CatalogueFeedback
   layout "catalogue"
   rescue_from Recording::CatalogueEditing::StaleDraft, with: :stale_draft
 

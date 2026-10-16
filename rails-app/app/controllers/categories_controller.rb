@@ -1,4 +1,5 @@
 class CategoriesController < ApplicationController
+  include CatalogueFeedback
   layout "catalogue"
   before_action :authorize_management
   before_action :set_recording, only: %i[show edit update]

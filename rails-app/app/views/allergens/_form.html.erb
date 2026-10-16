@@ -1,0 +1,22 @@
+<%= form_with model: recording.recordable, url: recording.persisted? ? admin_allergen_path(recording) : admin_allergens_path, method: recording.persisted? ? :patch : :post, class: "catalogue__panel" do |form| %>
+  <h2>Allergen details</h2>
+  <% if recording.recordable.errors.any? %>
+    <div class="catalogue__notice" role="alert">
+      <strong>Check the allergen details</strong>
+      <ul><% recording.recordable.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+    </div>
+  <% end %>
+  <%= hidden_field_tag :revision, recording.draft_revision if recording.persisted? %>
+  <div class="catalogue__field">
+    <%= form.label :name, "Name *" %>
+    <%= form.text_field :name, required: true, aria: { invalid: recording.recordable.errors[:name].any? } %>
+  </div>
+  <div class="catalogue__field">
+    <%= form.label :description, "Description · optional" %>
+    <%= form.text_area :description, rows: 2 %>
+  </div>
+  <div class="catalogue__actions">
+    <%= form.submit "Save allergen", class: "btn btn--primary" %>
+    <%= link_to "Cancel", admin_allergens_path, class: "btn btn--secondary" %>
+  </div>
+<% end %>
