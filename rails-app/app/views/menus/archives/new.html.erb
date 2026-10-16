@@ -1,0 +1,7 @@
+<h1>Archive <%= @recording.recordable.name %>?</h1>
+<section class="catalogue__panel">
+  <h2>Remove this menu from active menus</h2>
+  <p class="catalogue__muted">Published versions, product placements and event history are preserved.</p>
+  <div class="catalogue__notice"><strong>A live menu is unpublished immediately</strong><p>Archiving this menu will leave no live menu if it is currently published. Restoration returns it as an unpublished draft and never replaces the live menu.</p></div>
+  <div class="catalogue__actions"><%= menu_actions.archive_button_for(@recording) %><%= link_to "Cancel", edit_admin_menu_path(@recording), class: "btn btn--secondary" %></div>
+</section>

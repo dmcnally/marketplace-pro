@@ -1,6 +1,6 @@
 <h1>Menus</h1>
 <p class="catalogue__muted"><%= Current.bucket.name %> · One live menu at a time</p>
-<%= menu_actions.new_link %>
+<div class="catalogue__actions"><%= menu_actions.new_link %><%= menu_actions.archives_link %></div>
 <section class="catalogue__panel">
   <h2>Your menus</h2>
   <% @menus.each do |draft| %>

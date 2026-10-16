@@ -6,4 +6,12 @@ class Variant < ApplicationRecord
 
   def diffable? = true
   def timeline_description(event) = name
+
+  def before_catalogue_archive(recording)
+    VariantAvailability.find_by(recording: recording)&.withdraw!(reason: "Variant archived")
+  end
+
+  def before_catalogue_restore(recording)
+    VariantAvailability.find_by(recording: recording)&.withdraw!(reason: "Variant restored unavailable")
+  end
 end

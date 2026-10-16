@@ -10,6 +10,7 @@
       <div class="catalogue__row">
         <div class="catalogue__record"><strong><%= variant.recordable.name %> · <%= number_with_precision variant.recordable.price, precision: 2 %> <%= @draft.bucket.currency %></strong><p class="catalogue__muted"><%= variant.discarded? ? "Archived" : "Draft" %></p></div>
         <%= product_actions.variant_link_for(@draft.recording, variant) %>
+        <%= product_actions.restore_variant_button_for(@draft.recording, variant) %>
       </div>
     <% end %>
     <%= product_actions.new_variant_link_for(@draft.recording) %>
@@ -17,3 +18,4 @@
   </section>
 </div>
 <%= product_actions.allergen_form_for(@draft.recording) %>
+<section class="catalogue__panel"><h2>Archive product</h2><p class="catalogue__muted">Withdraw this product and its variants immediately while preserving published history.</p><div class="catalogue__actions"><%= product_actions.archive_link_for(@draft.recording) %><%= product_actions.archives_link %></div></section>

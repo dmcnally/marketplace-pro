@@ -5,6 +5,8 @@ class MenuActionsTest < ActiveSupport::TestCase
   include CatalogueTestHelper
 
   class View
+    def new_admin_menu_archive_path(menu) = "/admin/menus/#{menu.id}/archive/new"
+    def admin_menu_archive_path(menu) = "/admin/menus/#{menu.id}/archive"
     def new_admin_menu_publication_path(menu, **options) = "/admin/menus/#{menu.id}/publication/new"
     def admin_menu_publication_path(menu) = "/admin/menus/#{menu.id}/publication"
     def new_admin_menu_reversion_path(menu) = "/admin/menus/#{menu.id}/reversion/new"
@@ -17,6 +19,22 @@ class MenuActionsTest < ActiveSupport::TestCase
     def link_to(label, path, **options) = { label: label, path: path, options: options }
     def button_to(label, path, **options) = { label: label, path: path, options: options }
     def render(partial, **locals) = { partial: partial, locals: locals }
+  end
+
+  test "archive controls reflect permission and lifecycle without mutation" do
+    menu = create_catalogue_menu
+    actions = MenuActions.new(view: View.new, person: Current.person, bucket: Current.bucket)
+    assert_nil actions.archive_link_for(menu)
+    assert_nil actions.archive_button_for(menu)
+    Membership.create!(person: Current.person, bucket: Current.bucket, role: :editor)
+    assert_no_difference "Event.count" do
+      assert_equal "Archive menu", actions.archive_link_for(menu)[:label]
+      assert_equal menu.draft_revision, actions.archive_button_for(menu)[:options][:params][:revision]
+      assert_nil actions.restore_button_for(menu)
+    end
+    menu.archive_content!(revision: menu.draft_revision)
+    assert_nil actions.archive_link_for(menu)
+    assert_equal :delete, actions.restore_button_for(menu)[:options][:method]
   end
 
   test "publication controls reflect permission blockers and prior publication" do

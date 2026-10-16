@@ -3,17 +3,20 @@
 Scope: [confirmed requirements](marketplace-admin-requirements.md) and
 [Figma coverage](marketplace-figma-coverage.md). Each feature is committed after
 implementation and focused verification. Design coverage alone is not completion.
+Keep commits to small, complete workflows; finish and commit the current workflow
+before starting another. The user explicitly requested shorter gaps between commits.
 
 ## Features
 
 - [x] Categories: create/edit, validation, archive/restore, history, stale saves, permissions.
 - [x] Allergens: bucket-owned management, archive/restore, history and permissions.
 - [x] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
-- [ ] Product copying and catalogue filters: unpublished copies, category/publication filters, archive listing.
+- [ ] Product copying: independent unpublished copies with unavailable variants.
+- [ ] Catalogue filters: category and publication filters (archive listing is implemented).
 - [x] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
 - [x] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
 - [x] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
-- [ ] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
+- [x] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
 - [ ] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
 - [ ] Live allergen warnings: affected products, assignment/content changes, correct resolution.
 - [ ] History: actor/time and before/after comparisons including relationships and variant events.
@@ -21,6 +24,33 @@ implementation and focused verification. Design coverage alone is not completion
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Archive lifecycle: product/variant/menu archive confirmations, archive lists and
+restoration are policy-backed and stale-protected. Product archiving withdraws all
+variant availability with an attributed event for each changed variant. Variant
+archiving leaves siblings unchanged. Live-menu archiving unpublishes in the same
+transaction. Failed archives roll back availability, release state and events.
+Restoration never enables availability or publishes a menu. Published snapshots,
+immutable content and history are retained. `Catalogue::LiveMenu` reads published
+structure and current product releases, filters archived products/variants and
+empty containers, and reveals eligible restored content without republishing.
+The upcoming Overview uses this reader; its controls are still pending.
+
+Full suite: 712 tests / 3,245 assertions passed. RuboCop clean (376 files),
+Archspec passed (193 files; reported analysis gaps remain). No schema changes
+were needed; checkout migrations remain applied through `20261016000400`.
+Direct model tests cover filtering, restoration, draft-only variants, stale
+publication, rollback, availability events and preservation of snapshots.
+Integration/policy/action coverage checks ownership, viewer denial, stale/missing
+revisions, confirmation links, archive listing and restoration.
+Temporary Chrome test `tmp/archive_visual_test.rb` passed 37 assertions including
+archive/restore actions and five screens at 1440px/390px without overflow.
+Representative product/variant confirmations and archive lists were inspected
+against Figma `14:767`, `45:473`, `48:773`. Product and variant confirmations are
+separate pages instead of the combined showcase. The menu list currently says
+history retained without the design's last-publication date. Shared navigation
+and font differences remain tracked below. Native headless click limitations
+persist; the browser test dispatched DOM clicks through real forms.
 
 Menu publication: immutable presentation/structure snapshots, named unpublished
 product blockers, atomic replacement of the live menu, impact confirmation,

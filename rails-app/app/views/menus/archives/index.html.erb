@@ -1,0 +1,10 @@
+<h1>Archived menus</h1>
+<% @archives.each do |menu| %>
+  <section class="catalogue__panel"><h2><%= menu.recordable.name %></h2><p class="catalogue__muted">Archived · Unpublished · History retained</p><div class="catalogue__actions"><%= menu_actions.restore_button_for(menu) %><%= menu_actions.history_link_for(menu) %></div></section>
+<% end %>
+<% if @archives.empty? %><section class="catalogue__panel"><p class="catalogue__muted">No archived menus.</p></section><% end %>
+<section class="catalogue__panel">
+  <h2>Restored as an unpublished draft</h2>
+  <div class="catalogue__notice"><strong>Restoration never makes a menu live</strong><p>The current live menu remains unchanged. Review and explicitly publish a restored menu to replace it.</p></div>
+  <%= link_to "Back to menus", admin_menus_path, class: "btn btn--secondary" %>
+</section>

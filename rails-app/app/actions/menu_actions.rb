@@ -1,4 +1,24 @@
 class MenuActions < ActionsBase
+  def archives_link
+    view.link_to "Archived menus", view.admin_archived_menus_path, class: "btn btn--secondary" if policy.can_create?
+  end
+
+  def archive_link_for(menu)
+    view.link_to "Archive menu", view.new_admin_menu_archive_path(menu), class: "btn btn--secondary" if policy.can_archive?(menu)
+  end
+
+  def archive_button_for(menu)
+    return unless policy.can_archive?(menu)
+
+    view.button_to "Archive menu", view.admin_menu_archive_path(menu), params: { revision: menu.draft_revision }, class: "btn btn--secondary"
+  end
+
+  def restore_button_for(menu)
+    return unless policy.can_restore?(menu)
+
+    view.button_to "Restore menu", view.admin_menu_archive_path(menu), method: :delete, params: { revision: menu.draft_revision }, class: "btn btn--secondary"
+  end
+
   def publication_link_for(menu)
     view.link_to "Review & publish", view.new_admin_menu_publication_path(menu), class: "btn btn--primary" if policy.can_publish?(menu)
   end

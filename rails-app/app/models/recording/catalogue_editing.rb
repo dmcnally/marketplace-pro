@@ -27,6 +27,7 @@ module Recording::CatalogueEditing
   def archive_content!(revision:)
     with_catalogue_lock do
       assert_draft_revision!(revision)
+      recordable.before_catalogue_archive(self) if kept? && recordable.respond_to?(:before_catalogue_archive)
       discard!
     end
   end
@@ -35,6 +36,7 @@ module Recording::CatalogueEditing
     with_catalogue_lock do
       assert_draft_revision!(revision)
       if discarded?
+        recordable.before_catalogue_restore(self) if recordable.respond_to?(:before_catalogue_restore)
         restore!
         events.create!(bucket: bucket, subject: recordable, action: "restored", person: Current.person)
       end

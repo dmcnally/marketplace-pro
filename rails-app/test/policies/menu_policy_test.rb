@@ -4,6 +4,20 @@ require_relative "../test_helpers/catalogue_test_helper"
 class MenuPolicyTest < ActiveSupport::TestCase
   include CatalogueTestHelper
 
+  test "archive and restore require an editor and the corresponding archive state" do
+    menu = create_catalogue_menu
+    policy = MenuPolicy.new(person: Current.person, bucket: Current.bucket)
+    refute policy.can_archive?(menu)
+    membership = Membership.create!(person: Current.person, bucket: Current.bucket, role: :editor)
+    assert policy.can_archive?(menu)
+    refute policy.can_restore?(menu)
+    menu.archive_content!(revision: menu.draft_revision)
+    refute policy.can_archive?(menu)
+    assert policy.can_restore?(menu)
+    membership.update!(role: :viewer)
+    refute policy.can_restore?(menu)
+  end
+
   test "only editors and admins may manage menus within their bucket" do
     menu = create_catalogue_menu
     policy = MenuPolicy.new(person: Current.person, bucket: Current.bucket)

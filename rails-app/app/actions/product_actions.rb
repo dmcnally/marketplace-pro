@@ -1,4 +1,42 @@
 class ProductActions < ActionsBase
+  def archives_link
+    view.link_to "Archived products & variants", view.admin_archived_products_path, class: "btn btn--secondary" if policy.can_create?
+  end
+
+  def archive_link_for(recording)
+    view.link_to "Archive product", view.new_admin_product_archive_path(recording), class: "btn btn--secondary" if policy.can_archive?(recording)
+  end
+
+  def archive_button_for(recording)
+    return unless policy.can_archive?(recording)
+
+    view.button_to "Archive product", view.admin_product_archive_path(recording), params: { revision: recording.draft_revision }, class: "btn btn--secondary"
+  end
+
+  def restore_button_for(recording)
+    return unless policy.can_restore?(recording)
+
+    view.button_to "Restore product", view.admin_product_archive_path(recording), method: :delete, params: { revision: recording.draft_revision }, class: "btn btn--secondary"
+  end
+
+  def archive_variant_link_for(product, variant)
+    return unless policy.can_archive_variant?(product, variant)
+
+    view.link_to "Archive variant", view.new_admin_product_variant_archive_path(product, variant), class: "btn btn--secondary"
+  end
+
+  def archive_variant_button_for(product, variant)
+    return unless policy.can_archive_variant?(product, variant)
+
+    view.button_to "Archive variant", view.admin_product_variant_archive_path(product, variant), params: { revision: variant.draft_revision }, class: "btn btn--secondary"
+  end
+
+  def restore_variant_button_for(product, variant)
+    return unless policy.can_restore_variant?(product, variant)
+
+    view.button_to "Restore variant", view.admin_product_variant_archive_path(product, variant), method: :delete, params: { revision: variant.draft_revision }, class: "btn btn--secondary"
+  end
+
   def revert_link_for(recording)
     return unless policy.can_revert?(recording)
 

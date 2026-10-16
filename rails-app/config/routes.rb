@@ -40,7 +40,10 @@ Rails.application.routes.draw do
   end
 
   scope path: "admin", as: "admin" do
+    resources :archived_products, only: :index, controller: "products/archives"
+    resources :archived_menus, only: :index, controller: "menus/archives"
     resources :menus, except: :destroy do
+      resource :archive, only: %i[new create destroy], controller: "menus/archives"
       resources :sections, controller: "menu_sections", except: %i[index show] do
         resource :product_order, only: :create, controller: "menu_sections/product_orders"
       end
@@ -50,7 +53,10 @@ Rails.application.routes.draw do
       resource :reversion, only: %i[new create], controller: "menus/reversions"
     end
     resources :products, except: :destroy do
-      resources :variants, only: %i[new create edit update]
+      resource :archive, only: %i[new create destroy], controller: "products/archives"
+      resources :variants, only: %i[new create edit update] do
+        resource :archive, only: %i[new create destroy], controller: "variants/archives"
+      end
       resource :variant_order, only: :create, controller: "products/variant_orders"
       resource :allergen_assignment, only: :create, controller: "products/allergen_assignments"
       resource :publication, only: %i[new create destroy], controller: "products/publications"

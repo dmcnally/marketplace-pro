@@ -1,6 +1,6 @@
 <h1>Products</h1>
 <p class="catalogue__muted">Food and drink · <%= Current.bucket.name %> · Prices in <%= Current.bucket.currency %></p>
-<div class="catalogue__actions"><%= product_actions.new_link %></div>
+<div class="catalogue__actions"><%= product_actions.new_link %><%= product_actions.archives_link %></div>
 <section class="catalogue__panel">
   <h2>Catalogue</h2>
   <%= form_with url: admin_products_path, method: :get, class: "catalogue__field" do |form| %>

@@ -1,0 +1,7 @@
+<h1>Archive product</h1>
+<section class="catalogue__panel">
+  <h2>Archive <%= @recording.recordable.name %>?</h2>
+  <p class="catalogue__muted">Published snapshots and event history are retained. Empty product groups and sections hide automatically. Archived records are excluded from future menu selection.</p>
+  <div class="catalogue__notice"><strong>Withdraw immediately from all menus</strong><p>The product and all its variants become unavailable and disappear from the live menu and Overview without republishing. They are not shown as sold out.</p></div>
+  <div class="catalogue__actions"><%= product_actions.archive_button_for(@recording) %><%= link_to "Cancel", edit_admin_product_path(@recording), class: "btn btn--secondary" %></div>
+</section>
