@@ -37,6 +37,26 @@ module CatalogueHelper
     blob ? link_to(blob.filename.to_s, rails_blob_path(blob)) : "Image no longer available"
   end
 
+  def catalogue_menu_transition(event)
+    return unless event.subject_type == "Menu"
+
+    details = event.details.index_by(&:key)
+    key, prefix = case event.action
+    when "published" then [ "replaced_menu", "Replaced" ]
+    when "unpublished" then [ "replaced_by_menu", "Replaced by" ]
+    else return
+    end
+    id = details["#{key}_id"]&.value
+    return details["reason"]&.value if id.blank?
+    return if id.to_i == event.eventable_id
+
+    menu = event.bucket.recordings.menus.find_by(id: id)
+    return "#{prefix} an unavailable menu." unless menu
+
+    name = details["#{key}_name"]&.value.presence || menu.subject_at(event)&.name || "an earlier menu"
+    "#{prefix} #{name}."
+  end
+
   def product_actions
     @product_actions ||= ProductActions.new(view: self, person: Current.person, bucket: Current.bucket)
   end

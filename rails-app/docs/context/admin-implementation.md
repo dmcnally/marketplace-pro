@@ -19,11 +19,42 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Archive lifecycle: live filtering, preserved snapshots, unavailable restoration, menu unpublication.
 - [x] Overview: live published menu, variant and bulk availability, per-record events, staff permissions.
 - [x] Live allergen warnings: affected products, assignment/content changes, correct resolution.
-- [ ] History: actor/time and before/after comparisons including relationships and variant events.
+- [x] History: actor/time and before/after comparisons including relationships and variant events.
 - [ ] Navigation and Orders: main/admin split, mobile navigation, read-only bucket orders.
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+History completion audit: menu replacement now records the published names on
+both transition events and renders “Replaced …” / “Replaced by …”. Unpublished
+draft renames cannot mislabel the replaced live menu. Legacy references resolve
+within the event bucket; foreign references disclose no names. Archival-driven
+unpublication displays its reason; archive events use the user-facing “Archived”
+label. Direct publication tests, helper tests and request tests cover these cases.
+
+History requirement evidence checked across resources:
+- Categories/allergens: controller tests cover immutable edits, actor attribution,
+  before/after values and denied history access for viewers.
+- Products/variants: controller tests cover combined history, historical relationship
+  names, prices and availability; VariantChanges tests prove per-variant events
+  for bulk edits and ordering. Timeline tests cover descendants and timestamp ties.
+- Menus/sections: controller tests cover section/placement edits and ordering;
+  publication tests cover replacement, unpublication, revert and atomic failure.
+- Archive/restore: CatalogueEditing tests prove retained content, event sequence
+  and actor attribution. Availability tests cover archive effects and per-variant
+  transitions; history reads the same retained descendant events.
+- Content and publication comparisons: RecordableDiff and PublicationDiff tests
+  cover scalar fields, relationships, images, preserved snapshots and removals.
+  Views remain read-only, with no arbitrary historical restoration controls.
+
+Verification: 758 tests / 3,876 assertions passed; RuboCop clean (399 files),
+Archspec passed (204 files, analysis gaps remain). No migration needed.
+`tmp/history_audit_visual_test.rb` passed 30 assertions covering category,
+allergen and both menu replacement histories at 1440px/390px. Representative
+screenshots were inspected; no overflow. Previous product browser checks cover
+availability, content/image and publication comparisons. The functional History
+feature is complete; existing inline-comparison, metadata, font and mobile-shell
+differences remain assigned to final visual verification/navigation below.
 
 Image-history checkpoint: content comparisons now show retained before/after
 images and explicit removal, including edits that change only the image. This

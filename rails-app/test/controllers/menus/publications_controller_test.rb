@@ -37,6 +37,12 @@ class Menus::PublicationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal other, Catalogue::Release.live_menu(@bucket).recording
     refute @menu.catalogue_published?
     assert_equal users(:two).person, @menu.events.find_by!(action: "unpublished").person
+    get admin_menu_path(@menu)
+    assert_response :success
+    assert_select "p", "Replaced by Lunch."
+    get admin_menu_path(other)
+    assert_response :success
+    assert_select "p", "Replaced Evening menu."
     get new_admin_menu_publication_path(other, intent: "unpublish")
     assert_response :success
     assert_select "h2", "There will be no live menu"

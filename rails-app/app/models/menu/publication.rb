@@ -82,11 +82,11 @@ class Menu::Publication
       previous = live_menu
       if previous && previous.recording_id != recording.id
         previous.update!(active: false)
-        track!(previous.recording, "unpublished", previous.snapshot, "replaced_by_menu_id" => recording.id)
+        track!(previous.recording, "unpublished", previous.snapshot, "replaced_by_menu_id" => recording.id, "replaced_by_menu_name" => snapshot.content.fetch("name"))
       end
       publication = release || Catalogue::Release.new(recording: recording, bucket: recording.bucket, kind: "Menu")
       publication.update!(snapshot: snapshot, active: true)
-      track!(recording, "published", snapshot, "replaced_menu_id" => previous&.recording_id)
+      track!(recording, "published", snapshot, "replaced_menu_id" => previous&.recording_id, "replaced_menu_name" => previous&.snapshot&.content&.fetch("name"))
     end
   end
 

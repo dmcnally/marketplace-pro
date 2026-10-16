@@ -55,6 +55,7 @@ class Menu::PublicationTest < ActiveSupport::TestCase
 
   test "replacing a live menu records both transitions and unpublishing leaves no live menu" do
     @publication.publish!(token: @publication.review_token)
+    @menu.update!(recordable: Menu.new(name: "Unpublished rename", section_order: @menu.recordable.section_order))
     candidate = create_catalogue_menu(name: "Lunch")
     add_menu_section(candidate, product_ids: [ @product.id ])
     other = Menu::Publication.new(candidate.reload)
@@ -64,6 +65,9 @@ class Menu::PublicationTest < ActiveSupport::TestCase
     assert_equal 1, Catalogue::Release.active.where(bucket: Current.bucket, kind: "Menu").count
     event = @menu.events.where(action: "unpublished").sole
     assert_equal candidate.id.to_s, event.details.find_by!(key: "replaced_by_menu_id").value
+    assert_equal "Lunch", event.details.find_by!(key: "replaced_by_menu_name").value
+    published_event = candidate.events.where(action: "published").sole
+    assert_equal "Evening menu", published_event.details.find_by!(key: "replaced_menu_name").value
     other.unpublish!(token: other.review_token)
     assert_nil Catalogue::Release.live_menu(Current.bucket)
     assert other.previous_content
