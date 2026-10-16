@@ -11,7 +11,9 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       assert_select "h1", "Orders"
       assert_select "h2", "Orders workflow is deferred"
       assert_select "nav[aria-label=Main] a" do |links|
-        expected = role == :viewer ? [ "Overview", "Orders" ] : [ "Overview", "Orders", "Admin" ]
+        expected = [ "Overview", "Orders" ]
+        expected += [ "Products", "Categories", "Allergens", "Menus" ] unless role == :viewer
+        expected << "Admin" if role == :admin
         assert_equal expected, links.map(&:text)
       end
       assert_select "nav a[aria-current=page]", text: "Orders", count: 1

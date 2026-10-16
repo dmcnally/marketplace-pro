@@ -98,6 +98,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000400) do
     t.index ["recording_id"], name: "index_catalogue_snapshots_on_recording_id"
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.bigint "site_id", null: false
+    t.bigint "recording_id", null: false
+    t.string "slug", limit: 200, null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recording_id"], name: "index_categories_on_recording_id", unique: true
+    t.index ["site_id", "slug"], name: "index_categories_on_site_id_and_slug", unique: true
+    t.index ["site_id"], name: "index_categories_on_site_id"
+    t.check_constraint "slug::text ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text", name: "categories_canonical_slug"
+  end
+
+  create_table "category_contents", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+    t.text "description"
+    t.bigint "parent_category_id"
+    t.index ["parent_category_id"], name: "index_category_contents_on_parent_category_id"
+    t.check_constraint "length(TRIM(BOTH FROM name)) > 0", name: "category_contents_name_present"
+  end
+
   create_table "comments", force: :cascade do |t|
     t.text "body", null: false
   end
@@ -272,6 +293,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000400) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "sites", force: :cascade do |t|
+    t.bigint "bucket_id", null: false
+    t.string "name", limit: 200, null: false
+    t.string "time_zone", default: "Europe/London", null: false
+    t.string "currency_code", default: "GBP", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bucket_id"], name: "index_sites_on_bucket_id"
+    t.check_constraint "currency_code::text = 'GBP'::text", name: "sites_supported_currency"
+    t.check_constraint "length(TRIM(BOTH FROM name)) > 0", name: "sites_name_present"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -304,6 +337,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000400) do
   add_foreign_key "catalogue_releases", "catalogue_snapshots", column: "snapshot_id"
   add_foreign_key "catalogue_releases", "recordings"
   add_foreign_key "catalogue_snapshots", "recordings"
+  add_foreign_key "categories", "recordings"
+  add_foreign_key "categories", "sites"
+  add_foreign_key "category_contents", "categories", column: "parent_category_id"
   add_foreign_key "csv_import_rows", "csv_imports"
   add_foreign_key "csv_import_rows", "recordings", column: "imported_recording_id"
   add_foreign_key "csv_imports", "buckets"
@@ -321,6 +357,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_000400) do
   add_foreign_key "recordings", "recordings", column: "parent_id"
   add_foreign_key "search_indices", "recordings"
   add_foreign_key "sessions", "users"
+  add_foreign_key "sites", "buckets"
   add_foreign_key "users", "people"
   add_foreign_key "variant_availabilities", "recordings"
 end

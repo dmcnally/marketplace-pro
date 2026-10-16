@@ -34,7 +34,7 @@ precedence over the historical editorial redesign scope below.
 - Products have a separate Unpublish action for editors and admins, applying to the product and variants together and tracked through events. Block it while the product is referenced by the live menu: remove all its placements and republish the menu first, or unpublish the menu. This initial restriction may be revisited if it causes workflow friction; availability can stop sales immediately.
 - Product publication requires at least one non-archived variant with a valid name and price. Temporary unavailability does not block publication.
 - Allergen name/description edits mark affected products as having unpublished changes while published wording remains unchanged until product republication. If affected products appear on the live menu, prominently warn that allergen edits may make it inaccurate and identify those products. Menu republication alone does not resolve the warning.
-- The allergen-change warning is shown in admin to editors and admins, not on the staff Overview page.
+- The allergen-change warning is shown in catalogue management to editors and admins, not on the staff Overview page.
 - The same warning covers unpublished variant allergen assignment changes, including bulk edits, for products appearing on the live menu. Published assignments remain unchanged until product republication.
 - Archiving immediately omits products and variants from the live menu and Overview availability controls without republishing, and excludes them from future selection. Published history is preserved; archived items are filtered from live display rather than shown as sold out. Restoring products or variants does not automatically enable availability. Archiving the published menu atomically unpublishes it.
 - Restored menus return as unpublished drafts and require explicit publication; restoration never replaces the live menu.
@@ -45,16 +45,16 @@ precedence over the historical editorial redesign scope below.
 - Content-change history offers before-and-after comparisons for names, descriptions, prices, and allergen assignments, reusing existing diff functionality where applicable.
 - History is read-only. Arbitrary historical content restoration is deferred; Revert all to the most recently published version is the only initial content rollback action, separate from archive restoration.
 - Each bucket uses one currency. Products have a required name, optional description, and optional image; variants have a required name and price, availability, and allergens.
-- The admin sidebar contains Products, Categories, Allergens, and Menus, in that order.
-- The main sidebar contains Overview and Orders, in that order. Editors and admins also see an Admin link. Orders links to an Orders page.
-- The admin area includes a Back to Overview link. Editors and admins can manage all four admin sections and publish menus.
+- The main sidebar contains Overview and Orders, followed by Products, Categories, Allergens, and Menus for editors and admins.
+- Only admins see Admin. Its dashboard and sidebar are reserved for user management: Members, roles/permissions, and Invitations, with a Back to Overview link.
+- Catalogue management is part of the normal workspace. Editors and admins can manage it and publish menus. Orders links to an Orders page.
 - Articles is not a sidebar item.
 - Orders is a staff view of all orders in the current bucket, accessible to every bucket member. Customer-facing behavior is outside the current scope; order mutation permissions remain undecided.
 - Every bucket member can toggle availability only for products and variants on the currently published menu in their bucket, with changes tracked through events. Draft placement or product publication alone does not qualify. Content editing and publishing remain restricted to editors and admins.
 - Overview displays the live menu's products and variants with availability controls for every bucket member, without requiring admin access or another sidebar page.
 - Product-level availability toggles are bulk UX controls over published variants, not separate product state. Each affected variant change is tracked through events.
 - Order processing is deferred beyond the current admin build. Part of that workflow will be handled by the Android application; the Rails/Android split will be defined later.
-- These requirements supersede the earlier editorial navigation described below. The Marketplace Figma screens now represent the main/admin navigation split and confirmed workflows; see [Figma requirements coverage](marketplace-figma-coverage.md). Rails navigation and domain functionality still require implementation.
+- These requirements supersede the earlier editorial navigation described below. The Marketplace Figma screens now represent the main/admin navigation split and confirmed workflows; see [Figma requirements coverage](marketplace-figma-coverage.md). Rails catalogue workflows are implemented; see [verification](admin-verification.md). The current [workspace navigation](workspace-navigation.md) supersedes older sidebar descriptions below.
 
 ## What was missed
 

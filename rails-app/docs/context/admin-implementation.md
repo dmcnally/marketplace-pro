@@ -1,5 +1,16 @@
 # Admin implementation tracker
 
+## Navigation correction — 16 October 2026
+
+The current [workspace navigation](workspace-navigation.md) supersedes navigation
+descriptions in the historical checkpoints below. Catalogue tools now appear in
+the main sidebar for editors and admins, with URLs outside `/admin`. Only admins
+see Admin, whose dashboard and sidebar contain user-management functions.
+Regression verification after this correction: **764 tests, 3,977 assertions**,
+zero failures or errors. Existing-member role editing remains a separate gap.
+
+## Earlier implementation checkpoints
+
 Scope: [confirmed requirements](marketplace-admin-requirements.md) and
 [Figma coverage](marketplace-figma-coverage.md). Each feature is committed after
 implementation and focused verification. Design coverage alone is not completion.

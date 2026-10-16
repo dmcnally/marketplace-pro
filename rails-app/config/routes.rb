@@ -42,7 +42,8 @@ Rails.application.routes.draw do
     root "dashboards#show"
   end
 
-  scope path: "admin", as: "admin" do
+  # Keep existing helper names while catalogue pages live in the main workspace.
+  scope as: "admin" do
     resources :archived_products, only: :index, controller: "products/archives"
     resources :archived_menus, only: :index, controller: "menus/archives"
     resources :menus, except: :destroy do

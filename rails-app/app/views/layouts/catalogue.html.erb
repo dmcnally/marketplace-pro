@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Marketplace admin" %></title>
+    <title><%= content_for(:title) || "Marketplace" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -13,9 +13,9 @@
       <strong class="catalogue__brand">marketplace</strong>
       <p><%= Current.bucket.name %></p>
       <details class="catalogue__navigation-disclosure" data-catalogue-navigation-target="disclosure" open>
-        <summary>Admin navigation · Menu</summary>
+        <summary>Main navigation · Menu</summary>
         <div class="catalogue__navigation-panel">
-          <nav aria-label="Admin" class="catalogue__navigation">
+          <nav aria-label="Main" class="catalogue__navigation">
             <%= catalogue_navigation_actions.links %>
           </nav>
           <p><%= Current.person.person_card.name %></p>

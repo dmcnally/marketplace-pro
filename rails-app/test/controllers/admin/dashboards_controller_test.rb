@@ -10,14 +10,19 @@ module Admin
       get admin_root_path
 
       assert_response :success
-      assert_select "h1", "Welcome back, Jane"
-      assert_select ".workspace__nav-link[aria-current=page]", "Overview"
-      assert_select ".workspace-metric h2", "Team members"
-      assert_select ".workspace-metric__value", "1"
-      assert_select ".workspace-card__item p", "0 invitations still pending"
-      assert_select "a[href=?]", new_article_path, text: "Create article"
+      assert_select "h1", "Manage users"
+      assert_select ".management-sidebar__link--active", "Dashboard"
+      assert_select ".dashboard-summary__label", "Team members"
+      assert_select ".dashboard-summary__value", "1"
+      assert_select ".dashboard-summary__item p", "0 invitations still pending"
+      assert_select "a[href=?]", new_article_path, count: 0
       assert_select "a[href=?]", new_admin_invitation_path, text: "Invite member"
-      assert_select "#workspace-name[readonly][value=Default]"
+      assert_select "nav[aria-label=Admin] a" do |links|
+        assert_equal [ "Dashboard", "Members", "Invitations", "Back to Overview" ], links.map(&:text)
+      end
+      [ articles_path, admin_csv_imports_path, admin_products_path, admin_categories_path, admin_allergens_path, admin_menus_path ].each do |path|
+        assert_select "main a[href=?]", path, count: 0
+      end
     end
 
     test "show displays current bucket member and sent invitation counts" do
@@ -45,9 +50,9 @@ module Admin
       get admin_root_path
 
       assert_response :success
-      assert_select ".workspace-metric h2", "Team members"
-      assert_select ".workspace-metric__value", "1"
-      assert_select ".workspace-card__item p", "1 invitation still pending"
+      assert_select ".dashboard-summary__label", "Team members"
+      assert_select ".dashboard-summary__value", "1"
+      assert_select ".dashboard-summary__item p", "1 invitation still pending"
     end
 
     test "show redirects guests to sign in" do
@@ -74,7 +79,7 @@ module Admin
       get admin_dashboard_path
 
       assert_response :success
-      assert_select "h1", "Welcome back, Jane"
+      assert_select "h1", "Manage users"
     end
   end
 end

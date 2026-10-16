@@ -22,10 +22,6 @@ class AvailabilityActions < ActionsBase
     navigation_link("Orders", view.orders_path, "orders") if OrderPolicy.new(person: person, bucket: bucket).can_view?
   end
 
-  def admin_link
-    view.link_to "Admin", view.admin_products_path, class: "catalogue__nav-link" if ProductPolicy.new(person: person, bucket: bucket).can_create?
-  end
-
   private
 
   def navigation_link(label, path, controller)

@@ -41,10 +41,11 @@ class Catalogue::OverviewsControllerTest < ActionDispatch::IntegrationTest
     assert_select "button", "All available"
     @membership.update!(role: :editor)
     get overview_path
-    assert_select "a[href=?]", admin_products_path, text: "Admin"
+    assert_select "a[href=?]", admin_products_path, text: "Products"
+    assert_select "a", text: "Admin", count: 0
     assert_select "h2", text: "Review live allergen information", count: 0
     get admin_products_path
-    assert_select "a[href=?]", overview_path, text: "Back to Overview"
+    assert_select "a[href=?]", overview_path, text: "Overview"
   end
 
   test "individual and bulk controls update through Turbo with HTML fallback and attributed events" do

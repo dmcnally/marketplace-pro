@@ -1,5 +1,17 @@
 # Marketplace admin final verification
 
+## Navigation correction — 16 October 2026
+
+The subsequent [workspace navigation configuration](workspace-navigation.md)
+moves Products, Categories, Allergens and Menus into the main editor/admin sidebar
+and reserves Admin for user management. Catalogue URLs are now outside `/admin`.
+The full Rails regression suite passed **764 tests, 3,977 assertions**, with zero
+failures or errors. RuboCop passed for all nine changed Ruby files; ArchSpec passed
+for 206 files with its existing analysis gaps. The checkpoint and browser evidence below describe the earlier
+implementation; they do not constitute a new browser check of this correction.
+
+## Earlier verification checkpoint
+
 Verified 16 October 2026 against the confirmed
 [requirements](marketplace-admin-requirements.md),
 [Figma coverage](marketplace-figma-coverage.md) and

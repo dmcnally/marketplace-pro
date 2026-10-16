@@ -160,8 +160,8 @@ for "sold out today" and archive for "we no longer offer this."
 - Show a prominent warning that allergens have been edited and the live menu may
   be inaccurate when affected products appear on the live menu. Identify the
   affected products and direct editors/admins to review and republish them.
-- This warning appears in admin for editors and admins, not on the staff
-  Overview page.
+- This warning appears in catalogue management for editors and admins, not on
+  the staff Overview page.
 - The same warning covers unpublished additions or removals of allergen
   assignments on variants of products appearing on the live menu, including
   assignments changed through the product-level bulk editor. Flag the affected
@@ -282,12 +282,23 @@ for "sold out today" and archive for "we no longer offer this."
 
 ## Navigation
 
-- The main area sidebar has Overview and Orders, in that order.
+See [workspace navigation](workspace-navigation.md) for the role matrix, current
+URLs, persona workflows and playable Figma entry points.
+
+- The main sidebar has Overview and Orders for all workspace members.
+- Editors and admins additionally see Products, Categories, Allergens, and Menus,
+  in that order, directly in the main sidebar. These are normal workspace
+  functions, not admin functions.
 - Orders links to an Orders page.
-- Editors and admins also see an Admin link in the main sidebar.
-- The admin sidebar has Products, Categories, Allergens, and Menus, in that order.
-- Admin includes a Back to Overview link to return to the main area.
+- Only admins see the Admin link. It opens the user-management dashboard.
+- The admin dashboard contains only user-management functions: Members, their
+  roles/permissions, and Invitations. Existing role-editing implementation gaps
+  remain; this navigation decision does not itself implement role changes.
+- The admin sidebar contains Dashboard, Members, Invitations, and a Back to
+  Overview link. Catalogue, article, import, and publishing controls do not
+  belong on the admin dashboard.
 - Articles is not a sidebar item.
+- This navigation decision supersedes the previous catalogue/admin split.
 
 ## Overview
 
