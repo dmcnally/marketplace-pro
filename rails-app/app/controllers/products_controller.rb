@@ -5,8 +5,7 @@ class ProductsController < ApplicationController
   rescue_from Recording::CatalogueEditing::StaleDraft, with: :stale_draft
 
   def index
-    @page = { recordings: product_recordings.kept.includes(:recordable), query: params[:q] }
-    @page[:recordings] = @page[:recordings].joins("INNER JOIN products ON products.id = recordings.recordable_id").where("products.name ILIKE ?", "%#{Product.sanitize_sql_like(params[:q])}%") if params[:q].present?
+    @catalogue = Product::Catalogue.new(bucket: Current.bucket, query: params[:q], category_id: params[:category_id], publication_state: params[:publication_state])
   end
 
   def show

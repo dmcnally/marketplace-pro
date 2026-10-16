@@ -47,6 +47,25 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_select "[role=alert]"
   end
 
+  test "catalogue combines filters retains selections and reports prices publication and invalid filters" do
+    product = create_product(category_ids: [ @category.id ])
+    publication = Product::Publication.new(product)
+    publication.publish!(token: publication.review_token)
+    get admin_products_path(q: "Wings", category_id: @category.id, publication_state: "published")
+    assert_response :success
+    assert_select "input[name=q][value=Wings]"
+    assert_select "select[name=category_id] option[selected][value=?]", @category.id.to_s
+    assert_select "select[name=publication_state] option[selected][value=published]"
+    assert_select ".catalogue__record p", "1 variant · 5.95 GBP · Published"
+    assert_select "a[href=?]", admin_products_path, text: "Clear filters"
+    get admin_products_path(publication_state: "never_published")
+    assert_select ".catalogue__record", count: 0
+    assert_select "p", /No products found/
+    get admin_products_path(category_id: "invalid")
+    assert_select "[role=alert]", /selected filter is unavailable/
+    assert_select ".catalogue__record", count: 0
+  end
+
   test "image edits preserve earlier versions and allow removing the draft image" do
     upload = Rack::Test::UploadedFile.new(Rails.root.join("public/icon.png"), "image/png")
     post admin_products_path, params: { product: { name: "Illustrated", price: "1", image: upload } }

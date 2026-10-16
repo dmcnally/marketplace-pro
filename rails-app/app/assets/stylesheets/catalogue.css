@@ -34,6 +34,10 @@
 .catalogue__field input[aria-invalid="true"] { border-color: var(--color-danger); }
 .catalogue__notice { padding: 16px; border-radius: 9px; background: #fff4e5; display: flex; flex-direction: column; gap: 8px; }
 .catalogue__comparison { overflow-wrap: anywhere; }
+.catalogue__filters { display: grid; gap: 16px; }
+.catalogue__filters select { display: block; width: 100%; padding: 8px; border: 1px solid var(--color-line); border-radius: 9px; background: white; color: var(--color-ink); font: inherit; }
+.catalogue__filters select:hover { border-color: var(--color-muted); }
+.catalogue__filters select:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
 .catalogue__comparison dd { margin: 8px 0 16px; }
 .catalogue__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .catalogue__columns .catalogue__row { flex-wrap: wrap; }

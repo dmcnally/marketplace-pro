@@ -1,4 +1,10 @@
 module CatalogueHelper
+  def catalogue_price(row)
+    return "No active variants" unless row[:minimum_price]
+
+    [ ("From" if row[:variant_count] > 1), number_with_precision(row[:minimum_price], precision: 2), Current.bucket.currency ].compact.join(" ")
+  end
+
   def catalogue_history_value(event, field, value)
     return value.presence || "Empty" unless %w[category_ids allergen_ids variant_order section_order product_ids].include?(field)
     return "None" if value.blank?

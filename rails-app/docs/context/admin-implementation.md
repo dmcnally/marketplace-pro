@@ -12,7 +12,7 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [x] Allergens: bucket-owned management, archive/restore, history and permissions.
 - [x] Products and variants: immutable content, images, prices, ordering, categories, copied/bulk allergen assignments.
 - [x] Product copying: independent unpublished copies with unavailable variants.
-- [ ] Catalogue filters: category and publication filters (archive listing is implemented).
+- [x] Catalogue filters: category and publication filters, accurate draft prices/counts and publication labels.
 - [x] Product publication: snapshots, impact confirmation, unpublished changes, unpublish restrictions, revert.
 - [x] Menus: presentation/images, ordered sections and placements, duplicate indicators, draft preview.
 - [x] Menu publication: blockers, atomic replacement, snapshots, stale confirmation, unpublish/revert.
@@ -24,6 +24,25 @@ before starting another. The user explicitly requested shorter gaps between comm
 - [ ] Final verification: focused/full tests, RuboCop without suppressions, Archspec, desktop/mobile visual comparison.
 
 ## Evidence and remaining work
+
+Catalogue filters: category and publication state combine with literal name
+search. Published, unpublished, never-published and unpublished-change filters
+use the actual publication lifecycle. Archived categories remain filterable for
+retained assignments; invalid/foreign filters produce no results and clear
+feedback. Product rows show active draft variant counts and minimum prices,
+excluding variants outside the current draft order. Search and selection values
+persist, Clear filters resets them, and existing management authorization applies.
+
+Verification: 726 tests / 3,421 assertions passed; full RuboCop clean (382 files),
+Archspec passed (196 files; analysis gaps remain). No migration needed.
+The Figma Products `4:101` context/render inspected during the preceding workflow
+provided the filter/record layout. `tmp/catalogue_filters_visual_test.rb` passed
+15 assertions for combined form submission, clearing, prices/states and desktop/
+mobile overflow. Both `tmp/catalogue-filters-*.png` renders were inspected; the
+dropdowns use shared colors, radii and focus states. Functional select controls
+and explicit submit/reset buttons make the filter panel taller than Figma's
+static summary. Currency is shown explicitly as the bucket's code. Allergen
+warnings and the Overview link remain in their separately tracked workflows.
 
 Product copying: a named copy form creates independent immutable product and
 active variant content in draft order, including image, categories, prices and
